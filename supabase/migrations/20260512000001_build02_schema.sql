@@ -1,5 +1,5 @@
 -- BUILD02: v1 data model
--- Run this in the Supabase SQL editor for project hxhnjjcemmcqneogmbpm.
+-- Run this in the Supabase SQL editor for project <your-project-ref>.
 -- DO NOT run via CLI without reviewing first.
 
 -- ============================================================

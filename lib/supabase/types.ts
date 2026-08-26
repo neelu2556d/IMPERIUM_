@@ -1,5 +1,5 @@
 // Hand-written types matching the BUILD02 schema.
-// Regenerate with `npx supabase gen types typescript --project-id hxhnjjcemmcqneogmbpm`
+// Regenerate with `npx supabase gen types typescript --project-id <your-project-ref>`
 // after the migration has been applied in the Supabase SQL editor.
 
 export type Goal = 'recomp' | 'cut' | 'bulk' | 'maintain' | 'general_health'

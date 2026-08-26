@@ -12,7 +12,7 @@
 -- and writes the resulting recommended_weights blob here.
 --
 -- ⚠️  APPLY MANUALLY in the Supabase SQL editor for project
---    hxhnjjcemmcqneogmbpm. The migration is idempotent (`if not
+--    <your-project-ref>. The migration is idempotent (`if not
 --    exists`) so re-running is safe.
 -- ============================================================
 

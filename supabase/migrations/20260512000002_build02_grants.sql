@@ -5,7 +5,7 @@
 -- basic table privilege — the DB rejects with "permission denied for table X" before
 -- even evaluating policies.
 --
--- Run this in the Supabase SQL editor for project hxhnjjcemmcqneogmbpm.
+-- Run this in the Supabase SQL editor for project <your-project-ref>.
 
 grant select, insert, update, delete on table public.user_profile      to anon, authenticated, service_role;
 grant select, insert, update, delete on table public.weights            to anon, authenticated, service_role;

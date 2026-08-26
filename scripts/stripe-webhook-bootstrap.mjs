@@ -37,7 +37,13 @@ async function loadEnv() {
   return out
 }
 
-const PROD_URL = 'http://localhost:3000/api/stripe/webhook'
+// Webhook URL: pass it as the first argument, or set NEXT_PUBLIC_APP_URL in
+// .env.local — e.g. `node scripts/stripe-webhook-bootstrap.mjs https://myapp.vercel.app`
+function resolveProdUrl(env) {
+  const base = process.argv.find((a) => a.startsWith('http')) || env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  return `${base.replace(/\/+$/, '')}/api/stripe/webhook`
+}
+
 const EVENTS = [
   'checkout.session.completed',
   'customer.subscription.created',
@@ -49,6 +55,7 @@ const EVENTS = [
 async function main() {
   const rotate = process.argv.includes('--rotate')
   const env = await loadEnv()
+  const PROD_URL = resolveProdUrl(env)
   const secret = env.STRIPE_SECRET_KEY
   if (!secret) {
     console.error('STRIPE_SECRET_KEY not found in .env.local')
