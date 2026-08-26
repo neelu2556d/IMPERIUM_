@@ -27,7 +27,7 @@ Either way, the only hard requirement is a free Supabase project. **Every other 
 
 ## The modules
 
-> The clips below are captured from the design standalones that live in this repo (`public/*.html`) — open them in a browser and play with them before you even set up the app.
+> The clips below are captured from the interactive demo pages the app itself ships and links to (`public/*.html`) — open them in a browser and play with them before you even set up the app.
 
 ### Vitals — one calm number
 
@@ -43,8 +43,6 @@ One 0–100 read of how your body is doing today, built from whatever you have �
 
 ### Fitness — a logger that remembers
 
-![Fitness](media/fitness.gif)
-
 A workout logger that remembers your last session, sizes today around your goal, and treats light weeks as part of the plan.
 
 - Rep prescriptions bend to your goal: the same heavy day reads 4×6 for a strength goal and 3×13 for longevity, with a reps-in-reserve target per set ([lib/training/repZones.ts](lib/training/repZones.ts)).
@@ -55,8 +53,6 @@ A workout logger that remembers your last session, sizes today around your goal,
 *Mid-session edits survive iOS killing the tab: a synchronous localStorage snapshot lands before every network save, and on reload the logger folds only the sets the server is missing back in ([lib/workouts/pendingSnapshot.ts](lib/workouts/pendingSnapshot.ts)).*
 
 ### Fuel — nutrition without guessing
-
-![Fuel](media/fuel.gif)
 
 Log food by photo, barcode, or search — then let the scale, not a formula, steer your calorie target.
 
@@ -90,8 +86,6 @@ An hour-by-hour forecast of your energy — from your circadian rhythm, your rec
 
 ### Finance — money on one quiet page
 
-![Finance](media/finance.gif)
-
 Net worth, subscriptions, and live markets — where a screenshot of a statement becomes structured data you approve before it lands.
 
 - Photograph a bank statement, billing page, or receipt and Claude extracts it into an editable preview — every row is reviewable before anything saves, and the extractor treats text in the image as data, never instructions ([app/api/finance/import-statement/route.ts](app/api/finance/import-statement/route.ts)).
@@ -101,8 +95,6 @@ Net worth, subscriptions, and live markets — where a screenshot of a statement
 *Auto-deduct renewals are a pure, idempotent state transform — capped at one billing cycle per pass, so a months-stale renewal date under-charges safely instead of storming the balance.*
 
 ### Brand — for people who publish
-
-![Brand](media/brand.gif)
 
 Every venture you're building on one page — its cadence, its numbers, and its money.
 
