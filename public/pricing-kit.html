@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vitality · Pricing revamp · 3 directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000; --bg-elev:#0a0a0a; --fg:#fff;
+    --mint:#6EE7B7; --mint-hover:#5dd6a6; --mint-deep:#1f4d3d;
+    --mint-glow:rgba(110,231,183,.4); --mint-ink:#042a1c;
+    --amber:#F59E0B;
+    --muted:rgba(255,255,255,.5); --muted-strong:rgba(255,255,255,.72);
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.16);
+    --card:rgba(255,255,255,.02); --card-elev:rgba(255,255,255,.04);
+    --ease:cubic-bezier(.2,.8,.2,1);
+    --ease-premium:cubic-bezier(.16,1,.3,1);
+    --serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg);color:var(--fg);}
+  body{
+    font-family:var(--sans);
+    font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding-top:54px; /* room for the fixed switcher */
+  }
+  em,.it{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:.01em;}
+
+  /* film grain — exact match to globals.css overlay */
+  body::after{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:60;
+    opacity:.035;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:200px 200px;
+  }
+
+  /* ───────── switcher ───────── */
+  .switch{
+    position:fixed;top:0;left:0;right:0;height:54px;z-index:70;
+    display:flex;align-items:center;gap:18px;
+    padding:0 22px;
+    background:rgba(0,0,0,.72);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .switch .brand{font-weight:600;letter-spacing:-.02em;font-size:15px;}
+  .switch .brand b{color:var(--mint);}
+  .switch .hint{font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-right:auto;}
+  .switch .tabs{display:flex;gap:8px;}
+  .switch button{
+    font-family:inherit;font-size:12.5px;font-weight:600;letter-spacing:.01em;
+    color:var(--muted-strong);background:transparent;
+    border:1px solid var(--border);border-radius:999px;
+    padding:7px 15px;cursor:pointer;
+    transition:all .2s var(--ease-premium);
+  }
+  .switch button:hover{border-color:var(--border-strong);color:var(--fg);}
+  .switch button.on{
+    background:var(--mint);color:#04150e;border-color:var(--mint);
+    box-shadow:0 0 0 4px rgba(110,231,183,.12);
+  }
+  @media(max-width:720px){.switch .hint{display:none;} .switch{gap:10px;padding:0 12px;}}
+
+  /* ───────── shared building blocks ───────── */
+  .dir{display:none;}
+  .dir.show{display:block;}
+
+  .atmos{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+  .aurora{
+    position:absolute;left:50%;top:-10%;width:90vw;height:60vh;transform:translateX(-50%);
+    background:radial-gradient(ellipse at 50% 30%,rgba(110,231,183,.16),rgba(110,231,183,.04) 38%,transparent 66%);
+    filter:blur(20px);
+  }
+  .lightning{position:absolute;inset:0;width:100%;height:100%;opacity:.5;}
+  .lightning path{
+    fill:none;stroke:var(--mint);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;
+    filter:drop-shadow(0 0 6px rgba(110,231,183,.7));
+    stroke-dasharray:520;stroke-dashoffset:520;
+    animation:strike 2.6s var(--ease-premium) forwards;
+  }
+  .lightning path.b{animation-delay:.7s;opacity:.6;}
+  @keyframes strike{to{stroke-dashoffset:0;}}
+
+  .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 28px;}
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--mint);
+  }
+  .eyebrow .rule{width:30px;height:1px;background:linear-gradient(90deg,var(--mint),transparent);}
+
+  .coord{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+
+  /* price figure */
+  .fig{display:flex;align-items:flex-start;gap:2px;line-height:1;}
+  .fig .cur{font-size:26px;font-weight:600;color:var(--mint);margin-top:8px;}
+  .fig .amt{font-size:78px;font-weight:600;letter-spacing:-.04em;}
+  .fig .unit{display:flex;flex-direction:column;margin:10px 0 0 6px;}
+  .fig .unit .t{font-size:15px;font-weight:600;}
+  .fig .unit .b{font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-top:2px;}
+
+  .check{flex:0 0 auto;width:17px;height:17px;border-radius:999px;background:rgba(110,231,183,.14);
+    display:inline-flex;align-items:center;justify-content:center;margin-top:1px;}
+  .check svg{width:9px;height:9px;}
+
+  .cta{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    background:var(--mint);color:#04150e;
+    font-family:inherit;font-size:15px;font-weight:600;letter-spacing:-.01em;
+    padding:15px 26px;border-radius:12px;border:none;cursor:pointer;width:100%;
+    transition:transform .14s var(--ease),background .2s var(--ease),box-shadow .3s var(--ease-premium);
+    box-shadow:0 8px 30px rgba(110,231,183,.16);
+  }
+  .cta:hover{background:var(--mint-hover);box-shadow:0 10px 38px rgba(110,231,183,.28);}
+  .cta:active{transform:translateY(1px);}
+  .cta .arr{transition:transform .25s var(--ease-premium);}
+  .cta:hover .arr{transform:translateX(4px);}
+  .fine{font-size:12px;color:var(--muted);text-align:center;letter-spacing:.02em;}
+
+  /* gem fallback (live Three.js icosahedron in the real app) */
+  .gem{position:relative;}
+  .gem svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 40px rgba(110,231,183,.3));}
+  .gem .tag{
+    position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);
+    white-space:nowrap;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  }
+
+  /* generic section heads */
+  .head{max-width:640px;}
+  .head h2{font-size:clamp(28px,4vw,46px);font-weight:600;letter-spacing:-.03em;line-height:1.04;margin:18px 0 0;}
+  .head p{color:var(--muted-strong);font-size:16px;line-height:1.65;margin-top:18px;}
+
+  .band{
+    display:flex;align-items:center;gap:14px;
+    font-size:13px;font-weight:600;letter-spacing:.02em;
+    padding:0 0 18px;border-bottom:1px solid var(--border);margin:54px 0 38px;
+  }
+  .band .mk{color:var(--mint);font-variant-numeric:tabular-nums;}
+  .band .st{margin-left:auto;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mint);
+    background:rgba(110,231,183,.1);padding:4px 11px;border-radius:999px;font-weight:600;}
+  .band .st.soon{color:var(--amber);background:rgba(245,158,11,.1);}
+
+  .faq{display:grid;gap:0;border-top:1px solid var(--border);margin-top:60px;}
+  .faq .q{border-bottom:1px solid var(--border);padding:24px 0;display:grid;grid-template-columns:1fr 1.4fr;gap:30px;}
+  .faq .q dt{font-size:16px;font-weight:600;letter-spacing:-.01em;}
+  .faq .q dd{color:var(--muted-strong);font-size:15px;line-height:1.6;}
+  @media(max-width:680px){.faq .q{grid-template-columns:1fr;gap:8px;}}
+
+  .indie{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.1em;padding:54px 0 90px;}
+
+  /* ════════════════════════════════════════════════════════
+     DIRECTION A — FOCUS  (the single card, Apple restraint)
+     ════════════════════════════════════════════════════════ */
+  #dirA .heroA{position:relative;min-height:92vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:80px 28px 60px;overflow:hidden;}
+  #dirA .gemA{width:300px;height:300px;margin-bottom:-30px;opacity:.92;}
+  #dirA .eyebrow{justify-content:center;}
+  #dirA .hl{font-size:clamp(52px,9vw,108px);font-weight:600;letter-spacing:-.045em;line-height:.95;margin:22px 0 0;}
+  #dirA .subA{color:var(--muted-strong);font-size:18px;line-height:1.6;margin:22px auto 0;max-width:440px;}
+  #dirA .cardA{
+    position:relative;z-index:3;width:100%;max-width:420px;margin:44px auto 0;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+    border:1px solid var(--border-strong);border-radius:22px;padding:30px 28px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+    text-align:left;
+  }
+  #dirA .cardA .toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+  #dirA .cardA .toprow .l{font-size:13px;font-weight:600;letter-spacing:.02em;}
+  #dirA .cardA .toprow .m{font-size:12px;color:var(--mint);font-variant-numeric:tabular-nums;}
+  #dirA .bullets{list-style:none;display:grid;gap:13px;margin:26px 0;}
+  #dirA .bullets li{display:flex;gap:11px;font-size:14.5px;color:var(--muted-strong);align-items:flex-start;}
+  #dirA .incl{max-width:560px;margin:0 auto;padding:30px 28px 0;}
+  #dirA .incl .row{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);align-items:baseline;}
+  #dirA .incl .row .n{font-size:12px;color:var(--mint);font-variant-numeric:tabular-nums;flex:0 0 26px;font-weight:600;}
+  #dirA .incl .row .t{font-size:15.5px;font-weight:600;flex:0 0 180px;letter-spacing:-.01em;}
+  #dirA .incl .row .d{font-size:14px;color:var(--muted);line-height:1.55;}
+  @media(max-width:600px){#dirA .incl .row{flex-direction:column;gap:4px;} #dirA .incl .row .t{flex:none;}}
+  #dirA .closeA{text-align:center;max-width:460px;margin:80px auto 0;padding:0 28px;}
+
+  /* ════════════════════════════════════════════════════════
+     DIRECTION B — EDITORIAL +  (current, leveled up)
+     ════════════════════════════════════════════════════════ */
+  #dirB .heroB{position:relative;min-height:90vh;padding:90px 0 60px;overflow:hidden;display:flex;align-items:center;}
+  #dirB .heroGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;width:100%;}
+  #dirB .hl{font-size:clamp(46px,6.5vw,82px);font-weight:600;letter-spacing:-.04em;line-height:.96;margin:24px 0 0;}
+  #dirB .subB{color:var(--muted-strong);font-size:18px;line-height:1.6;margin:24px 0 0;max-width:400px;}
+  #dirB .gemB{position:absolute;right:-40px;top:60px;width:230px;height:230px;opacity:.5;}
+  #dirB .cardB{
+    position:relative;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+    border:1px solid var(--border-strong);border-radius:22px;padding:30px 30px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  #dirB .cardB .toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  #dirB .cardB .toprow .l{font-size:13px;font-weight:600;}
+  #dirB .cardB .toprow .m{font-size:12px;color:var(--mint);}
+  #dirB .bullets{list-style:none;display:grid;gap:13px;margin:24px 0;}
+  #dirB .bullets li{display:flex;gap:11px;font-size:14.5px;color:var(--muted-strong);align-items:flex-start;}
+  #dirB .ladder{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);
+    border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  #dirB .ladder li{background:var(--bg);padding:26px 22px;transition:background .3s var(--ease-premium);cursor:default;}
+  #dirB .ladder li:hover{background:rgba(110,231,183,.05);}
+  #dirB .ladder .mk{font-size:12px;color:var(--mint);font-variant-numeric:tabular-nums;font-weight:600;}
+  #dirB .ladder h3{font-size:16px;font-weight:600;letter-spacing:-.01em;margin:14px 0 8px;transition:color .3s var(--ease-premium);}
+  #dirB .ladder li:hover h3{color:var(--mint);}
+  #dirB .ladder p{font-size:13.5px;color:var(--muted);line-height:1.55;}
+  @media(max-width:880px){#dirB .ladder{grid-template-columns:1fr 1fr;} #dirB .heroGrid{grid-template-columns:1fr;} #dirB .gemB{display:none;}}
+  @media(max-width:560px){#dirB .ladder{grid-template-columns:1fr;}}
+  #dirB .reserved{margin-top:1px;background:var(--card);border:1px dashed var(--border-strong);border-radius:16px;
+    padding:38px 30px;text-align:center;}
+  #dirB .reserved .t{font-size:22px;margin-bottom:12px;}
+  #dirB .reserved p{color:var(--muted);font-size:15px;line-height:1.6;max-width:520px;margin:0 auto;}
+  #dirB .founders{display:grid;grid-template-columns:1fr 1.3fr;gap:50px;margin:90px 0 0;}
+  #dirB .founders .body p{color:var(--muted-strong);font-size:16px;line-height:1.7;margin-bottom:18px;}
+  #dirB .founders .lock{border-left:2px solid var(--mint);padding-left:18px;color:var(--fg);}
+  #dirB .founders .lock b{color:var(--mint);}
+  @media(max-width:760px){#dirB .founders{grid-template-columns:1fr;gap:24px;}}
+  #dirB .closeB{margin:90px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;
+    background:linear-gradient(180deg,rgba(110,231,183,.06),transparent);border:1px solid var(--border);
+    border-radius:24px;padding:44px;}
+  @media(max-width:680px){#dirB .closeB{grid-template-columns:1fr;text-align:center;}}
+
+  /* ════════════════════════════════════════════════════════
+     DIRECTION C — LEDGER  (one member, one ledger)
+     ════════════════════════════════════════════════════════ */
+  #dirC .heroC{position:relative;padding:90px 0 40px;overflow:hidden;text-align:center;}
+  #dirC .gemC{width:150px;height:150px;margin:0 auto 6px;opacity:.9;}
+  #dirC .hl{font-size:clamp(42px,6vw,74px);font-weight:600;letter-spacing:-.04em;line-height:1;margin:18px 0 0;}
+  #dirC .subC{color:var(--muted-strong);font-size:17px;line-height:1.6;margin:20px auto 0;max-width:420px;}
+  #dirC .ledger{
+    max-width:560px;margin:50px auto 0;position:relative;z-index:2;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+    border:1px solid var(--border-strong);border-radius:18px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  #dirC .ledger .lhead{display:flex;justify-content:space-between;align-items:center;
+    padding:20px 26px;border-bottom:1px solid var(--border);}
+  #dirC .ledger .lhead .l{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  #dirC .ledger .lhead .r{font-size:12px;color:var(--mint);font-variant-numeric:tabular-nums;}
+  #dirC .ledger .line{display:flex;align-items:baseline;gap:14px;padding:17px 26px;
+    transition:background .3s var(--ease-premium);}
+  #dirC .ledger .line:hover{background:rgba(110,231,183,.05);}
+  #dirC .ledger .line .name{font-size:15px;font-weight:500;letter-spacing:-.01em;}
+  #dirC .ledger .line .name span{display:block;font-size:12.5px;color:var(--muted);font-weight:400;margin-top:3px;}
+  #dirC .ledger .line .dots{flex:1;border-bottom:1px dotted var(--border-strong);transform:translateY(-3px);}
+  #dirC .ledger .line .val{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mint);font-weight:600;white-space:nowrap;}
+  #dirC .ledger .total{display:flex;justify-content:space-between;align-items:center;
+    padding:24px 26px;border-top:1px solid var(--border-strong);background:rgba(110,231,183,.04);}
+  #dirC .ledger .total .lbl{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-strong);font-weight:600;}
+  #dirC .ledger .ctaWrap{padding:0 26px 26px;}
+  #dirC .ledger .ctaWrap .fine{margin-top:14px;}
+  #dirC .stamp{margin-top:26px;text-align:center;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  #dirC .closeC{text-align:center;max-width:480px;margin:84px auto 0;}
+</style>
+</head>
+<body>
+
+<!-- ───────── switcher ───────── -->
+<div class="switch">
+  <span class="brand"><b>Vitality</b> · pricing revamp</span>
+  <span class="hint">3 directions · same DNA · pick one or mix</span>
+  <div class="tabs">
+    <button data-dir="A" class="on">A · Focus</button>
+    <button data-dir="B">B · Editorial+</button>
+    <button data-dir="C">C · Ledger</button>
+  </div>
+</div>
+
+<!-- reusable gem fallback markup is inlined per direction below -->
+
+<!-- ════════ DIRECTION A — FOCUS ════════ -->
+<div class="dir show" id="dirA">
+  <section class="heroA">
+    <div class="atmos">
+      <div class="aurora"></div>
+      <svg class="lightning" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M120,720 L300,640 L430,680 L560,560 L700,610 L860,470 L1000,520 L1120,360" />
+        <path class="b" d="M1080,740 L900,660 L760,700 L600,580" />
+      </svg>
+    </div>
+
+    <div class="gem gemA" aria-hidden="true">
+      <svg viewBox="-1.2 -1.2 2.4 2.4">
+        <defs><linearGradient id="icoA" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#A7F3D0"/><stop offset="100%" stop-color="#3a8a6a"/>
+        </linearGradient></defs>
+        <polygon points="0,-1 0.95,-0.31 0.59,0.81 -0.59,0.81 -0.95,-0.31" fill="url(#icoA)" stroke="#6EE7B7" stroke-width=".012" stroke-opacity=".5"/>
+      </svg>
+      <span class="tag">gem renders live in-app</span>
+    </div>
+
+    <div class="eyebrow"><span class="rule"></span>Membership · One price · No tiers</div>
+    <h1 class="hl"><em>Fifteen</em> dollars<br/>a month.</h1>
+    <p class="subA">The same dashboard we open every morning. Now it opens for you too.</p>
+
+    <div class="cardA">
+      <div class="toprow"><span class="l">Vitality membership</span><span class="m">·01</span></div>
+      <div class="fig">
+        <span class="cur">$</span><span class="amt">15</span>
+        <span class="unit"><span class="t">/month</span><span class="b">billed monthly</span></span>
+      </div>
+      <ul class="bullets">
+        <li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L5 9.5L10 3" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Everything in v1, all included</li>
+        <li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L5 9.5L10 3" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Every new module ships to you free</li>
+        <li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L5 9.5L10 3" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Your data exports as JSON, anytime</li>
+      </ul>
+      <button class="cta">Start your dashboard <span class="arr">→</span></button>
+      <p class="fine" style="margin-top:14px;">Cancel anytime · 30-day money-back guarantee</p>
+    </div>
+  </section>
+
+  <div class="incl">
+    <div class="head" style="text-align:center;margin:0 auto 10px;">
+      <div class="eyebrow" style="justify-content:center;"><span class="rule"></span>What's included</div>
+    </div>
+    <div class="row"><span class="n">01</span><span class="t">Workout logger</span><span class="d">200+ exercises, progressive-overload graph, splits tailored to you, partial-rep logging, rest timer.</span></div>
+    <div class="row"><span class="n">02</span><span class="t">Tailored to you</span><span class="d">Answer a short setup and we generate your starting weight for every lift, machine, and accessory.</span></div>
+    <div class="row"><span class="n">03</span><span class="t">Every future module</span><span class="d">Wearables, nutrition, finance, goals. Each one ships into your subscription as it lands. No upsell.</span></div>
+    <div class="row"><span class="n">04</span><span class="t">Your data is yours</span><span class="d">Export everything as JSON in one tap. We never sell it and never train on it.</span></div>
+  </div>
+
+  <div class="closeA">
+    <h2 style="font-size:34px;font-weight:600;letter-spacing:-.03em;">Start your dashboard.</h2>
+    <div style="max-width:340px;margin:26px auto 0;">
+      <button class="cta">Start your dashboard <span class="arr">→</span></button>
+      <p class="fine" style="margin-top:14px;">30-day money-back guarantee · no questions asked</p>
+    </div>
+  </div>
+  <div class="indie">No VCs &nbsp;·&nbsp; No ads &nbsp;·&nbsp; No pivots &nbsp;·&nbsp; Two brothers building what we needed</div>
+</div>
+
+<!-- ════════ DIRECTION B — EDITORIAL + ════════ -->
+<div class="dir" id="dirB">
+  <section class="heroB">
+    <div class="atmos">
+      <div class="aurora"></div>
+      <svg class="lightning" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M120,720 L300,640 L430,680 L560,560 L700,610 L860,470 L1000,520 L1120,360" />
+        <path class="b" d="M1080,740 L900,660 L760,700 L600,580" />
+      </svg>
+    </div>
+    <div class="wrap">
+      <div class="heroGrid">
+        <div>
+          <div class="eyebrow"><span class="rule"></span>Membership · One price · No tiers</div>
+          <h1 class="hl"><em>Fifteen</em><br/>dollars a month.</h1>
+          <p class="subB">The same dashboard we open every morning. Now it opens for you too.</p>
+        </div>
+        <div style="position:relative;">
+          <div class="gem gemB" aria-hidden="true">
+            <svg viewBox="-1.2 -1.2 2.4 2.4">
+              <defs><linearGradient id="icoB" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#A7F3D0"/><stop offset="100%" stop-color="#3a8a6a"/>
+              </linearGradient></defs>
+              <polygon points="0,-1 0.95,-0.31 0.59,0.81 -0.59,0.81 -0.95,-0.31" fill="url(#icoB)" stroke="#6EE7B7" stroke-width=".012" stroke-opacity=".5"/>
+            </svg>
+          </div>
+          <div class="cardB">
+            <div class="toprow"><span class="l">Vitality membership</span><span class="m">·01</span></div>
+            <div class="fig">
+              <span class="cur">$</span><span class="amt">15</span>
+              <span class="unit"><span class="t">/month</span><span class="b">billed monthly</span></span>
+            </div>
+            <ul class="bullets">
+              <li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L5 9.5L10 3" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Everything in v1, all included</li>
+              <li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L5 9.5L10 3" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Every new module ships to you free</li>
+              <li><span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L5 9.5L10 3" stroke="#6EE7B7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Your data exports as JSON, anytime</li>
+            </ul>
+            <button class="cta">Start your dashboard <span class="arr">→</span></button>
+            <p class="fine" style="margin-top:14px;">Cancel anytime · 30-day money-back guarantee</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="head">
+      <div class="eyebrow"><span class="rule"></span>What's included</div>
+      <h2>Everything in your <em>dashboard</em>.</h2>
+      <p>v1 starts with the workout logger. Fully built, every set tracked. More modules are in the studio right now and ship into your subscription as soon as they're ready.</p>
+    </div>
+
+    <div class="band"><span class="mk">·01</span> Workout Logger <span class="st">Now live</span></div>
+    <ul class="ladder">
+      <li><span class="mk">01</span><h3>Full exercise library</h3><p>200+ exercises with form photos and short coaching tips. Search any lift, swap it in, log it.</p></li>
+      <li><span class="mk">02</span><h3>Progressive overload graph</h3><p>Every lift, every session, plotted from day one. Your all-time top set in one tap.</p></li>
+      <li><span class="mk">03</span><h3>Tailored starting weights</h3><p>A short setup generates your starting weight for every lift, machine, and accessory.</p></li>
+      <li><span class="mk">04</span><h3>Smart split builder</h3><p>Pick a preset or build your own day-by-day. Set the rotation, lock it in.</p></li>
+      <li><span class="mk">05</span><h3>Rest timer, adjustable</h3><p>Auto-starts the second a set is clean. Floats at the bottom, never in your way.</p></li>
+      <li><span class="mk">06</span><h3>Your data, as JSON</h3><p>Export everything any time, in one tap. We never sell it and never train on it.</p></li>
+    </ul>
+
+    <div class="band"><span class="mk">·02</span> More modules · in the studio <span class="st soon">Shipping before launch</span></div>
+    <div class="reserved">
+      <p class="t"><em>More in development.</em></p>
+      <p>We're building the next standalone right now. It ships into your subscription the moment it's ready. Lock in $15 today and every module that lands before launch is yours, no extra charge.</p>
+    </div>
+
+    <div class="founders">
+      <div class="head" style="padding-top:6px;">
+        <div class="eyebrow"><span class="rule"></span>Why this exists</div>
+        <h2 style="font-size:36px;">We built it <em>for ourselves</em>.</h2>
+      </div>
+      <div class="body">
+        <p>The workout logger came from Alex wanting clean PRs without a spreadsheet. The wearable sync came from Sam not being able to read his Whoop graphs anymore. Every feature is one of us solving a real problem first, then shaping it for you.</p>
+        <p class="lock"><b>Founder's pricing.</b> $15/mo right now. The price may rise as we add more. Anyone who joins now keeps $15 for as long as their subscription stays active.</p>
+      </div>
+    </div>
+
+    <div class="closeB">
+      <div>
+        <div class="fig">
+          <span class="cur">$</span><span class="amt">15</span>
+          <span class="unit"><span class="t">/month</span><span class="b">cancel anytime</span></span>
+        </div>
+        <h2 style="font-size:30px;font-weight:600;letter-spacing:-.02em;margin-top:14px;">Start your dashboard.</h2>
+      </div>
+      <div>
+        <button class="cta">Start your dashboard <span class="arr">→</span></button>
+        <p class="fine" style="margin-top:14px;">30-day money-back guarantee · no questions asked</p>
+      </div>
+    </div>
+
+    <dl class="faq">
+      <div class="q"><dt>Is my data mine?</dt><dd>Always. Export the whole thing as JSON any time. We don't sell it, we don't train on it, we don't share it.</dd></div>
+      <div class="q"><dt>What if I cancel?</dt><dd>Cancel anytime from your account settings, one tap. Refund within 30 days if you change your mind, no questions asked.</dd></div>
+      <div class="q"><dt>Are there usage limits?</dt><dd>No throttles, no soft caps. The dashboard is the dashboard.</dd></div>
+      <div class="q"><dt>What about new modules?</dt><dd>Included. Every new module ships into your existing subscription. Join now, lock in $15.</dd></div>
+    </dl>
+
+    <div class="indie">No VCs &nbsp;·&nbsp; No ads &nbsp;·&nbsp; No pivots &nbsp;·&nbsp; Two brothers building what we needed</div>
+  </div>
+</div>
+
+<!-- ════════ DIRECTION C — LEDGER ════════ -->
+<div class="dir" id="dirC">
+  <section class="heroC">
+    <div class="atmos">
+      <div class="aurora"></div>
+      <svg class="lightning" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M120,720 L300,640 L430,680 L560,560 L700,610 L860,470 L1000,520 L1120,360" />
+      </svg>
+    </div>
+    <div class="wrap">
+      <div class="gem gemC" aria-hidden="true">
+        <svg viewBox="-1.2 -1.2 2.4 2.4">
+          <defs><linearGradient id="icoC" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#A7F3D0"/><stop offset="100%" stop-color="#3a8a6a"/>
+          </linearGradient></defs>
+          <polygon points="0,-1 0.95,-0.31 0.59,0.81 -0.59,0.81 -0.95,-0.31" fill="url(#icoC)" stroke="#6EE7B7" stroke-width=".012" stroke-opacity=".5"/>
+        </svg>
+      </div>
+      <div class="eyebrow" style="justify-content:center;width:100%;"><span class="rule"></span>One member · One ledger · MMXXVI</div>
+      <h1 class="hl">One price.<br/><em>Everything</em> on the line.</h1>
+      <p class="subC">No tiers, no add-ons, no asterisks. Here is the whole account, itemized.</p>
+
+      <div class="ledger">
+        <div class="lhead"><span class="l">Vitality membership</span><span class="r">Statement · ·01</span></div>
+        <div class="line"><span class="name">Workout logger<span>200+ lifts, overload graph, tailored splits</span></span><span class="dots"></span><span class="val">Included</span></div>
+        <div class="line"><span class="name">Tailored starting weights<span>Generated for every lift and machine</span></span><span class="dots"></span><span class="val">Included</span></div>
+        <div class="line"><span class="name">Every future module<span>Wearables, nutrition, finance, goals</span></span><span class="dots"></span><span class="val">Included</span></div>
+        <div class="line"><span class="name">Your data, as JSON<span>Export anytime. Never sold, never trained on</span></span><span class="dots"></span><span class="val">Yours</span></div>
+        <div class="line"><span class="name">Usage limits<span>No throttles, no soft caps</span></span><span class="dots"></span><span class="val">None</span></div>
+        <div class="total"><span class="lbl">Total</span>
+          <div class="fig"><span class="cur">$</span><span class="amt" style="font-size:54px;">15</span><span class="unit"><span class="t">/month</span><span class="b">cancel anytime</span></span></div>
+        </div>
+        <div class="ctaWrap">
+          <button class="cta">Start your dashboard <span class="arr">→</span></button>
+          <p class="fine">30-day money-back guarantee · no questions asked</p>
+        </div>
+      </div>
+      <div class="stamp">Vitality Studio &nbsp;·&nbsp; Built by twins &nbsp;·&nbsp; Updated every week</div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="closeC">
+      <div class="eyebrow" style="justify-content:center;width:100%;"><span class="rule"></span>Why this exists</div>
+      <h2 style="font-size:34px;font-weight:600;letter-spacing:-.03em;margin-top:16px;">We built it <em>for ourselves</em>.</h2>
+      <p style="color:var(--muted-strong);font-size:16px;line-height:1.7;margin-top:20px;">It's the same dashboard we open every morning. When something breaks, we feel it on the next workout. When something is missing, we ship it the next week.</p>
+    </div>
+    <dl class="faq" style="max-width:760px;margin:60px auto 0;">
+      <div class="q"><dt>Is my data mine?</dt><dd>Always. Export the whole thing as JSON any time. We don't sell it, train on it, or share it.</dd></div>
+      <div class="q"><dt>What if I cancel?</dt><dd>One tap from settings. Refund within 30 days, no questions asked.</dd></div>
+      <div class="q"><dt>What about new modules?</dt><dd>Included. Every new module ships into your subscription. Join now, lock in $15.</dd></div>
+    </dl>
+    <div class="indie">No VCs &nbsp;·&nbsp; No ads &nbsp;·&nbsp; No pivots &nbsp;·&nbsp; Two brothers building what we needed</div>
+  </div>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.switch button');
+  const dirs = {A:document.getElementById('dirA'),B:document.getElementById('dirB'),C:document.getElementById('dirC')};
+  tabs.forEach(btn=>btn.addEventListener('click',()=>{
+    tabs.forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    Object.values(dirs).forEach(d=>d.classList.remove('show'));
+    dirs[btn.dataset.dir].classList.add('show');
+    window.scrollTo({top:0,behavior:'instant'});
+    // replay the lightning strike on the now-visible direction
+    dirs[btn.dataset.dir].querySelectorAll('.lightning path').forEach(p=>{
+      p.style.animation='none'; void p.offsetWidth; p.style.animation='';
+    });
+  }));
+</script>
+</body>
+</html>

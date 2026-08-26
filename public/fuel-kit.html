@@ -1,0 +1,338 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The supplement stack · Vitality Build Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{
+  --bg:#000; --fg:#fff;
+  --mint:#6EE7B7; --mint-deep:#1f4d3d; --mint-cool:#A7F3D0; --mint-ink:#042a1c;
+  --amber:#F59E0B;
+  --muted:rgba(255,255,255,0.5); --muted-strong:rgba(255,255,255,0.72);
+  --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.16);
+  --card:rgba(255,255,255,0.02);
+  --radius-card:18px; --radius-pill:999px;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease-premium:cubic-bezier(0.16,1,0.3,1);
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:rgba(110,231,183,0.25);color:#fff}
+
+.atmos{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 55% 45% at 50% 12%, rgba(110,231,183,0.10), rgba(110,231,183,0.03) 45%, transparent 70%),radial-gradient(ellipse 120% 80% at 50% 100%, rgba(14,38,30,0.4), rgba(0,0,0,0.95));}
+.atmos::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(110,231,183,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(110,231,183,0.045) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse 85% 60% at 50% 22%,#000,transparent 74%);mask-image:radial-gradient(ellipse 85% 60% at 50% 22%,#000,transparent 74%);opacity:.6;animation:gridDrift 50s linear infinite}
+@keyframes gridDrift{to{background-position:46px 46px}}
+
+.kit{position:relative;z-index:5;max-width:700px;margin:0 auto;padding:clamp(26px,5vw,48px) clamp(18px,5vw,34px) 96px}
+
+.kit-head{text-align:center;margin-bottom:8px}
+.eyebrow{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.24em;color:var(--mint);margin-bottom:11px;opacity:0;animation:fade .7s var(--ease-premium) .05s forwards}
+.kit-title{font-family:var(--serif);font-weight:400;font-size:clamp(2.3rem,8vw,3.2rem);line-height:.98;letter-spacing:-.01em;opacity:0;animation:rise .8s var(--ease-premium) .12s forwards}
+.kit-idea{margin:14px auto 0;max-width:38ch;font-size:.98rem;line-height:1.55;color:var(--muted-strong);opacity:0;animation:rise .8s var(--ease-premium) .22s forwards}
+.hl{font:inherit;font-weight:600;color:var(--mint-cool);position:relative;white-space:nowrap;padding:1px 4px;border-radius:6px}
+.hl::before{content:'';position:absolute;inset:0;border-radius:6px;z-index:-1;background:rgba(110,231,183,0.16);transform-origin:left center;transform:scaleX(0);animation:sweep .7s var(--ease-premium) .6s forwards}
+@keyframes sweep{to{transform:scaleX(1)}}
+.kit-tagline{margin-top:13px;font-family:var(--mono);font-size:.56rem;text-transform:uppercase;letter-spacing:.22em;color:var(--muted);opacity:0;animation:fade .9s var(--ease-premium) .32s forwards}
+
+/* how it works strip */
+.how{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:24px 0 8px;opacity:0;animation:fade .8s var(--ease-premium) .4s forwards}
+.how span{font-family:var(--mono);font-size:.56rem;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);border:1px solid var(--border);border-radius:var(--radius-pill);padding:7px 13px}
+.how b{color:var(--mint);font-weight:500}
+
+/* section marks */
+.sect{margin:38px 0 14px;text-align:center}
+.sect .k{font-family:var(--mono);font-size:.56rem;text-transform:uppercase;letter-spacing:.2em;color:var(--mint)}
+.sect h2{font-family:var(--serif);font-weight:400;font-size:1.7rem;margin-top:7px;line-height:1.1}
+.sect p{margin:8px auto 0;max-width:44ch;font-size:.86rem;line-height:1.5;color:var(--muted)}
+
+/* prompt cards */
+.pcard{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);margin-bottom:12px;overflow:hidden;opacity:0;transform:translateY(12px);animation:cardIn .6s var(--ease-premium) forwards;animation-delay:calc(var(--i,0)*60ms + .1s);transition:border-color .4s,box-shadow .4s}
+.pcard:hover{border-color:rgba(110,231,183,0.28);box-shadow:0 0 44px rgba(110,231,183,0.07)}
+@keyframes cardIn{to{opacity:1;transform:none}}
+.pcard .hd{display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.pnum{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.18);color:var(--mint);font-family:var(--mono);font-size:.7rem}
+.pcard .ttl{flex:1;min-width:0}
+.pcard .ttl b{display:block;font-family:var(--serif);font-weight:400;font-size:1.18rem;line-height:1.1}
+.pcard .ttl i{font-style:normal;font-family:var(--mono);font-size:.5rem;text-transform:uppercase;letter-spacing:.13em;color:var(--muted)}
+/* the link-up 1-2-3: dead simple, a tired viewer gets it in 5 seconds */
+.lk-steps{display:grid;gap:10px;max-width:430px;margin:18px auto 0;text-align:left}
+.lk-steps .ls{display:flex;gap:12px;align-items:flex-start}
+.lk-steps .ls .n{flex:0 0 24px;height:24px;border-radius:50%;background:rgba(110,231,183,.06);border:1px solid rgba(110,231,183,.5);color:#6EE7B7;font-family:var(--mono);font-size:.66rem;display:flex;align-items:center;justify-content:center}
+.lk-steps .ls .t{font-size:.92rem;line-height:1.5;color:rgba(255,255,255,.72);padding-top:2px}
+.lk-steps .ls .t b{color:#fff;font-weight:600}
+/* amber caution flag: the capstone is for the standalone, never the dashboard path */
+.cap-flag{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--mono);font-size:.56rem;text-transform:uppercase;letter-spacing:.16em;color:#F59E0B;border:1px solid rgba(245,158,11,.35);border-radius:999px;padding:7px 14px}
+.cap-flag .fdot{width:5px;height:5px;border-radius:50%;background:#F59E0B;box-shadow:0 0 8px rgba(245,158,11,.6);flex:none}
+.chev{flex:none;color:var(--muted);transition:transform .35s var(--ease-premium)}
+.pcard.open .chev{transform:rotate(180deg)}
+.pcard .body{max-height:0;overflow:hidden;transition:max-height .55s var(--ease-premium)}
+.pcard.open .body{max-height:640px}
+.pcard pre{margin:0 16px;background:#070808;border:1px solid var(--border);border-radius:12px;padding:14px;overflow-x:auto;font-family:var(--mono);font-size:.7rem;line-height:1.65;color:#c9d2cc;white-space:pre-wrap}
+.pcard .body-pad{padding-bottom:16px}
+
+/* the spark copy button */
+.copy-btn{appearance:none;display:flex;width:calc(100% - 32px);margin:10px 16px 0;align-items:center;justify-content:center;gap:9px;border:1px solid var(--border-strong);background:rgba(255,255,255,0.02);color:var(--fg);font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;padding:12px;border-radius:11px;cursor:pointer;position:relative;overflow:hidden;transition:border-color .25s,background .25s,color .25s}
+.copy-btn svg{width:15px;height:15px;color:var(--muted);transition:color .25s,transform .45s var(--spring)}
+.copy-btn:hover{border-color:rgba(110,231,183,0.4)} .copy-btn:hover svg{color:var(--mint)}
+.copy-btn.copied{border-color:var(--mint);background:rgba(110,231,183,0.1);color:var(--mint)}
+.copy-btn.copied svg{color:var(--mint);transform:scale(1.18)}
+.copy-btn .ring{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;border:1.5px solid var(--mint);transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none}
+.copy-btn.spark .ring{animation:charge .55s var(--ease-premium)}
+@keyframes charge{0%{transform:translate(-50%,-50%) scale(0);opacity:.7}100%{transform:translate(-50%,-50%) scale(26);opacity:0}}
+
+/* progress rail */
+.rail{position:fixed;left:0;top:0;height:2px;background:var(--mint);z-index:50;width:0;box-shadow:0 0 12px rgba(110,231,183,.6);transition:width .2s}
+
+/* theme passport callout */
+.passport{border:1px solid rgba(110,231,183,0.22);border-radius:var(--radius-card);background:rgba(110,231,183,0.04);padding:18px 18px 6px;margin-bottom:12px;opacity:0;transform:translateY(12px);animation:cardIn .6s var(--ease-premium) .08s forwards}
+.passport .pk{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.55rem;text-transform:uppercase;letter-spacing:.16em;color:var(--mint);margin-bottom:8px}
+.passport .pk .dot{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.passport p{font-size:.84rem;line-height:1.55;color:var(--muted-strong);margin-bottom:12px}
+.passport p b{color:var(--mint-cool);font-weight:500}
+
+.kit-foot{margin-top:42px;text-align:center}
+.foot-rule{width:38px;height:1px;background:linear-gradient(90deg,transparent,var(--mint),transparent);margin:0 auto 18px;opacity:.6}
+.foot-line{font-family:var(--serif);font-size:1.45rem;line-height:1.28;max-width:24ch;margin:0 auto}
+.foot-cue{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.56rem;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);border:1px solid var(--border);border-radius:var(--radius-pill);padding:8px 15px}
+.foot-cue .dot{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+
+/* PRESET NOTE banner: builder deletes this whole block + its markup */
+.preset-note{position:relative;z-index:6;max-width:700px;margin:14px auto 0;padding:0 clamp(18px,5vw,34px)}
+.preset-note .pn{display:flex;align-items:center;gap:9px;border:1px dashed rgba(245,158,11,.4);border-radius:12px;padding:10px 14px;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.preset-note .pn .fdot{width:5px;height:5px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px rgba(245,158,11,.6);flex:none}
+
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
+@keyframes fade{to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* master prompt: one paste builds the whole part (what we use in the video) */
+.master{border:1px solid rgba(110,231,183,.3);border-radius:var(--radius-card);background:rgba(110,231,183,.045);padding:16px;margin-bottom:12px;opacity:0;transform:translateY(12px);animation:cardIn .6s var(--ease-premium) .05s forwards}
+.master .mk{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mint);margin-bottom:10px}
+.master .mk .dot{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.master pre{background:#070808;border:1px solid var(--border);border-radius:12px;padding:14px;overflow:hidden;font-family:var(--mono);font-size:.7rem;line-height:1.65;color:#c9d2cc;white-space:pre-wrap;max-height:120px;transition:max-height .5s var(--ease-premium);-webkit-mask-image:linear-gradient(180deg,#000 50%,transparent);mask-image:linear-gradient(180deg,#000 50%,transparent)}
+.master.open pre{max-height:1200px;overflow-y:auto;-webkit-mask-image:none;mask-image:none}
+.m-expand{display:block;width:100%;border:0;background:transparent;color:var(--mint);font-family:var(--mono);font-size:.54rem;text-transform:uppercase;letter-spacing:.14em;cursor:pointer;padding:8px 0 2px;opacity:.85}
+.master .copy-btn{width:100%;margin:8px 0 0}
+</style>
+
+<div class="rail" id="rail"></div>
+<div class="atmos"></div>
+
+<main class="kit">
+
+  <!-- ===== head ===== -->
+  <header class="kit-head">
+    <p class="eyebrow">Vitality · The Build Kit</p>
+    <h1 class="kit-title">The supplement stack</h1>
+    <p class="kit-idea">Every supplement you take, when to take it, and whether you actually took it today, from <span class="hl">one prompt</span> and saved right in your browser.</p>
+    <p class="kit-tagline">One file · saves offline · yours forever</p>
+  </header>
+
+  <!-- PERMANENT: the how-strip never changes -->
+  <div class="how">
+    <span><b>1</b> · copy a prompt</span>
+    <span><b>2</b> · paste into Claude</span>
+    <span><b>3</b> · watch it appear</span>
+  </div>
+
+  <!-- ===== base-section ===== -->
+  <div class="sect">
+    <span class="k">Start here · build once</span>
+    <h2>The base</h2>
+    <p>This first prompt builds the empty shell: one file that opens offline and saves in your browser. It also sets the look every later prompt will inherit. Build it once, then stack the pieces on top.</p>
+  </div>
+
+  <!-- ===== passport-callout ===== -->
+  <div class="passport">
+    <div class="pk"><span class="dot"></span>Why this prompt is longer</div>
+    <p>Prompt 0 carries the <b>theme passport</b>: the colors, the fonts and the feel, written out once. Every later prompt says only "same theme", so the whole app inherits this exact look without you repeating yourself.</p>
+  </div>
+
+  <!-- ===== prompt-0 (the single-file shell) ===== -->
+  <article class="pcard open" style="--i:0">
+    <div class="hd"><span class="pnum">0</span><span class="ttl"><b>The single-file shell</b><i>one index.html · offline · saves in the browser</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>Build a single-file supplement tracker as one index.html. It works offline and saves in the browser with localStorage. The app is a daily supplement stack: rows grouped by time of day (morning, midday, evening, before bed, anytime). Each row shows a name, a dose, and a tap-to-take checkbox. A progress bar at the top fills by the exact fraction taken today. A small add form lets me add a supplement with a name, a dose and a time block. THE THEME, match this exactly so every later prompt inherits it: pure black background, white text, mint accent #6EE7B7 and soft mint #A7F3D0; Inter for body, Instrument Serif italic for headings, JetBrains Mono for small labels and numbers; cards with a 1px white border at 8 percent opacity, 18px radius, a faint fill; mobile first, calm, premium, lots of breathing room; no emojis and no em dashes. Build only this shell, nothing else yet. We add one piece at a time.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy prompt 0</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <!-- ===== part-1 ===== -->
+  <div class="sect">
+    <span class="k">Part 1 · the stack</span>
+    <h2>The stack, one paste</h2>
+  </div>
+
+  <!-- ===== part-1-master (the one-paste for the whole part) ===== -->
+  <div class="master">
+    <div class="mk"><span class="dot"></span>In a hurry? One paste builds all of Part 1 · this is what we use in the video</div>
+    <pre>Same file we started, same theme throughout: pure black, white text, mint #6EE7B7 and soft mint #A7F3D0, Inter for body, Instrument Serif italic for headings, JetBrains Mono for labels and numbers, calm and premium. Now build the daily stack.
+
+1. Time-of-day rows: group the supplements into five blocks, morning, midday, evening, before bed and anytime. Each block is its own small labelled section, and every supplement sits inside its block as one row showing the name and the dose.
+
+2. The check-off: give every row a tap-to-take checkbox that marks it done for today, and put a progress bar across the top that fills by the exact fraction taken, so three taken out of six fills it halfway. The taken state resets on a new day.
+
+3. The timing reader: add a small button that reads my current stack and, behind a cozy loader, prints one calm line of best-time advice per supplement, like take this with food or keep this away from bedtime. It is deterministic and reads only what I entered, no AI call and no internet.
+
+Build it clean and complete. Same theme throughout.</pre>
+    <button class="m-expand">Show the whole prompt</button>
+    <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy all of Part 1</button>
+  </div>
+
+  <!-- ===== lego-1.1 ===== -->
+  <article class="pcard" style="--i:1">
+    <div class="hd"><span class="pnum">1.1</span><span class="ttl"><b>Time-of-day rows</b><i>five blocks · morning to anytime</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>Group the supplements into five time-of-day blocks: morning, midday, evening, before bed and anytime. Each block is its own small labelled section, and every supplement sits inside its block as one row showing the name and the dose. Same theme.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy prompt 1.1</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <!-- ===== lego-1.2 ===== -->
+  <article class="pcard" style="--i:2">
+    <div class="hd"><span class="pnum">1.2</span><span class="ttl"><b>Tap to take, watch it fill</b><i>check-off · fraction progress bar</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>Give every row a tap-to-take checkbox that marks that supplement done for today. Add a progress bar across the top that fills by the exact fraction taken, so three taken out of six fills it halfway. The taken state resets on a new day. Same theme.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy prompt 1.2</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <!-- ===== lego-1.3 ===== -->
+  <article class="pcard" style="--i:3">
+    <div class="hd"><span class="pnum">1.3</span><span class="ttl"><b>The timing reader</b><i>cozy loader · one calm line each · no AI</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>Add a small button that reads my current stack and shows one calm line of best-time advice for each supplement, like take this with food or keep this away from bedtime. Run it behind a cozy loader. It is deterministic and reads only what I entered, no AI call and no internet. Same theme.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy prompt 1.3</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <!-- ===== link-up (Fuel tile) ===== -->
+  <div class="sect">
+    <span class="k">The link-up · plug it into your dashboard</span>
+    <h2>Light up the Fuel tile</h2>
+    <p>Your build is done. This puts it on your dashboard from the setup video. No dashboard? Skip ahead, it works on its own.</p>
+    <div class="lk-steps">
+      <div class="ls"><span class="n">1</span><span class="t"><b>Copy</b> the paste below</span></div>
+      <div class="ls"><span class="n">2</span><span class="t"><b>Paste it</b> into the same Claude chat that built it</span></div>
+      <div class="ls"><span class="n">3</span><span class="t">Done. Your <b>Fuel tile is your app</b>, full screen</span></div>
+    </div>
+  </div>
+
+  <div class="master">
+    <div class="mk"><span class="dot"></span>One paste · same chat, straight after Part 1</div>
+    <pre>Find my vitality-base copy on this machine. Make a sealed one-file dashboard copy of the supplement tracker we just built and save it as public/tiles/fuel.html. It must be fully self-contained in that one file and use the same theme. It saves through the dashboard bridge: read and write with window.Vitality.save and window.Vitality.load when they exist, and fall back to saving on the device when they do not. Do not dumb anything down, keep every feature: the time-of-day blocks, the tap-to-take check-off, the fraction progress bar and the timing reader. Then commit, push, and tell me to refresh my dashboard. The Fuel tile is now this app.</pre>
+    <button class="m-expand">Show the whole prompt</button>
+    <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy the link-up</button>
+  </div>
+
+  <!-- PERMANENT: L0 login-fix paste is evergreen (viewer machines are never logged in) -->
+  <article class="pcard" style="--i:5">
+    <div class="hd"><span class="pnum">L0</span><span class="ttl"><b>If the push fails (GitHub login)</b><i>one-time setup · browser flow</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>My git push failed with an authentication error (git cannot log in to
+GitHub). Fix it with me: check if the GitHub CLI (gh) is installed and
+install it if missing, then walk me through gh auth login step by step
+(GitHub.com, HTTPS, login with browser) and tell me exactly what to click.
+When I am logged in, retry the push. This is a one-time setup: every push
+after this just works.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy the login fix</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <article class="pcard" style="--i:5">
+    <div class="hd"><span class="pnum">L1</span><span class="ttl"><b>If the tile acts up</b><i>the repair paste · 30 seconds</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>My Fuel tile is acting up. Open public/tiles/fuel.html and check it against
+this list: it is fully self-contained in that one file with no outside
+requests, it does not rely on localStorage alone, and the dashboard bridge is
+present so it saves through window.Vitality.save and window.Vitality.load with
+a device fallback when those are missing. Keep the same theme and every
+feature. Fix whatever is off, then commit and push and tell me to refresh.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy the repair paste</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <!-- PERMANENT: L2 update paste is evergreen, identical every episode -->
+  <article class="pcard" style="--i:6">
+    <div class="hd"><span class="pnum">L2</span><span class="ttl"><b>Had your dashboard a while?</b><i>the update paste · pulls the newest dashboard features</i></span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="body"><pre>My Vitality dashboard is an older copy of vitality-base. Bring it up to date:
+add https://github.com/RowanThistlebrooke/vitality-base as a remote called
+upstream, merge its latest main into my copy, and if anything conflicts keep
+my own tiles in public/tiles/ and my name in content/site.ts. Then push.
+Tell me in one line what is new.</pre>
+      <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy the update paste</button>
+      <div class="body-pad"></div>
+    </div>
+  </article>
+
+  <!-- ===== capstone (episode-specific Supabase paste, both cases) ===== -->
+  <div class="sect">
+    <span class="k">The capstone · optional</span>
+    <h2>Back it up to the cloud</h2>
+    <div class="cap-flag"><span class="fdot"></span>On the dashboard? You are done · skip this</div>
+    <p>Using the build on its own, without the dashboard? One paste makes your data follow you across devices.</p>
+  </div>
+
+  <div class="master">
+    <div class="mk"><span class="dot"></span>One paste · works with or without Supabase</div>
+    <pre>Add cloud backup for my supplement tracker so my stack and today's taken state follow me across devices. Two cases, handle both.
+
+If I already set up a Supabase project in Episode 0: reuse it. Add one table for my supplements and daily check-offs, with row level security so the rows are locked to my account, and a simple email sign in. Save to the cloud when I am signed in.
+
+If this is my first time: walk me through creating a free Supabase project step by step, give me the exact SQL for the one table, and wire up the same simple sign in.
+
+Either way, keep saving on the device as the offline fallback so the app still works with no internet and no account. Same theme.</pre>
+    <button class="m-expand">Show the whole prompt</button>
+    <button class="copy-btn"><span class="ring"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Copy the capstone</button>
+  </div>
+
+  <!-- PERMANENT: footer never changes -->
+  <footer class="kit-foot">
+    <div class="foot-rule"></div>
+    <p class="foot-line">Built it? It is yours forever. Want it done for you?</p>
+    <a class="foot-cue" href="https://www.patreon.com/cw/example/shop" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer"><span class="dot"></span>Patreon · the finished one is a single command</a>
+    <p class="foot-line" style="margin-top:12px;font-size:.72rem">Join here: <a href="https://www.patreon.com/cw/example/shop" target="_blank" rel="noopener" style="color:var(--mint);text-decoration:none">patreon.com/cw/example/shop</a></p>
+  </footer>
+
+</main>
+
+<script>
+  // accordion
+  document.querySelectorAll('.pcard .hd').forEach(function(h){
+    h.addEventListener('click', function(){ h.parentElement.classList.toggle('open'); });
+  });
+  // spark copy
+  document.querySelectorAll('.copy-btn').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      var pre = b.parentElement.querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent.trim());
+      b.classList.remove('spark'); void b.offsetWidth; b.classList.add('spark','copied');
+      var t = b.childNodes[b.childNodes.length-1], p = t.textContent; t.textContent = ' Copied';
+      setTimeout(function(){ b.classList.remove('copied'); t.textContent = p; }, 1400);
+    });
+  });
+  // master prompt expand
+  document.querySelectorAll('.m-expand').forEach(function(x){
+    x.addEventListener('click', function(){
+      var m = x.closest('.master'); m.classList.toggle('open');
+      x.textContent = m.classList.contains('open') ? 'Hide' : 'Show the whole prompt';
+    });
+  });
+  // progress rail
+  addEventListener('scroll', function(){
+    var h = document.documentElement;
+    document.getElementById('rail').style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  }, {passive:true});
+</script>

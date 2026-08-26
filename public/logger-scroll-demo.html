@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Logger scroll demo · Vitality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#04060a; --fg:#fff;
+  --mint:#6EE7B7; --mint-soft:#a7f3d0;
+  --ink-faint:rgba(233,239,233,.45);
+  --rule:rgba(233,239,233,.14); --rule-strong:rgba(233,239,233,.22);
+  --card:rgba(255,255,255,.02); --card-elevated:rgba(255,255,255,.04);
+  --radius-pill:999px; --space-5:1.25rem;
+  --ease-premium:cubic-bezier(.16,1,.3,1);
+  --duration:180ms; --duration-lift:480ms;
+  --font-serif:'Newsreader',Georgia,serif;
+  --font-mono:'Roboto Mono',ui-monospace,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  -webkit-font-smoothing:antialiased; line-height:1.5; user-select:none;
+  min-height:100vh; position:relative; isolation:isolate; overflow-x:hidden;
+}
+/* full-PAGE animated atmosphere (the thing the cards scroll over — the exact
+   scenario that used to make the card tops glitch) */
+.atmosphere{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(90% 30vh at 50% 0%, rgba(110,231,183,.14) 0%, rgba(110,231,183,.04) 40%, rgba(110,231,183,0) 75%),
+    linear-gradient(to bottom,#0a1612 0%,#07110d 25%,#050a08 55%,#04060a 100%);}
+.particles{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.particles span{position:absolute;width:1.5px;height:1.5px;background:rgba(233,239,233,.7);border-radius:50%;
+  box-shadow:0 0 6px rgba(167,243,208,.5);animation:drift linear infinite;}
+@keyframes drift{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:.7}90%{opacity:.55}100%{transform:translate3d(var(--dx,12px),-160vh,0);opacity:0}}
+
+.shell{position:relative;z-index:5;max-width:760px;margin:0 auto;padding:44px clamp(18px,5vw,40px) 200px;}
+.banner{display:flex;gap:10px;align-items:flex-start;margin:0 0 26px;padding:13px 15px;
+  background:rgba(110,231,183,.06);border:1px solid rgba(110,231,183,.22);border-radius:14px;
+  font-size:.9rem;color:var(--mint-soft);line-height:1.5;}
+.banner b{color:var(--mint);font-weight:600;}
+.banner svg{color:var(--mint);flex-shrink:0;margin-top:2px;}
+.title{font-family:var(--font-serif);font-style:italic;font-size:clamp(2.4rem,6vw,3.2rem);line-height:1;letter-spacing:-.02em;margin-bottom:8px;}
+.subtitle{font-family:var(--font-mono);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:34px;}
+
+.grid{display:flex;flex-direction:column;gap:16px;}
+
+/* ── the real card recipe, with the FIX ── */
+.cardSlot{position:relative;display:flex;border-radius:18px;overflow:hidden;isolation:isolate;
+  /* THE FIX: backwards (not forwards) → settles to transform:none after the
+     rise, so the rounded clip stops re-rasterizing the top edge on scroll. */
+  animation:cardIn 700ms var(--ease-premium) backwards;}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.cardSlot>.card{flex:1;z-index:1;background-color:#060b0a;}
+
+.card{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
+  min-height:220px;padding:var(--space-5);border:1px solid var(--rule);border-radius:18px;isolation:isolate;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.02) 100%);
+  /* NO backdrop-filter — that was the iOS scroll re-rasterization bug. */
+  box-shadow:0 12px 36px -20px rgba(0,0,0,.7),0 4px 12px -8px rgba(110,231,183,.08),inset 0 1px 0 rgba(255,255,255,.04);
+  transition:border-color var(--duration),box-shadow var(--duration-lift) var(--ease-premium);}
+.card:hover{border-color:var(--rule-strong);}
+
+.cardArt{position:absolute;inset:0;border-radius:18px;pointer-events:none;opacity:.45;z-index:0;}
+.artPush{background:radial-gradient(ellipse 70% 50% at 25% 20%,rgba(110,231,183,.18),transparent 65%),radial-gradient(ellipse 60% 60% at 80% 90%,rgba(31,77,61,.5),transparent 70%),linear-gradient(160deg,#05130e 0%,#000 100%);}
+.artPull{background:radial-gradient(ellipse 70% 50% at 75% 20%,rgba(110,231,183,.14),transparent 65%),radial-gradient(ellipse 65% 55% at 20% 85%,rgba(56,100,130,.32),transparent 70%),linear-gradient(200deg,#04111a 0%,#000 100%);}
+.artLegs{background:radial-gradient(ellipse 60% 50% at 30% 25%,rgba(245,158,11,.16),transparent 65%),radial-gradient(ellipse 70% 55% at 80% 85%,rgba(124,45,18,.48),transparent 70%),linear-gradient(180deg,#110806 0%,#000 100%);}
+.artRest{opacity:.5;background:repeating-linear-gradient(45deg,transparent 0,transparent 16px,rgba(255,255,255,.015) 16px,rgba(255,255,255,.015) 17px),linear-gradient(160deg,#050505 0%,#000 100%);}
+
+.cardBody{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;}
+.cardTop{display:flex;justify-content:space-between;align-items:flex-start;}
+.dayNum{font-family:var(--font-serif);font-style:italic;font-size:1rem;color:var(--mint);opacity:.75;}
+.dayName{font-family:var(--font-serif);font-style:italic;font-size:clamp(2rem,3.5vw,2.6rem);line-height:1;letter-spacing:-.025em;margin:16px 0 8px;}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto;}
+.pill{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:4px 10px;border-radius:var(--radius-pill);border:1px solid var(--rule);}
+.pillHeavy{color:var(--mint);border-color:rgba(110,231,183,.4);background:rgba(110,231,183,.05);}
+.exCount{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.12em;text-transform:uppercase;}
+.arrow{position:absolute;bottom:16px;right:18px;font-family:var(--font-serif);font-style:italic;font-size:1.4rem;color:rgba(255,255,255,.35);}
+.seal{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#06281d;background:linear-gradient(150deg,#a7f3d0,var(--mint) 60%);box-shadow:0 0 16px rgba(110,231,183,.4);}
+.seal svg{width:16px;height:16px;}
+.donePill{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);border:1px solid rgba(110,231,183,.3);border-radius:var(--radius-pill);padding:3px 9px;}
+.card.done{border-color:rgba(110,231,183,.22);background:linear-gradient(180deg,rgba(110,231,183,.06),rgba(110,231,183,.014));}
+</style>
+</head>
+<body>
+<div class="atmosphere"></div>
+<div class="particles" id="particles"></div>
+<div class="shell">
+  <div class="banner">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <span><b>Scroll this hard, up and down.</b> The card tops should stay crisp — no glitch, no cut-off. This is the fixed board on a fresh URL (no app cache). If your home-screen app still glitches, it's serving the old cached version — cold-start it.</span>
+  </div>
+  <div class="title" style="font-style:italic">Today&rsquo;s session</div>
+  <div class="subtitle">scroll demo · the fix</div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const pc=document.getElementById('particles');
+for(let i=0;i<40;i++){const s=document.createElement('span');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+  s.style.setProperty('--dx',(Math.random()*40-20)+'px');s.style.animationDuration=(16+Math.random()*16)+'s';s.style.animationDelay=(-Math.random()*22)+'s';pc.appendChild(s);}
+
+// Enough cards to force a real scroll on a phone.
+const SEAL='<span class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>';
+const days=[
+  {n:'Push',art:'artPush',done:true},
+  {n:'Pull',art:'artPull'},
+  {n:'Legs',art:'artLegs'},
+  {n:'Rest',art:'artRest',rest:true},
+  {n:'Upper',art:'artPush'},
+  {n:'Lower',art:'artLegs'},
+  {n:'Push',art:'artPush'},
+  {n:'Pull',art:'artPull'},
+];
+const grid=document.getElementById('grid');
+days.forEach((d,i)=>{
+  const slot=document.createElement('div');slot.className='cardSlot';slot.style.animationDelay=(120+i*55)+'ms';
+  const bottom=d.rest
+    ? '<div class="row"><span class="pill">REST</span></div>'
+    : d.done
+      ? '<div class="row">'+SEAL+'<span class="donePill">done</span><span class="exCount">18 sets · in the books</span></div>'
+      : '<div class="row"><span class="pill pillHeavy">Heavy</span><span class="exCount">'+(5+(i%4))+' exercises</span></div><span class="arrow">&rarr;</span>';
+  slot.innerHTML='<div class="card '+(d.done?'done':'')+'"><div class="cardArt '+d.art+'"></div><div class="cardBody">'+
+    '<div class="cardTop"><span class="dayNum">&middot;'+String(i+1).padStart(2,'0')+'</span></div>'+
+    '<div class="dayName">'+d.n+'</div>'+bottom+'</div></div>';
+  grid.appendChild(slot);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Studio tile - live demo (host harness)</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;}
+  iframe{display:block;border:0;width:100%;height:100vh;background:#000;}
+</style>
+</head>
+<body>
+<!-- This page is ONLY a demo harness. It plays the role of the Vitality host
+     (useTileHost.ts) so the sealed tile can be seen alive outside the app:
+     it answers load with seeded data, stores saves in memory, logs reports,
+     and fakes the gated verbs (studio:status, studio:lookup, studio:channel,
+     studio:claude, ai, studio:connect) with realistic latency. Not shipped. -->
+<iframe id="tile" src="studio-tile.html" sandbox="allow-scripts"></iframe>
+<script>
+  var store = {
+    v: 1,
+    channel: null, // start unset so the "Point it at your channel" card shows
+    videos: [
+      { id:'sv-seed1', title:'The only split you need', status:'published', publishedAt:'2026-06-27', url:'https://youtu.be/aaaaaaaaaaa',
+        notes:null, extra:{ description:'A full walk through the push pull legs rebuild.', tags:['fitness','split','ppl'], hashtags:['#gym','#lifting'],
+        chapters:[{t:'0:00',label:'Intro'},{t:'1:20',label:'The split'}], thumbnailWords:'THE ONLY SPLIT', thumbnailPrompt:'',
+        script:'Alright so today I want to walk you through exactly how I built my first workout split, because when I started I had no idea what I was doing. Most people copy a random program and stall for a year. Here is the honest way to build one around your real week instead.',
+        timestamps:'0:00 Intro\n1:20 The split\n6:40 The mistakes',
+        sourceViews: 11300, sourceDuration:'12:41', sourceAuthor:'example' } },
+      { id:'sv-seed2', title:'Deload week, done right', status:'published', publishedAt:'2026-07-01', url:'https://youtu.be/bbbbbbbbbbb',
+        notes:null, extra:{ description:'Why a deload beats grinding.', tags:['recovery','deload'], hashtags:['#recovery'],
+        chapters:[{t:'0:00',label:'Why deload'}], thumbnailWords:'REST TO GROW', thumbnailPrompt:'',
+        sourceViews: 6800, sourceDuration:'9:03', sourceAuthor:'example' } }
+    ],
+    links: [
+      { id:'sl-seed1', label:'WHOOP band', url:'join.whoop.com/sam', kind:'affiliate', isDefault:true, position:0 },
+      { id:'sl-seed2', label:'Instagram', url:'instagram.com/example', kind:'social', isDefault:true, position:1 },
+      { id:'sl-seed3', label:'The free build kit', url:'ohwisey.github.io/kit', kind:'other', isDefault:false, position:2 }
+    ]
+  };
+  var frame = document.getElementById('tile');
+  var connected = false; // flip to true to demo the connected Stats state
+
+  window.addEventListener('message', function (e) {
+    var m = e.data;
+    if (!m || m.source !== 'vitality-tile') return;
+    function reply(msg){ frame.contentWindow.postMessage(Object.assign({ source:'vitality-host' }, msg), '*') }
+
+    if (m.type === 'load') { reply({ type:'load:result', id:m.id, data: store }); return }
+    if (m.type === 'save') { store = m.data; console.log('[host] saved', store); return }
+    if (m.type === 'report') { console.log('[host] report', m.stream); return }
+
+    if (m.type === 'studio:status') {
+      setTimeout(function(){ reply({ type:'studio:status:result', id:m.id, data:{
+        configured:true, connected:connected, accountLabel: connected ? 'example' : null,
+        metrics: connected ? { subscribers: 12800, views_28d: 96200, watch_minutes_28d: 411000, subs_gained_28d: 540 } : {} } }) }, 250);
+      return;
+    }
+    if (m.type === 'studio:channel') {
+      setTimeout(function(){ reply({ type:'studio:channel:result', id:m.id, data:{ channel:{
+        id:'UCdemo000000000000000000', handle:'@'+String(m.channel||'yourhandle').replace(/^@/,''), title:'example',
+        videos:[
+          { videoId:'aaaaaaaaaaa', title:'The only split you need', published:'2026-06-27T00:00:00Z', views:11300 },
+          { videoId:'bbbbbbbbbbb', title:'Deload week, done right', published:'2026-07-01T00:00:00Z', views:6800 },
+          { videoId:'ccccccccccc', title:'I trained like a powerlifter for 30 days', published:'2026-06-14T00:00:00Z', views:24100 },
+          { videoId:'ddddddddddd', title:'What I eat on a cut, honestly', published:'2026-06-07T00:00:00Z', views:9400 },
+          { videoId:'eeeeeeeeeee', title:'My first workout split was a disaster', published:'2026-05-30T00:00:00Z', views:15800 }
+        ] } } }) }, 900);
+      return;
+    }
+    if (m.type === 'studio:lookup') {
+      setTimeout(function(){ reply({ type:'studio:lookup:result', id:m.id, data:{ video:{
+        videoId:(String(m.url).match(/[A-Za-z0-9_-]{11}/)||['demovideoid'])[0],
+        title:'How I Built My First Workout Split', author:'example', duration:'12:41',
+        description:'The exact push pull legs setup I use.', publishedAt:'2026-06-20T00:00:00Z',
+        stats:{ views: 11300 },
+        captions:'Alright so today I want to walk you through exactly how I built my first workout split, because when I started I had no idea what I was doing.',
+        source:'api' } } }) }, 700);
+      return;
+    }
+    if (m.type === 'ai') {
+      // First title deliberately echoes an old channel title so the amber
+      // anti-clash badge (and the auto-pick skipping it) can be seen live.
+      setTimeout(function(){ reply({ type:'ai:result', id:m.id, data:{
+        titles:[
+          'My First Workout Split Was a Disaster',
+          "I Wasted a Year on Bad Workouts. Here's the Split That Fixed It",
+          'The Push Pull Legs Split I Wish I Started With'],
+        description:'I wasted a full year on random routines before I understood how a real training split works.\n\nChapters\n0:00 Why most beginners stall\n1:20 Be honest about your days',
+        tags:['workout split','push pull legs','beginner workout'],
+        hashtags:['#workoutsplit','#gymtips'],
+        chapters:[{t:'0:00',label:'Why most beginners stall'},{t:'1:20',label:'Be honest about your days'}],
+        thumbnailWords:'MY FIRST SPLIT',
+        thumbnailPrompt:'A focused lifter mid set on an incline bench, teal rim light, no text baked in.' } }) }, 1400);
+      return;
+    }
+    if (m.type === 'studio:claude') {
+      console.log('[host] would open claude.ai/new');
+      reply({ type:'studio:claude:result', id:m.id, opened:true });
+      return;
+    }
+    if (m.type === 'studio:connect') {
+      connected = true;
+      reply({ type:'studio:connect:result', id:m.id, opened:true });
+      return;
+    }
+  });
+</script>
+</body>
+</html>

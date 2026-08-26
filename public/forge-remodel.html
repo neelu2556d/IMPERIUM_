@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Forge - Remodel Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#04060a; --mint:#6ee7b7; --mint-hover:#5dd6a6; --mint-ink:#042a1c; --amber:#f59e0b;
+    --tx:#f2f6f4; --tx-dim:rgba(255,255,255,.62); --tx-faint:rgba(255,255,255,.36);
+    --line:rgba(167,243,208,.16); --card:rgba(255,255,255,.02);
+    --ease:cubic-bezier(.16,1,.3,1);
+    --serif:'Instrument Serif','Iowan Old Style',Georgia,serif;
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100svh}
+  ::selection{background:rgba(110,231,183,.25)}
+  button,input{font:inherit;color:inherit;background:none;border:none;-webkit-tap-highlight-color:transparent}
+  button{cursor:pointer}
+  :focus-visible{outline:1.5px solid rgba(110,231,183,.65);outline-offset:3px;border-radius:6px}
+
+  /* ------- atmosphere (the front-door soul) ------- */
+  .aurora,.grain{position:fixed;inset:0;pointer-events:none}
+  .aurora{z-index:0;background:
+    radial-gradient(60% 50% at 50% 28%, rgba(110,231,183,.10), rgba(110,231,183,.04) 34%, transparent 66%),
+    radial-gradient(28% 22% at 50% 36%, rgba(255,226,181,.05), transparent 70%),
+    radial-gradient(120% 80% at 50% 100%, rgba(14,38,30,.45), rgba(4,6,10,.96) 76%);}
+  .ridge{position:fixed;left:0;right:0;bottom:0;height:30vh;min-height:180px;z-index:1;pointer-events:none;opacity:.8}
+  .particles{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+  .particles span{position:absolute;border-radius:50%;background:rgba(233,239,233,.7);box-shadow:0 0 6px rgba(110,231,183,.55);animation:drift linear infinite;opacity:0}
+  @keyframes drift{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:.7}90%{opacity:.55}100%{transform:translate3d(var(--dx,12px),var(--dy,-80vh),0);opacity:0}}
+  .grain{z-index:3;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .page{position:relative;z-index:5;width:min(680px,92vw);margin:0 auto;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:calc(26px + env(safe-area-inset-top)) 0 calc(40px + env(safe-area-inset-bottom))}
+
+  .home{position:fixed;top:calc(14px + env(safe-area-inset-top));left:16px;z-index:40;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;color:var(--tx-dim);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 14px;background:rgba(8,12,10,.55);backdrop-filter:blur(8px);text-decoration:none}
+  .home svg{width:11px;height:11px;transform:rotate(180deg)}
+
+  /* ------- headline ------- */
+  .eyebrow{display:flex;justify-content:center;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.26em;color:var(--mint);animation:riseIn .8s var(--ease) .05s both}
+  .eyebrow svg{width:11px;height:11px;animation:sparkGlow 3.4s var(--ease) infinite}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,7.4vw,62px);line-height:1.06;letter-spacing:-.01em;text-align:center;margin:22px 0 10px;animation:riseIn .9s var(--ease) .14s both}
+  h1 em{font-style:italic;color:var(--mint)}
+  .lede{text-align:center;color:var(--tx-dim);font-size:15.5px;line-height:1.55;max-width:44ch;margin:0 auto;animation:riseIn .9s var(--ease) .22s both}
+
+  /* ------- idea input ------- */
+  .bar{position:relative;display:flex;align-items:center;width:100%;max-width:560px;height:62px;margin:36px auto 0;padding:0 9px 0 20px;background:rgba(9,13,12,.72);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(20px);transition:border-color .35s var(--ease),box-shadow .35s var(--ease);animation:riseIn .9s var(--ease) .32s both}
+  .bar:focus-within{border-color:rgba(167,243,208,.34);box-shadow:0 0 54px rgba(110,231,183,.09)}
+  .bar svg{width:17px;height:17px;fill:var(--mint);opacity:.9;flex:none}
+  .bar input{flex:1;height:100%;padding:0 14px;font-size:16px;caret-color:var(--mint);outline:none}
+  .bar input::placeholder{color:var(--tx-faint);font-family:var(--serif);font-style:italic;font-size:18px}
+
+  /* ------- the mode picker (choose your build, like choosing a model) ------- */
+  .modeLabel{display:flex;justify-content:center;margin-top:34px;font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.2em;color:var(--tx-faint);animation:riseIn .9s var(--ease) .42s both}
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;animation:riseIn .9s var(--ease) .5s both}
+  @media(max-width:560px){.modes{grid-template-columns:1fr}}
+  .mode{position:relative;text-align:left;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:var(--card);padding:18px 18px 15px;display:flex;flex-direction:column;gap:8px;transition:border-color .3s var(--ease),background .3s var(--ease),transform .3s var(--ease)}
+  @media(hover:hover){.mode:hover{border-color:rgba(167,243,208,.35);transform:translateY(-1px)}}
+  .mode[aria-pressed="true"]{border-color:rgba(110,231,183,.5);background:rgba(110,231,183,.03);box-shadow:0 10px 34px -14px rgba(110,231,183,.45)}
+  .modeTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .modeName{font-family:var(--serif);font-size:22px;letter-spacing:-.01em}
+  .modeName em{font-style:italic;color:var(--mint)}
+  .modeTag{font-family:var(--mono);font-size:7.5px;font-weight:500;letter-spacing:.16em;color:var(--mint);border:1px solid rgba(110,231,183,.35);border-radius:999px;padding:4px 9px;background:rgba(4,42,28,.55);white-space:nowrap}
+  .mode[data-mode="lite"] .modeTag{color:var(--tx-dim);border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.03)}
+  .modeCopy{font-size:12.5px;line-height:1.5;color:var(--tx-dim)}
+  .modeFoot{font-family:var(--mono);font-size:7.5px;font-weight:500;letter-spacing:.15em;color:var(--tx-faint);margin-top:2px}
+  .modeCheck{position:absolute;top:-7px;right:14px;display:none;align-items:center;gap:5px;font-family:var(--mono);font-size:7px;font-weight:500;letter-spacing:.16em;color:var(--mint-ink);background:var(--mint);border-radius:999px;padding:3px 8px}
+  .mode[aria-pressed="true"] .modeCheck{display:inline-flex}
+
+  /* ------- the paste ------- */
+  .pasteWrap{margin-top:26px;border:1px dashed rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.015);padding:14px 16px;animation:riseIn .9s var(--ease) .58s both}
+  .pasteHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+  .pasteLabel{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.2em;color:var(--tx-faint)}
+  .copyBtn{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.16em;color:var(--mint-ink);background:var(--mint);border-radius:999px;padding:8px 14px;transition:background .3s var(--ease),transform .3s var(--ease);animation:invite 1.6s ease-in-out infinite}
+  @media(hover:hover){.copyBtn:hover{background:var(--mint-hover)}}
+  .copyBtn:active{transform:scale(.94)}
+  .copyBtn svg{width:11px;height:11px}
+  .paste{font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--tx-dim);word-break:break-word}
+  .paste b{color:var(--tx);font-weight:500}
+  .quiet{text-align:center;font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.2em;color:var(--tx-faint);margin-top:22px;animation:riseIn .9s var(--ease) .66s both}
+
+  @keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  @keyframes sparkGlow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.86)}}
+  @keyframes invite{0%,100%{box-shadow:0 0 0 0 rgba(110,231,183,.22)}50%{box-shadow:0 0 0 8px rgba(110,231,183,0)}}
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}.particles span{animation:none}}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+<svg class="ridge" viewBox="0 0 1600 420" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 300 L220 210 L430 280 L650 170 L880 250 L1090 160 L1320 240 L1600 180 L1600 420 L0 420 Z" fill="#0d1a17" opacity=".55"/>
+  <path d="M0 350 L260 300 L520 355 L760 285 L1010 350 L1280 300 L1600 345 L1600 420 L0 420 Z" fill="#050a09"/>
+</svg>
+<div class="particles" id="particles" aria-hidden="true"></div>
+<div class="grain"></div>
+
+<a class="home" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>DASHBOARD</a>
+
+<main class="page">
+  <div class="eyebrow">
+    <svg viewBox="0 0 24 24" fill="#6ee7b7"><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/></svg>
+    VITALITY &middot; FORGE
+  </div>
+  <h1>Describe it.<br/>Claude <em>builds</em> it.</h1>
+  <p class="lede">One idea in plain words. Claude reads Vitality's DNA and hand-builds a real tile onto your dashboard.</p>
+
+  <div class="bar">
+    <svg viewBox="0 0 24 24"><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/></svg>
+    <input id="idea" type="text" placeholder="a stretching session tracker..." autocomplete="off" />
+  </div>
+
+  <div class="modeLabel">CHOOSE YOUR BUILD</div>
+  <div class="modes" role="group" aria-label="Choose your build">
+    <button class="mode" data-mode="lite" aria-pressed="false" id="modeLite">
+      <span class="modeCheck"><svg viewBox="0 0 24 24" fill="none" stroke="#042a1c" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" width="8" height="8"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg>SELECTED</span>
+      <span class="modeTop"><span class="modeName">Lite</span><span class="modeTag">SAVES TOKENS</span></span>
+      <span class="modeCopy">A focused kit read. A clean, pro tile for pocket change.</span>
+      <span class="modeFoot">~20K TOKENS &middot; ONE PASS &middot; FLOOR ENFORCED</span>
+    </button>
+    <button class="mode" data-mode="allout" aria-pressed="true" id="modeAllOut">
+      <span class="modeCheck"><svg viewBox="0 0 24 24" fill="none" stroke="#042a1c" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" width="8" height="8"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg>SELECTED</span>
+      <span class="modeTop"><span class="modeName">All <em>out</em></span><span class="modeTag">VITALITY GRADE</span></span>
+      <span class="modeCopy">The full DNA pack plus a sealed ceiling example. The richest tile Claude can build.</span>
+      <span class="modeFoot">~35K TOKENS &middot; ITERATES TO 0 ERRORS</span>
+    </button>
+  </div>
+
+  <div class="pasteWrap">
+    <div class="pasteHead">
+      <span class="pasteLabel">YOUR ONE-PASTE &middot; DROP INTO CLAUDE</span>
+      <button class="copyBtn" id="copy"><svg viewBox="0 0 24 24" fill="none" stroke="#042a1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>COPY</button>
+    </div>
+    <div class="paste" id="paste"></div>
+  </div>
+
+  <div class="quiet">LIKE PICKING A MODEL. SMALL WHEN YOU WANT CHEAP, BIG WHEN YOU WANT MAGIC.</div>
+</main>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // stars
+  var field = document.getElementById('particles');
+  if(!reduce){
+    var n = innerWidth < 640 ? 14 : 24;
+    for(var i=0;i<n;i++){
+      var s=document.createElement('span');
+      var size=(1.2+Math.random()*1.2).toFixed(1);
+      s.style.width=size+'px';s.style.height=size+'px';
+      s.style.left=(Math.random()*100)+'%';
+      s.style.top=(60+Math.random()*40)+'%';
+      s.style.setProperty('--dx',((Math.random()*30-15)|0)+'px');
+      s.style.setProperty('--dy','-'+((60+Math.random()*50)|0)+'vh');
+      s.style.animationDuration=(22+Math.random()*28)+'s';
+      s.style.animationDelay=(-Math.random()*30)+'s';
+      field.appendChild(s);
+    }
+  }
+
+  // mode picker -> one-paste
+  var idea = document.getElementById('idea');
+  var paste = document.getElementById('paste');
+  var lite = document.getElementById('modeLite');
+  var allout = document.getElementById('modeAllOut');
+  var mode = 'allout';
+
+  function ideaText(){
+    var t = (idea.value||'').trim();
+    return t || 'a stretching session tracker';
+  }
+  function render(){
+    var t = ideaText();
+    if(mode==='lite'){
+      paste.innerHTML = 'Using the vitality MCP: read <b>vitality_tile_kit</b> with the right domain and <b>lean:true</b>, hand-author a sealed tile for <b>&ldquo;'+esc(t)+'&rdquo;</b>, run <b>check_tile</b> until it passes with 0 errors, then put it on my dashboard with <b>vitality_add_tile</b>.';
+    } else {
+      paste.innerHTML = 'Using the vitality MCP: read <b>vitality_tile_kit</b> (orientation first, then the right domain), steal the sealed shell from a ceiling example (<b>example-workout-tile</b> or <b>example-markets-tile</b>), hand-author a bespoke multi-section tile for <b>&ldquo;'+esc(t)+'&rdquo;</b>, iterate <b>check_tile</b> to 0 errors and 0 warnings, then put it on my dashboard with <b>vitality_add_tile</b>.';
+    }
+  }
+  function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+  function pick(m){
+    mode=m;
+    lite.setAttribute('aria-pressed', m==='lite');
+    allout.setAttribute('aria-pressed', m==='allout');
+    render();
+  }
+  lite.addEventListener('click', function(){pick('lite')});
+  allout.addEventListener('click', function(){pick('allout')});
+  idea.addEventListener('input', render);
+  render();
+
+  // copy
+  var btn=document.getElementById('copy');
+  btn.addEventListener('click', function(){
+    var tmp=document.createElement('textarea');
+    tmp.value=paste.textContent;
+    document.body.appendChild(tmp);tmp.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(tmp);
+    btn.lastChild.textContent='COPIED';
+    setTimeout(function(){btn.lastChild.textContent='COPY';},1600);
+  });
+})();
+</script>
+</body>
+</html>

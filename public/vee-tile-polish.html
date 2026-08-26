@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Vee · the tile, polished</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#04060a; --fg:#f3f1fb;
+    --iris:#a78bfa; --iris-hi:#c4b5fd; --iris-glow:rgba(167,139,250,0.4); --iris-ink:#1c1240;
+    --mint:#6EE7B7; --mint-hi:#a7f3d0; --mint-glow:rgba(110,231,183,0.38); --mint-ink:#04221a;
+    --amber:#F59E0B; --amber-hi:#fbbf3f; --amber-bd:rgba(245,158,11,0.34); --amber-ink:#2a1c02;
+    --muted:rgba(233,239,233,0.52); --muted-strong:rgba(233,239,233,0.72);
+    --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.16);
+    --serif:'Instrument Serif', Georgia, serif; --mono:'JetBrains Mono', ui-monospace, monospace; --body:'Inter', -apple-system, system-ui, sans-serif;
+    --ease:cubic-bezier(0.22,1,0.36,1); --spring:cubic-bezier(0.34,1.4,0.5,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  ::selection{background:rgba(110,231,183,0.26);color:#fff}
+  :focus-visible{outline:2px solid var(--mint);outline-offset:2px;border-radius:8px}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:var(--body);background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;min-height:100dvh;position:relative;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(70% 28vh at 50% -2%, rgba(167,139,250,0.11), transparent 70%), radial-gradient(44% 30% at 100% 102%, rgba(31,77,61,0.09), transparent 70%)}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:max(46px,env(safe-area-inset-top)) 20px 96px}
+
+  /* ---- header ---- */
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:0.63rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--iris-hi)}
+  .eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--iris);box-shadow:0 0 7px var(--iris)}
+  h1.lead{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(1.95rem,6vw,2.7rem);line-height:1.05;letter-spacing:-0.02em;margin:12px 0 9px}
+  .lead-sub{color:var(--muted-strong);max-width:58ch;font-size:0.97rem}
+
+  .kicker{display:flex;align-items:center;gap:11px;margin:40px 0 14px}
+  .kicker .lbl{font-family:var(--mono);font-size:0.64rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-strong)}
+  .kicker .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--border-strong),transparent)}
+
+  /* ---- hub grid ---- */
+  .hub{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+  @media(max-width:560px){.hub{grid-template-columns:repeat(2,1fr)}}
+  .tile{appearance:none;text-align:left;border:1px solid var(--border);border-radius:16px;padding:14px 14px 15px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.004));min-height:112px;display:flex;flex-direction:column;gap:8px;color:var(--fg);font-family:inherit;transition:transform .22s var(--ease),border-color .22s,background .22s}
+  .tile .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;border:1px solid var(--border-strong);color:var(--muted-strong)}
+  .tile .ic svg{width:14px;height:14px}
+  .tile .nm{font-size:0.9rem;font-weight:600}
+  .tile .mt{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-top:auto}
+  .tile.q{opacity:0.74}
+  .tile.user{border-style:dashed;border-color:rgba(110,231,183,0.32)}
+  .tile.user .ic{border-color:rgba(110,231,183,0.38);color:var(--mint-hi)}
+  .tile .badge{font-family:var(--mono);font-size:0.46rem;letter-spacing:0.08em;color:var(--mint-hi);border:1px solid rgba(110,231,183,0.3);border-radius:5px;padding:2px 4px;margin-left:6px;vertical-align:middle;text-transform:uppercase}
+
+  /* the live Vee tile (closed) */
+  .vtile{grid-column:1 / -1;appearance:none;text-align:left;font-family:inherit;color:var(--fg);cursor:pointer;
+    border:1px solid rgba(167,139,250,0.3);border-radius:16px;padding:15px 16px;
+    background:radial-gradient(120% 120% at 0% 0%, rgba(167,139,250,0.1), transparent 60%), linear-gradient(180deg,rgba(167,139,250,0.05),rgba(255,255,255,0.004));
+    box-shadow:0 0 44px -32px var(--iris-glow);display:flex;align-items:center;gap:13px;transition:transform .22s var(--ease),box-shadow .3s,border-color .22s}
+  .vtile:hover{transform:translateY(-2px);box-shadow:0 0 54px -26px var(--iris-glow);border-color:rgba(167,139,250,0.44)}
+  .vtile:active{transform:translateY(0) scale(0.995)}
+  .vmark{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;border:1px solid rgba(167,139,250,0.5);background:rgba(167,139,250,0.14);color:var(--iris-hi)}
+  .vmark svg{width:19px;height:19px}
+  .vmid{flex:1;min-width:0}
+  .vtop{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .vtag{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--iris-hi)}
+  .vnew{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mint-hi);border:1px solid rgba(110,231,183,0.3);border-radius:999px;padding:2px 7px}
+  .vnew .pd{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint);animation:pulse 2.2s var(--ease) infinite}
+  @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+  .vteaser{margin-top:5px;font-size:0.96rem;line-height:1.45}
+  .vteaser .ka{color:var(--amber-hi);font-weight:600}.vteaser .ki{color:var(--iris-hi);font-weight:600}
+  .vgo{flex:none;align-self:center;font-family:var(--mono);font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-strong);display:inline-flex;align-items:center;gap:6px}
+  .vgo svg{width:14px;height:14px;transition:transform .3s var(--spring)}
+  .vtile:hover .vgo svg{transform:translate(3px,-3px)}
+  .hint{margin-top:13px;font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-align:center}
+
+  /* ---- scrim + sheet ---- */
+  .scrim{position:fixed;inset:0;background:rgba(2,3,6,0.62);opacity:0;pointer-events:none;transition:opacity .32s var(--ease);z-index:40}
+  body.open .scrim{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:50%;bottom:0;width:min(700px,100%);max-height:94vh;max-height:94dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:50;
+    transform:translate(-50%,102%);transition:transform .46s var(--spring);
+    border:1px solid rgba(167,139,250,0.26);border-bottom:0;border-radius:24px 24px 0 0;
+    background:radial-gradient(120% 36% at 0% 0%, rgba(167,139,250,0.07), transparent 60%), linear-gradient(180deg,#0a0a14,#06070d);
+    box-shadow:0 -30px 80px -30px rgba(0,0,0,0.7)}
+  body.open .sheet{transform:translate(-50%,0)}
+  .grip{display:flex;justify-content:center;padding:10px 0 2px}
+  .grip span{width:38px;height:4px;border-radius:999px;background:var(--border-strong)}
+
+  .oh{display:flex;align-items:center;gap:11px;padding:9px 18px 14px;position:sticky;top:0;background:linear-gradient(180deg,rgba(10,10,20,0.96),rgba(10,10,20,0.0));backdrop-filter:blur(2px)}
+  .oh .vmark{width:28px;height:28px;border-radius:8px}.oh .vmark svg{width:15px;height:15px}
+  .oh .ttl{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--iris-hi)}
+  .oh .sp{flex:1}
+  .x{appearance:none;width:30px;height:30px;border-radius:9px;border:1px solid var(--border);background:transparent;display:grid;place-items:center;color:var(--muted);cursor:pointer;transition:.2s}
+  .x:hover{color:var(--fg);border-color:var(--border-strong)}
+  .x svg{width:14px;height:14px}
+  .ob{padding:6px 18px calc(26px + env(safe-area-inset-bottom))}
+
+  .hi{font-family:var(--serif);font-style:italic;font-size:1.55rem;line-height:1.08}
+  .hi .nm{color:var(--iris-hi)}
+  .hi-sub{color:var(--muted-strong);font-size:0.9rem;margin-top:6px;max-width:52ch}
+
+  .board{margin-top:18px;border:1px solid var(--border);border-radius:14px;padding:4px 13px}
+  .grow{display:flex;align-items:center;gap:12px;padding:12px 2px}
+  .grow + .grow{border-top:1px solid var(--border)}
+  .grow .gn{flex:1;min-width:0}
+  .grow .gn .t2{font-size:0.9rem;font-weight:600}
+  .grow .gn .s2{font-family:var(--mono);font-size:0.51rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .spk{flex:none}
+  .chg{font-family:var(--mono);font-weight:600;font-size:0.8rem;display:inline-flex;align-items:center;gap:5px;min-width:78px;justify-content:flex-end}
+  .chg svg{width:11px;height:11px}
+  .up{color:var(--mint-hi)}.dn{color:var(--amber-hi)}
+  .life{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+  .life .s{font-family:var(--mono);font-size:0.53rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted-strong);border:1px solid var(--border);border-radius:8px;padding:6px 9px}
+  .life .s b{color:var(--mint-hi);font-weight:500}.life .s .a{color:var(--amber-hi)}
+
+  .sec{display:flex;align-items:center;gap:10px;margin:24px 0 11px}
+  .sec .num{font-family:var(--serif);font-style:italic;font-size:1.02rem;color:var(--iris-hi)}
+  .sec .lbl{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted-strong)}
+  .sec .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--border-strong),transparent)}
+
+  .vcard{border:1px solid rgba(167,139,250,0.28);border-radius:16px;padding:17px 17px;background:radial-gradient(130% 90% at 0% 0%, rgba(167,139,250,0.07), transparent 55%), rgba(255,255,255,0.008);box-shadow:0 0 46px -34px var(--iris-glow)}
+  .ct{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+  .ctag{font-family:var(--mono);font-size:0.54rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--iris-hi)}
+  .csp{flex:1}
+  .cw{font-family:var(--mono);font-size:0.5rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px}
+  .cw svg{width:10px;height:10px}
+  .lead2{font-size:1.16rem;line-height:1.5;font-weight:450}
+  @media(max-width:560px){.lead2{font-size:1.06rem}}
+  .lead2 .ki{color:var(--iris-hi);font-weight:700}.lead2 .km{color:var(--mint-hi);font-weight:700}.lead2 .ka{color:var(--amber-hi);font-weight:700}
+  .sauce{color:var(--mint-hi);font-weight:700;border-bottom:2px solid rgba(110,231,183,0.5);padding-bottom:1px}
+  .impact{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid var(--border)}
+  .impact .il{font-family:var(--mono);font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+  .gp{display:inline-flex;align-items:center;gap:6px;font-size:0.77rem;font-weight:600;border:1px solid var(--amber-bd);background:rgba(245,158,11,0.06);color:var(--amber-hi);border-radius:999px;padding:5px 10px}
+  .gp svg{width:11px;height:11px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+  .chip{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted-strong);border:1px solid var(--border);background:rgba(255,255,255,0.02);border-radius:9px;padding:7px 10px}
+  .chip .a{color:var(--amber-hi)}.chip .m{color:var(--mint-hi)}
+  .acts{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+  .act{appearance:none;display:inline-flex;align-items:center;gap:8px;font:500 0.85rem var(--body);background:transparent;border:1px solid;border-radius:12px;padding:11px 15px;cursor:pointer;transition:.24s var(--ease)}
+  .act svg{width:15px;height:15px;transition:transform .4s var(--spring)}
+  .act:active{transform:scale(.97)}
+  .a-iris{color:var(--iris-hi);border-color:rgba(167,139,250,0.42)}
+  .a-iris:hover{color:var(--iris-ink);background:var(--iris);border-color:var(--iris);transform:translateY(-2px)}
+  .a-iris:hover svg{transform:rotate(90deg)}
+  .a-amber{color:var(--amber-hi);border-color:var(--amber-bd)}
+  .a-amber:hover{color:var(--amber-ink);background:var(--amber);border-color:var(--amber);transform:translateY(-2px)}
+  .cyc{display:flex;align-items:center;gap:13px;margin-top:15px}
+  .pgr{display:flex;gap:6px}.pgr i{width:6px;height:6px;border-radius:50%;background:rgba(167,139,250,0.26);transition:.25s}.pgr i.on{background:var(--iris-hi);transform:scale(1.18)}
+  .another{appearance:none;margin-left:auto;font:500 0.76rem var(--body);color:var(--muted-strong);background:transparent;border:1px solid var(--border);border-radius:999px;padding:8px 13px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;transition:.22s}
+  .another svg{width:13px;height:13px;transition:transform .5s var(--spring)}
+  .another:hover{color:var(--iris-hi);border-color:rgba(167,139,250,0.4)}.another:hover svg{transform:rotate(160deg)}
+
+  .quiet{appearance:none;width:100%;text-align:left;display:flex;align-items:center;gap:10px;margin-top:17px;padding:13px 15px;border:1px dashed var(--border-strong);border-radius:13px;color:var(--muted);font:inherit;font-size:0.85rem;background:transparent;cursor:pointer;transition:.22s}
+  .quiet:hover{border-color:var(--iris);color:var(--muted-strong)}
+  .quiet .lf{flex:none;width:15px;height:15px;color:var(--iris-hi);opacity:.85}
+  .quiet b{color:var(--muted-strong);font-weight:500}
+  .quiet .ch{margin-left:auto;flex:none;width:14px;height:14px;transition:transform .3s var(--spring)}
+  .quiet.on .ch{transform:rotate(180deg)}
+  .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--spring)}
+  .more.on{grid-template-rows:1fr}
+  .more-in{overflow:hidden;min-height:0}
+  .more-row{display:flex;align-items:center;gap:11px;padding:13px 4px;border-bottom:1px solid var(--border);color:var(--muted-strong);font-size:0.9rem}
+  .more-row:last-child{border-bottom:0}
+  .more-row svg{width:15px;height:15px;color:var(--iris-hi);flex:none;opacity:.8}
+
+  .disc{margin-top:42px;padding-top:18px;border-top:1px solid var(--border);font-family:var(--mono);font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .55s var(--ease) both}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001s !important;transition-duration:.05s !important}
+    .sheet{transition:transform .12s linear}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="rise">
+    <div class="eyebrow"><span class="dot"></span>Vitality · the Vee tile</div>
+    <h1 class="lead">Vee is one tile now.</h1>
+    <p class="lead-sub">The hub is the home. Vee sits in it like any other tile, quiet until it has the one true thing to say. Tap it and the magic is still there, just no longer the whole room.</p>
+  </header>
+
+  <div class="kicker rise" style="animation-delay:.05s"><span class="lbl">your hub</span><span class="rule"></span></div>
+  <div class="hub rise" style="animation-delay:.08s">
+    <button class="tile q"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 9h12M6 15h12"/></svg></span><span class="nm">Train</span><span class="mt">push · today</span></button>
+    <button class="tile q"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14l-1 7a6 6 0 0 1-12 0z"/><path d="M9 21h6"/></svg></span><span class="nm">Fuel</span><span class="mt">1,840 kcal</span></button>
+    <button class="tile q"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v12H3z"/><path d="M3 11h18"/></svg></span><span class="nm">Money</span><span class="mt">runway 2 mo</span></button>
+    <button class="tile q"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="nm">Weight</span><span class="mt">74.5 kg</span></button>
+    <button class="tile q user"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l-1 4H7z"/><path d="M7 7l1 13h8l1-13"/></svg></span><span class="nm">Beers<span class="badge">yours</span></span><span class="mt">built with mcp</span></button>
+    <button class="vtile" id="openVee" aria-haspopup="dialog" aria-controls="sheet">
+      <span class="vmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l7 11 7-11"/></svg></span>
+      <span class="vmid">
+        <span class="vtop"><span class="vtag">Vee · Vitality noticed</span><span class="vnew"><span class="pd"></span>1 new</span></span>
+        <span class="vteaser">your <span class="ka">1am work nights</span> are quietly blocking <span class="ki">get lean</span> and <span class="ki">launch by fall</span>.</span>
+      </span>
+      <span class="vgo">open<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+    </button>
+  </div>
+  <p class="hint">tap the Vee tile</p>
+
+  <div class="disc">mockup · the Vee tile in the hub world · sample copy and numbers · no em dashes, no emojis</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Vee" aria-hidden="true">
+  <div class="grip"><span></span></div>
+  <div class="oh">
+    <span class="vmark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l7 11 7-11"/></svg></span>
+    <span class="ttl">Vee</span>
+    <span class="sp"></span>
+    <button class="x" id="closeVee" aria-label="close Vee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="ob">
+    <div class="hi">Howdy, <span class="nm">Alex</span>.</div>
+    <p class="hi-sub">one tile, but it has read your goals, training, fuel, sleep, and the beers you just started logging.</p>
+
+    <div class="board">
+      <div class="grow">
+        <span class="gn"><span class="t2">get lean</span><span class="s2">12% body fat</span></span>
+        <svg class="spk" width="50" height="18" viewBox="0 0 50 18" fill="none"><polyline points="2,4 12,6 22,5 32,11 48,15" stroke="var(--amber)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="15" r="2" fill="var(--amber)"/></svg>
+        <span class="chg dn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 19L4 6h16z"/></svg>8% off</span>
+      </div>
+      <div class="grow">
+        <span class="gn"><span class="t2">launch the business</span><span class="s2">by fall</span></span>
+        <svg class="spk" width="50" height="18" viewBox="0 0 50 18" fill="none"><polyline points="2,15 12,12 22,13 32,6 48,3" stroke="var(--mint)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="48" cy="3" r="2" fill="var(--mint)"/></svg>
+        <span class="chg up"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5l8 13H4z"/></svg>12% ahead</span>
+      </div>
+    </div>
+    <div class="life">
+      <span class="s">Sleep <span class="a">5.6h</span> work nights</span>
+      <span class="s">Beers <span class="a">6</span> this wk</span>
+      <span class="s">Train <b>5x/wk</b></span>
+    </div>
+
+    <div class="sec"><span class="num">·01</span><span class="lbl">What Vitality noticed</span><span class="rule"></span></div>
+    <div class="vcard" id="card"></div>
+    <div class="cyc">
+      <div class="pgr" id="pgr"></div>
+      <button class="another" id="another"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>show me another</button>
+    </div>
+
+    <button class="quiet" id="moreToggle" aria-expanded="false" aria-controls="more">
+      <svg class="lf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l7 11 7-11"/></svg>
+      <span>the rest of Vee. one at a time, <b>never a wall.</b></span>
+      <svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="more" id="more"><div class="more-in">
+      <div class="more-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Vent with Vee in Claude</div>
+      <div class="more-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 2"/></svg>The void · jot a thought</div>
+      <div class="more-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>Mood · a one-tap read</div>
+    </div></div>
+  </div>
+</aside>
+
+<script>
+  var CLOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>';
+  var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.6 2.4l1.7 5.4 5.4 1.7-5.4 1.7-1.7 5.4-1.7-5.4-5.4-1.7 5.4-1.7z"/></svg>';
+  var DN='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 19L4 6h16z"/></svg>';
+  var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.5A8.5 8.5 0 1 1 11.5 3 7 7 0 0 0 21 12.5z"/></svg>';
+  var NOTES=[
+    {w:'goals + sleep + fuel · 21d',
+     lead:'you told me you want to <span class="ki">get lean</span> and <span class="ki">launch by fall</span>. your <span class="ka">1am work nights</span> wreck next-day recovery, so you skip the gym and snack late. one move fixes both. <span class="sauce">a hard stop at 11</span>.',
+     chips:['Sleep <span class="a">5h12</span> work nights','Gym skipped <span class="a">x4</span>','Late snacking <span class="a">x6</span>'],
+     act:{c:'a-amber',i:CLOCK,l:'set an 11pm wind-down'}},
+    {w:'beers + recovery · 18d',
+     lead:'the tile you built is already talking to me. on the nights you log <span class="ka">3 or more beers</span>, your next-day recovery runs <span class="ka">lower</span> and your weigh-in creeps up. <span class="sauce">you did not need a new app for that. you built it.</span>',
+     chips:['3+ beers, recovery <span class="a">-12%</span>','Weight <span class="a">+0.4kg</span> next day','<span class="m">18 days</span> logged'],
+     act:{c:'a-amber',i:MOON,l:'plan 2 dry nights'}}
+  ];
+  var card=document.getElementById('card'),pgr=document.getElementById('pgr'),idx=0;
+  NOTES.forEach(function(_,i){var d=document.createElement('i');if(i===0)d.className='on';pgr.appendChild(d)});
+  function render(i){var n=NOTES[i];
+    card.innerHTML='<div class="ct"><span class="ctag">Vitality noticed</span><span class="csp"></span><span class="cw">'+CLOCK+n.w+'</span></div>'+
+      '<div class="lead2">'+n.lead+'</div>'+
+      '<div class="impact"><span class="il">moves your goals</span><span class="gp">'+DN+'get lean</span><span class="gp">'+DN+'launch by fall</span></div>'+
+      '<div class="chips">'+n.chips.map(function(c){return '<span class="chip">'+c+'</span>'}).join('')+'</div>'+
+      '<div class="acts"><button class="act a-iris">'+SPARK+'talk deeper in Claude</button><button class="act '+n.act.c+'">'+n.act.i+n.act.l+'</button></div>';
+    Array.prototype.forEach.call(pgr.children,function(c,k){c.className=k===i?'on':''});
+    card.style.animation='none';void card.offsetWidth;card.style.animation='rise .5s var(--ease) both';
+  }
+  render(0);
+  document.getElementById('another').addEventListener('click',function(){idx=(idx+1)%NOTES.length;render(idx)});
+
+  // open / close the sheet — user-proof: tile, scrim, X, and Esc all work
+  var openBtn=document.getElementById('openVee'),sheet=document.getElementById('sheet'),scrim=document.getElementById('scrim'),closeBtn=document.getElementById('closeVee');
+  function openVee(){document.body.classList.add('open');sheet.setAttribute('aria-hidden','false');sheet.scrollTop=0;closeBtn.focus()}
+  function closeVee(){document.body.classList.remove('open');sheet.setAttribute('aria-hidden','true');openBtn.focus()}
+  openBtn.addEventListener('click',openVee);
+  closeBtn.addEventListener('click',closeVee);
+  scrim.addEventListener('click',closeVee);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.body.classList.contains('open'))closeVee()});
+
+  // the rest of Vee accordion
+  var mt=document.getElementById('moreToggle'),more=document.getElementById('more');
+  mt.addEventListener('click',function(){var on=more.classList.toggle('on');mt.classList.toggle('on',on);mt.setAttribute('aria-expanded',on?'true':'false')});
+</script>
+</body>
+</html>

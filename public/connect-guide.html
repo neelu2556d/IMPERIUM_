@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Connect · Vitals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000; --mint:#6ee7b7;
+    --accent:#5e9bff; --accent-hi:#8db8ff; --accent-glow:rgba(94,155,255,.42);
+    --amber:#F59E0B; --fg:#fff;
+    --muted:rgba(255,255,255,.5); --muted-strong:rgba(255,255,255,.72);
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.16);
+    --card:rgba(255,255,255,.025);
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:32px 18px;overflow-x:hidden}
+  ::selection{background:rgba(110,231,183,.26)}
+
+  /* ── atmosphere (aurora + mountains + particles + grain), lifted from vitals-remodel ── */
+  .atmosphere{position:fixed;inset:0;z-index:0;pointer-events:none;background-repeat:no-repeat;background-size:100% 100%;
+    background-image:
+      radial-gradient(60% 50% at 50% 26%, color-mix(in srgb, var(--mint) 15%, transparent) 0%, color-mix(in srgb, var(--mint) 6%, transparent) 32%, transparent 65%),
+      radial-gradient(40% 30% at 50% 30%, rgba(94,155,255,.08) 0%, rgba(94,155,255,0) 70%),
+      radial-gradient(120% 80% at 50% 100%, rgba(14,38,30,.5) 0%, rgba(4,6,10,.95) 75%);}
+  .mountains{position:fixed;left:0;right:0;bottom:0;z-index:1;height:30vh;min-height:180px;pointer-events:none;opacity:.8}
+  .mountains svg{width:100%;height:100%;display:block}
+  .particles{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+  .particles span{position:absolute;border-radius:50%;background:rgba(233,239,233,.7);
+    box-shadow:0 0 6px color-mix(in srgb, var(--mint) 55%, transparent);animation:drift linear infinite}
+  @keyframes drift{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:.7}90%{opacity:.55}100%{transform:translate3d(var(--dx,12px),var(--dy,-100vh),0);opacity:0}}
+  .grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .stage{position:relative;z-index:5;width:100%;max-width:440px}
+  .eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted-strong);text-align:center;margin-bottom:20px}
+
+  /* persistent gem hero (the real mint engraving) */
+  .gemwrap{width:150px;height:150px;margin:0 auto;display:grid;place-items:center;
+    background:radial-gradient(circle at 50% 46%, rgba(110,231,183,.13), transparent 62%)}
+  .gem{width:150px;height:150px;display:block}
+
+  /* progress */
+  .dots{display:flex;align-items:center;justify-content:center;margin:16px auto 26px;width:120px;height:8px;opacity:0;transition:opacity .4s}
+  .dots.show{opacity:1}
+  .dots .d{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--border-strong);transition:.45s}
+  .dots .bar{flex:1;height:1.5px;background:var(--border);transition:.45s}
+  .dots .d.done{background:var(--accent);border-color:var(--accent)}
+  .dots .bar.done{background:var(--accent)}
+  .dots .d.active{border-color:var(--accent);box-shadow:0 0 0 4px rgba(94,155,255,.16);animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(94,155,255,.14)}50%{box-shadow:0 0 0 7px rgba(94,155,255,.05)}}
+
+  .screen{display:none}
+  .screen.show{display:block;animation:riseIn .55s var(--ease) both}
+  @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(2rem,7vw,2.7rem);line-height:1.05;letter-spacing:-.01em;text-align:center;margin-bottom:12px}
+  .lede{font-size:15px;line-height:1.55;color:var(--muted);text-align:center;max-width:310px;margin:0 auto 26px}
+  .lede em{color:var(--mint);font-style:normal}
+
+  /* choose */
+  .choice{display:flex;flex-direction:column;gap:12px}
+  .band{display:flex;align-items:center;gap:14px;text-align:left;border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--card);cursor:pointer;transition:.22s var(--ease);color:inherit;font-family:var(--sans)}
+  .band:hover{border-color:rgba(94,155,255,.5);background:rgba(94,155,255,.045);transform:translateY(-2px)}
+  .band .mk{width:44px;height:44px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;color:var(--accent);border:1px solid var(--border-strong);background:rgba(94,155,255,.05)}
+  .band .mk svg{width:20px;height:20px;stroke-width:1.7}
+  .band .t{flex:1}
+  .band .t b{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.35rem;line-height:1.1}
+  .band .t span{font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+  .band .chev{color:var(--muted);transition:.22s}
+  .band:hover .chev{color:var(--accent);transform:translateX(2px)}
+  .band .chev svg{width:18px;height:18px;stroke-width:2}
+
+  /* copy chip */
+  .chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border-strong);border-radius:13px;padding:11px 11px 11px 15px;margin:18px 0 9px}
+  .chip .v{flex:1;min-width:0;font-family:var(--mono);font-size:12px;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip button{flex:0 0 auto;display:flex;align-items:center;gap:6px;border:1px solid rgba(94,155,255,.4);border-radius:9px;background:rgba(94,155,255,.08);color:var(--accent);font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;cursor:pointer;transition:.2s}
+  .chip button:hover{background:rgba(94,155,255,.16)}
+  .chip button.copied{background:var(--accent);color:#04122e;border-color:var(--accent)}
+  .chip button svg{width:13px;height:13px}
+  .cap{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--muted);text-align:center;line-height:1.6;text-transform:none}
+
+  /* fields */
+  .field{position:relative;margin-bottom:12px}
+  .field input{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border-strong);border-radius:13px;color:var(--fg);
+    font-family:var(--mono);font-size:14px;padding:22px 44px 10px 15px;outline:none;transition:.2s}
+  .field input:focus{border-color:rgba(94,155,255,.55)}
+  .field label{position:absolute;left:15px;top:12px;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);pointer-events:none}
+  .field .tick{position:absolute;right:14px;top:50%;transform:translateY(-50%) scale(.4);opacity:0;transition:.3s;color:var(--accent)}
+  .field.ok .tick{opacity:1;transform:translateY(-50%) scale(1)}
+  .field.ok input{border-color:rgba(94,155,255,.5)}
+  .field .tick svg{width:19px;height:19px;stroke-width:2.4}
+
+  .checkline{font-family:var(--mono);font-size:.7rem;letter-spacing:.03em;color:var(--muted);text-align:center;min-height:20px;margin:4px 0 2px;transition:.2s}
+  .checkline.good{color:var(--accent)}
+  .spin{display:inline-block;width:11px;height:11px;border:2px solid rgba(94,155,255,.25);border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  .btn{width:100%;border:0;border-radius:14px;font-family:var(--sans);font-size:15px;font-weight:600;padding:15px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn.primary{background:linear-gradient(180deg,var(--accent-hi),var(--accent));color:#04122e;box-shadow:0 14px 34px -16px var(--accent-glow)}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn:disabled{opacity:.32;cursor:not-allowed;box-shadow:none;filter:none}
+  .btn svg{width:16px;height:16px;stroke-width:2.2}
+  .stack{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .below{display:flex;justify-content:center;margin-top:12px}
+  .back{background:none;border:0;color:var(--muted);font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:8px 12px;transition:.2s}
+  .back:hover{color:var(--fg)}
+
+  .done{text-align:center}
+  .trust{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:30px;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--muted)}
+  .trust svg{width:13px;height:13px;stroke-width:1.8;color:var(--mint)}
+
+  @media (prefers-reduced-motion:reduce){.particles span{animation:none;opacity:.5}}
+</style>
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <div class="mountains" aria-hidden="true">
+    <svg viewBox="0 0 1600 420" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="mtFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0d1a17" stop-opacity="0"/><stop offset="55%" stop-color="#0d1a17" stop-opacity=".55"/><stop offset="100%" stop-color="#0d1a17" stop-opacity=".95"/>
+        </linearGradient>
+        <linearGradient id="mtNear" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#050a09" stop-opacity=".4"/><stop offset="60%" stop-color="#050a09" stop-opacity=".95"/><stop offset="100%" stop-color="#050a09" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,300 L120,230 L210,260 L320,180 L430,220 L560,150 L680,210 L820,170 L960,220 L1100,180 L1240,240 L1380,200 L1500,250 L1600,220 L1600,420 L0,420 Z" fill="url(#mtFar)"/>
+      <path d="M0,360 L100,320 L220,340 L340,290 L460,330 L590,300 L720,340 L860,310 L1000,350 L1140,310 L1280,355 L1420,320 L1540,360 L1600,340 L1600,420 L0,420 Z" fill="url(#mtNear)"/>
+    </svg>
+  </div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="stage">
+    <div class="eyebrow" id="eyebrow">VITALS · CONNECT</div>
+    <div class="gemwrap"><canvas class="gem" width="440" height="440"></canvas></div>
+
+    <div class="dots" id="dots">
+      <span class="d"></span><span class="bar"></span><span class="d"></span><span class="bar"></span><span class="d"></span>
+    </div>
+
+    <!-- CHOOSE -->
+    <section class="screen show" data-view="choose">
+      <h1>Which band do you wear?</h1>
+      <p class="lede">Two minutes, and we stay with you the whole way.</p>
+      <div class="choice">
+        <button class="band" data-pick="whoop">
+          <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg></span>
+          <span class="t"><b>WHOOP</b><span>Recovery &amp; strain</span></span>
+          <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+        <button class="band" data-pick="oura">
+          <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/></svg></span>
+          <span class="t"><b>Oura</b><span>Readiness &amp; sleep</span></span>
+          <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="screen" data-view="0">
+      <h1>Make your key</h1>
+      <p class="lede">Free, and takes a minute. We hand you the one line to paste.</p>
+      <a class="btn primary" id="openDev" href="#" target="_blank" rel="noopener">
+        Open <span class="bn">WHOOP</span> dashboard
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+      <p class="cap" id="arriveCap" style="margin-top:12px"></p>
+      <div class="chip">
+        <span class="v" id="redirectVal"></span>
+        <button data-copy="redirectVal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy</button>
+      </div>
+      <p class="cap">Paste this where it asks for a Redirect URL.</p>
+      <div class="stack"><button class="btn primary" data-next>Continue</button></div>
+      <div class="below"><button class="back" data-back>Back</button></div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="screen" data-view="1">
+      <h1>Copy your two codes</h1>
+      <p class="lede"><span class="bn">WHOOP</span> shows a Client ID and a Secret. Grab both.</p>
+      <div class="stack"><button class="btn primary" data-next>I have them</button></div>
+      <p class="cap" style="margin-top:16px">The Secret shows once. If it slips, a new one is free.</p>
+      <div class="below"><button class="back" data-back>Back</button></div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="screen" data-view="2">
+      <h1>Paste them in</h1>
+      <p class="lede">We check the format now; your band verifies them when you connect.</p>
+      <div class="field" id="f-id">
+        <input id="in-id" placeholder="Client ID" autocomplete="off" spellcheck="false" />
+        <label>Client ID</label>
+        <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      </div>
+      <div class="field" id="f-secret">
+        <input id="in-secret" placeholder="Client Secret" autocomplete="off" spellcheck="false" />
+        <label>Client Secret</label>
+        <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      </div>
+      <div class="checkline" id="checkState"></div>
+      <div class="stack"><button class="btn primary" id="connectBtn" disabled>Connect</button></div>
+      <div class="below"><button class="back" data-back>Back</button></div>
+    </section>
+
+    <!-- DONE -->
+    <section class="screen" data-view="done">
+      <div class="done">
+        <h1>You're in</h1>
+        <p class="lede" style="margin-bottom:0">Reading your <em class="bm">recovery</em> now. Your score updates in a moment.</p>
+      </div>
+    </section>
+
+    <div class="trust">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      Your keys are sealed, and only ever yours.
+    </div>
+  </div>
+
+<script>
+  /* drifting particles — 24, straight from vitals-remodel */
+  (function(){var root=document.getElementById('particles');var N=window.innerWidth<640?15:24;
+    for(var i=0;i<N;i++){var s=document.createElement('span');s.style.left=(Math.random()*100)+'%';s.style.top=(60+Math.random()*40)+'%';
+      var sz=(1.2+Math.random()*1.2);s.style.width=s.style.height=sz+'px';var dur=(22+Math.random()*28);
+      s.style.animationDuration=dur+'s';s.style.animationDelay=(-Math.random()*dur)+'s';
+      s.style.setProperty('--dx',(Math.random()*30-15)+'px');s.style.setProperty('--dy',-(60+Math.random()*50)+'vh');root.appendChild(s);}})();
+
+  const BANDS={
+    whoop:{name:'WHOOP',metric:'recovery',dev:'https://developer-dashboard.whoop.com/',first:'Create app',redirect:'http://localhost:3000/api/whoop/callback'},
+    oura:{name:'Oura',metric:'readiness',dev:'https://cloud.ouraring.com/oauth/applications',first:'New application',redirect:'http://localhost:3000/api/oura/callback'},
+  };
+  let band='whoop', step=-1;
+  const screens=[...document.querySelectorAll('.screen')];
+  const dots=document.getElementById('dots');
+  const dEls=[...document.querySelectorAll('.dots .d')];
+  const bEls=[...document.querySelectorAll('.dots .bar')];
+  const eyebrow=document.getElementById('eyebrow');
+
+  function applyBand(){
+    const b=BANDS[band];
+    document.querySelectorAll('.bn').forEach(e=>e.textContent=b.name);
+    document.querySelectorAll('.bm').forEach(e=>e.textContent=b.metric);
+    document.getElementById('openDev').href=b.dev;
+    document.getElementById('arriveCap').textContent='Sign in, then hit “'+b.first+'”. Name it anything.';
+    document.getElementById('redirectVal').textContent=b.redirect;
+    document.getElementById('connectBtn').textContent='Connect '+b.name;
+  }
+  function view(name){screens.forEach(s=>s.classList.toggle('show',s.dataset.view===name))}
+  function showStep(n){
+    step=n;
+    if(n<0){view('choose');dots.classList.remove('show');eyebrow.textContent='VITALS · CONNECT';return;}
+    if(n>2){view('done');dots.classList.remove('show');eyebrow.textContent='CONNECTED';return;}
+    view(String(n));dots.classList.add('show');eyebrow.textContent='VITALS · CONNECT';
+    dEls.forEach((d,i)=>{d.classList.toggle('done',i<n);d.classList.toggle('active',i===n)});
+    bEls.forEach((b,i)=>b.classList.toggle('done',i<n));
+  }
+  document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{band=b.dataset.pick;applyBand();resetKeys();showStep(0)});
+  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>showStep(step+1));
+  document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showStep(step-1));
+
+  document.querySelectorAll('[data-copy]').forEach(b=>{
+    b.onclick=()=>{const t=document.getElementById(b.dataset.copy).textContent;navigator.clipboard?.writeText(t);
+      const old=b.innerHTML;b.classList.add('copied');b.textContent='Copied';setTimeout(()=>{b.classList.remove('copied');b.innerHTML=old},1300)};
+  });
+
+  const inId=document.getElementById('in-id'),inSec=document.getElementById('in-secret');
+  const fId=document.getElementById('f-id'),fSec=document.getElementById('f-secret');
+  const state=document.getElementById('checkState'),connect=document.getElementById('connectBtn');
+  let timer;
+  function resetKeys(){inId.value='';inSec.value='';fId.classList.remove('ok');fSec.classList.remove('ok');state.className='checkline';state.textContent='';connect.disabled=true}
+  function maybeCheck(){
+    fId.classList.remove('ok');fSec.classList.remove('ok');connect.disabled=true;state.className='checkline';state.textContent='';
+    clearTimeout(timer);
+    if(inId.value.trim().length>6 && inSec.value.trim().length>6){
+      state.innerHTML='<span class="spin"></span>Checking the format…';
+      timer=setTimeout(()=>{fId.classList.add('ok');fSec.classList.add('ok');state.className='checkline good';state.textContent='Format looks right. Connect to verify.';connect.disabled=false},1100);
+    }
+  }
+  inId.addEventListener('input',maybeCheck);inSec.addEventListener('input',maybeCheck);
+  connect.onclick=()=>showStep(3);
+
+  applyBand();showStep(-1);
+
+  /* ── The Vitality gem: the LINK engraving, 1:1 from public/vitals-link-final.html
+     (the locked motion spec). Pulse charges, glides the wire, lands, and a check
+     draws inside it, breathes, loops. Same 5-layer mint glow the real gem uses. ── */
+  const GEM_LAYERS=[
+    ['rgba(110, 231, 183, 0.10)', 18, 90],['rgba(110, 231, 183, 0.22)', 13, 52],
+    ['rgba(167, 243, 208, 0.50)',  7, 26],['rgba(196, 250, 220, 0.85)',  4, 12],['rgba(240, 255, 245, 1.00)', 1.8, 4],
+  ];
+  const gL=(a,b,t)=>a+(b-a)*t, gC=x=>Math.max(0,Math.min(1,x)), gSp=(t,a,b)=>gC((t-a)/(b-a)), gS=t=>{t=gC(t);return t*t*t*(t*(6*t-15)+10)};
+  function gRing(c,x,y,r,a){if(a<=0||r<=0)return;c.save();c.globalAlpha=a;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();c.restore()}
+  function gSeg(c,x1,y1,x2,y2,a){if(a<=0)return;c.save();c.globalAlpha=a;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.restore()}
+  const GLX=156,GRX=352,GY=256,GR=20,GCHG=0.13,GARR=0.50,GHOFF=0.06,GCKD=0.74,GHLD=0.88;
+  function gCheck(c,cx,cy,sc,rev,al){if(rev<=0||al<=0)return;const p=[[cx-15*sc,cy+2*sc],[cx-4*sc,cy+13*sc],[cx+18*sc,cy-14*sc]];let tot=0,sl=[];for(let i=1;i<p.length;i++){const l=Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]);sl.push(l);tot+=l}const rv=rev*tot;c.save();c.globalAlpha=al;c.beginPath();c.moveTo(p[0][0],p[0][1]);let ac=0;for(let i=1;i<p.length;i++){if(ac+sl[i-1]<=rv){c.lineTo(p[i][0],p[i][1]);ac+=sl[i-1]}else{const r=(rv-ac)/sl[i-1];c.lineTo(gL(p[i-1][0],p[i][0],r),gL(p[i-1][1],p[i][1],r));break}}c.stroke();c.restore()}
+  function gDraw(c,t){
+    c.beginPath();c.moveTo(GLX+GR,GY);c.lineTo(GRX-GR,GY);c.stroke();
+    const chg=gSp(t,0,GCHG);gRing(c,GLX,GY,GR*(1+0.16*Math.sin(gS(chg)*Math.PI)),0.85);
+    const em=gSp(t,GCHG-0.02,GCHG+0.12);if(em>0&&em<1)gRing(c,GLX,GY,gL(GR,GR+20,gS(em)),(1-gS(em))*0.75);
+    let rr=GR;if(t>=GARR-0.08&&t<GARR)rr=gL(GR,GR+7,gS(gSp(t,GARR-0.08,GARR)));else if(t>=GARR&&t<GHLD)rr=GR+7;else if(t>=GHLD)rr=gL(GR+7,GR,gS(gSp(t,GHLD,1)));
+    gRing(c,GRX,GY,rr,0.85);
+    const ack=gSp(t,GARR-0.06,GARR+0.12);if(ack>0&&ack<1)gRing(c,GRX,GY,gL(GR,GR+26,gS(ack)),(1-gS(ack))*0.6);
+    if(t>=GCHG&&t<GARR+GHOFF){const p=gSp(t,GCHG,GARR),head=gL(GLX+GR,GRX-GR,gS(gC(p))),env=gS(gSp(t,GCHG,GCHG+0.06))*(1-gS(gSp(t,GARR-0.02,GARR+GHOFF))),tl=gL(34,70,gS(gC(p*1.6)));gSeg(c,Math.max(GLX+GR,head-tl),GY,head,GY,0.42*env);gRing(c,head,GY,11,0.95*env)}
+    if(t>=GARR-0.02){const rev=gS(gSp(t,GARR-0.02,GCKD)),fi=gS(gSp(t,GARR-0.02,GARR+GHOFF)),fo=1-gS(gSp(t,GHLD,1)),br=(t>=GCKD&&t<GHLD)?0.94+0.06*Math.sin(gSp(t,GCKD,GHLD)*Math.PI*2):1;gCheck(c,GRX,GY,0.62,rev,fi*fo*br)}
+  }
+  (function(){
+    const gems=[...document.querySelectorAll('.gem')];if(!gems.length)return;
+    const SPEED=0.78,PERIOD=2.3;let start=performance.now();
+    (function loop(){const el=((performance.now()-start)/1000)/SPEED,t=(el%PERIOD)/PERIOD;
+      for(const cv of gems){const c=cv.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,cv.width,cv.height);const s=cv.width/512;c.setTransform(s,0,0,s,0,0);c.lineCap='round';c.lineJoin='round';for(const [col,w,bl] of GEM_LAYERS){c.shadowColor='#6EE7B7';c.shadowBlur=bl;c.strokeStyle=col;c.lineWidth=w;gDraw(c,t)}c.shadowBlur=0}
+      requestAnimationFrame(loop)})();
+  })();
+</script>
+</body>
+</html>

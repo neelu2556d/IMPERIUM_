@@ -1,0 +1,1175 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vitality Studio Tile · Product Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000000; --bg-el:#0a0a0a; --fg:#ffffff;
+    --mint:#6EE7B7; --mint-hover:#5dd6a6; --mint-cool:#a7f3d0; --mint-deep:#1f4d3d;
+    --mint-glow:rgba(110,231,183,.4); --mint-ink:#042a1c;
+    --amber:#F59E0B; --amber-soft:#f4c56e; --red:#EF4444;
+    --iris:#b7abe6; --gold:#e6cf8f;
+    --muted:rgba(255,255,255,.5); --muted-strong:rgba(255,255,255,.7);
+    --muted-2:rgba(255,255,255,.34); --muted-3:rgba(255,255,255,.22);
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.16);
+    --card:rgba(255,255,255,.02); --card-el:rgba(255,255,255,.04);
+    --serif:'Instrument Serif',Georgia,serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --r:18px;
+    --premium:cubic-bezier(.16,1,.3,1);
+    --spring:cubic-bezier(.34,1.56,.64,1);
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--fg);font-family:var(--sans);min-height:100vh;line-height:1.5;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;font-size:16px}
+
+  /* ---- fixed atmosphere layers ---- */
+  .atmos{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .atmos.glow{background:
+      radial-gradient(78% 40vh at 50% -6%, rgba(110,231,183,.13), transparent 70%),
+      radial-gradient(52% 42% at 100% 104%, rgba(31,77,61,.16), transparent 74%)}
+  .atmos.grain{opacity:.04;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:180px 180px}
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,.5)}
+  .motes{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .mote{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:var(--mint);
+    filter:drop-shadow(0 0 5px var(--mint));opacity:0;animation:floatUp linear infinite}
+  @keyframes floatUp{
+    0%{opacity:0;transform:translateY(0) translateX(0)}
+    12%{opacity:.5}
+    88%{opacity:.4}
+    100%{opacity:0;transform:translateY(-104vh) translateX(22px)}}
+
+  ::selection{background:rgba(110,231,183,.25);color:#fff}
+  ::-moz-selection{background:rgba(110,231,183,.25);color:#fff}
+  :focus-visible{outline:1px solid var(--mint);outline-offset:2px}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:var(--serif);font-style:italic;font-weight:400}
+  .tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:52px 26px 120px}
+  @media(max-width:640px){.wrap{padding:38px 18px 96px}}
+
+  /* ============ HERO ============ */
+  .head{margin-bottom:34px}
+  .eyebrow{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .eyebrow .num{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--mint);line-height:1}
+  .eyebrow .sep{color:var(--muted-3)}
+  .eyebrow .lbl{font-family:var(--mono);font-size:.62rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--muted-strong)}
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(2.5rem,6.4vw,4rem);
+    letter-spacing:-.005em;line-height:.98;margin-bottom:16px}
+  h1 em{color:var(--mint);font-style:italic}
+  .sub{color:var(--muted);font-size:17px;max-width:56ch}
+  .sub b{color:var(--fg);font-weight:500}
+  .concept-pill{display:inline-flex;align-items:center;gap:9px;margin-top:20px;font-family:var(--mono);font-size:.58rem;
+    font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);
+    border:1px solid rgba(110,231,183,.3);background:rgba(110,231,183,.05);border-radius:999px;padding:7px 14px}
+  .concept-pill .d{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 7px var(--mint)}
+
+  /* ============ DEVICE / DASHBOARD FRAME ============ */
+  .device-shell{position:relative;margin:8px 0 44px}
+  .device-caption{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .device-caption .k{font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--mint)}
+  .device-caption .t{font-family:var(--serif);font-style:italic;font-size:1.35rem;line-height:1}
+  .device-caption .n{font-size:12.5px;color:var(--muted);margin-left:auto}
+
+  .device{position:relative;border-radius:26px;border:1px solid var(--border-strong);overflow:hidden;
+    background:linear-gradient(168deg,rgba(10,14,12,.9),rgba(4,6,5,.94));
+    box-shadow:0 50px 120px -46px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.05)}
+  .device-bar{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.012)}
+  .device-bar .lights{display:flex;gap:7px}
+  .device-bar .lights i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.1)}
+  .device-bar .brand{display:flex;align-items:center;gap:9px;margin:0 auto}
+  .device-bar .mark{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;
+    background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.32);
+    font-family:var(--serif);font-style:italic;color:var(--mint);font-size:14px;line-height:1}
+  .device-bar .brand span{font-size:12.5px;color:var(--muted-strong);font-weight:500}
+  .device-bar .now{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--muted-2)}
+  .device-body{padding:26px 24px 28px;background:
+    radial-gradient(120% 60% at 50% -10%, rgba(110,231,183,.05), transparent 60%)}
+  @media(max-width:560px){.device-body{padding:18px 14px 20px}}
+  .device-hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .device-hd .g{font-family:var(--serif);font-style:italic;font-size:1.5rem}
+  .device-hd .sub2{font-size:12px;color:var(--muted-2)}
+
+  /* --- the dashboard grid of tiles --- */
+  .dash{display:grid;gap:14px;grid-template-columns:repeat(4,1fr);grid-auto-rows:132px}
+  @media(max-width:720px){.dash{grid-template-columns:repeat(2,1fr);grid-auto-rows:120px}}
+  .tile{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--border);
+    background:linear-gradient(165deg,rgba(16,26,22,.4),rgba(7,12,10,.3));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04);transition:transform .4s var(--premium),border-color .4s var(--premium),box-shadow .4s var(--premium)}
+  .tile .idxn{position:absolute;top:14px;left:16px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted-2)}
+  .tile .lb{position:absolute;left:16px;bottom:14px;font-family:var(--serif);font-style:italic;font-size:1.15rem}
+  .tile .arw{position:absolute;right:14px;bottom:14px;color:var(--muted-2);transition:color .3s,transform .3s}
+  .tile.dim{opacity:.42}
+  .tile.dim:hover{opacity:.7;transform:translateY(-3px);border-color:var(--border-strong)}
+  .tile.dim .art{position:absolute;inset:0;opacity:.5}
+  .tile[data-span="2"]{grid-column:span 2}
+  @media(max-width:720px){.tile[data-span="2"]{grid-column:span 2}}
+
+  /* the tile-art mini graphics (cheap idle motion) */
+  .art svg{width:100%;height:100%}
+  .art .ln{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+  .art .bar{transform-origin:bottom;animation:barB 3.2s var(--ease) infinite alternate}
+  @keyframes barB{from{transform:scaleY(.86)}to{transform:scaleY(1)}}
+  .art .rg{transform-origin:center;animation:ringB 3.6s var(--ease) infinite alternate}
+  @keyframes ringB{from{transform:scale(.96)}to{transform:scale(1.02)}}
+
+  /* --- the STUDIO tile: the storefront face --- */
+  .tile.studio{grid-column:span 2;border-color:rgba(110,231,183,.32);
+    background:linear-gradient(160deg,rgba(18,32,26,.6),rgba(8,14,11,.44));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 60px -22px var(--mint-glow);cursor:pointer}
+  .tile.studio:hover{transform:translateY(-3px);border-color:rgba(110,231,183,.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 64px -18px var(--mint-glow)}
+  .studio-face{position:relative;height:100%;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between}
+  .studio-face .top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .studio-face .kick{font-family:var(--mono);font-size:.56rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);
+    display:inline-flex;align-items:center;gap:6px}
+  .studio-face .kick .d{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 7px var(--mint);
+    animation:livePulse 2.6s ease-in-out infinite}
+  @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.45}}
+  .studio-face .chan{text-align:right;display:flex;flex-direction:column;gap:2px}
+  .studio-face .chan .nm{font-size:12.5px;font-weight:600;color:#eafff5;line-height:1.1}
+  .studio-face .chan .sub{font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;color:var(--muted-2);text-transform:uppercase}
+  .studio-face .mid{display:flex;align-items:flex-end;gap:14px}
+  .studio-face .cnt{font-family:var(--serif);font-style:italic;font-size:2.5rem;line-height:.85}
+  .studio-face .cnt small{font-size:.72rem;color:var(--muted-2);font-family:var(--sans);font-style:normal;margin-left:6px;letter-spacing:.02em}
+  .studio-face .next{border-left:1px solid var(--border);padding-left:13px;padding-bottom:2px}
+  .studio-face .next .nl{font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);margin-bottom:3px}
+  .studio-face .next .nv{font-size:12px;color:var(--muted-strong)}
+  .studio-face .next .nv .day{color:var(--amber-soft)}
+  .studio-face .spark{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+  .studio-face .spark .pips{display:flex;align-items:flex-end;gap:2px;height:14px}
+  .studio-face .spark .pips i{width:3px;border-radius:1px;background:var(--mint);opacity:.85}
+  .studio-face .spark b{color:var(--mint-cool);font-weight:500}
+  .studio-face .arw{position:absolute;right:16px;bottom:14px;color:var(--muted-2)}
+  @media(max-width:560px){.studio-face .cnt{font-size:2rem}.studio-face .next{padding-left:11px}}
+
+  .device-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .device-foot .cap{font-size:12px;color:var(--muted-2);display:flex;align-items:center;gap:8px}
+  .device-foot .cap svg{width:13px;height:13px;color:var(--mint);flex:none}
+  .device-foot .install{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.56rem;
+    font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-strong);
+    border:1px solid var(--border);border-radius:999px;padding:7px 13px}
+  .device-foot .install .d{width:5px;height:5px;border-radius:50%;background:var(--mint)}
+
+  /* ============ TABS ============ */
+  .tabwrap{position:sticky;top:0;z-index:30;margin:0 -8px 6px;padding:12px 8px 12px;
+    background:linear-gradient(180deg,#000 58%,rgba(0,0,0,.86) 82%,transparent);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{border:1px solid var(--border);background:transparent;color:var(--muted-strong);border-radius:999px;
+    padding:9px 15px;font-size:12.5px;font-family:var(--sans);cursor:pointer;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:8px;transition:all .2s var(--premium)}
+  .tab .k{font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.1em;color:var(--muted-3);transition:color .2s}
+  .tab:hover{color:#fff;border-color:var(--border-strong)}
+  .tab.on{background:var(--mint);color:var(--mint-ink);border-color:var(--mint);font-weight:600}
+  .tab.on .k{color:rgba(4,42,28,.5)}
+
+  /* ============ PANELS ============ */
+  .panel{display:none}
+  .panel.on{display:block}
+  .panel.on .rise{opacity:0;animation:rise .78s var(--premium) forwards;animation-delay:calc(var(--i,0) * 80ms + 60ms)}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+  .lead{display:flex;align-items:flex-start;gap:16px;margin:20px 0 22px}
+  .lead .idx{font-family:var(--serif);font-style:italic;font-size:2.1rem;color:var(--mint);line-height:.78;flex:none;width:42px}
+  .lead h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.85rem;line-height:1.02;margin-bottom:7px}
+  .lead p{color:var(--muted);font-size:14.5px;max-width:64ch}
+  .lead p b{color:var(--fg);font-weight:500}
+  .hl{position:relative;color:var(--mint-cool);font-weight:500;white-space:nowrap}
+  .hl::before{content:'';position:absolute;left:-3px;right:-3px;top:-1px;bottom:-1px;border-radius:6px;z-index:-1;
+    background:rgba(110,231,183,.16);transform:scaleX(0);transform-origin:left center}
+  .panel.on .hl::before{animation:sweep .7s var(--premium) .7s forwards}
+  @keyframes sweep{to{transform:scaleX(1)}}
+
+  /* the framed "screen" that holds each section's app view */
+  .screen{border:1px solid rgba(167,243,208,.12);border-radius:22px;overflow:hidden;
+    background:linear-gradient(168deg,rgba(12,18,16,.6),rgba(5,8,7,.7));
+    box-shadow:0 40px 100px -44px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04)}
+  .screen-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 20px;
+    border-bottom:1px solid var(--border);background:rgba(255,255,255,.012)}
+  .screen-bar .path{font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-strong);
+    display:flex;align-items:center;gap:8px}
+  .screen-bar .path .sl{color:var(--muted-3)}
+  .screen-bar .path b{color:var(--mint)}
+  .screen-bar .dots{display:flex;gap:6px}
+  .screen-bar .dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1)}
+  .screen-in{padding:26px 26px 28px}
+  @media(max-width:560px){.screen-in{padding:18px 16px 20px}}
+
+  /* ---- generic atoms ---- */
+  .btn{border:0;border-radius:12px;padding:11px 17px;font-size:13.5px;font-weight:600;font-family:var(--sans);cursor:pointer;
+    transition:background .18s var(--premium),transform .15s var(--premium),color .25s var(--premium),border-color .18s;
+    display:inline-flex;align-items:center;gap:8px}
+  .btn.go{background:var(--mint);color:var(--mint-ink)}
+  .btn.go:hover{background:var(--mint-cool)}
+  .btn.go:active{transform:scale(.96)}
+  .btn.ghost{background:transparent;border:1px solid var(--border-strong);color:var(--muted-strong);border-radius:999px}
+  .btn.ghost:hover{color:var(--mint);border-color:var(--mint)}
+  .btn svg{width:15px;height:15px;stroke-width:2}
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--muted-strong);border-radius:999px;
+    padding:6px 12px;font-size:12px;display:inline-flex;align-items:center;gap:7px;transition:all .18s var(--premium)}
+  .chip:hover{color:#fff;border-color:var(--border-strong)}
+  .chip.hash{border-color:rgba(110,231,183,.3);color:var(--mint);background:rgba(110,231,183,.06);font-family:var(--mono);font-size:11px}
+  .mono-lbl{font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2)}
+
+  /* ============ (a) tile close-up + install ============ */
+  .storefront{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center}
+  @media(max-width:760px){.storefront{grid-template-columns:1fr}}
+  .storefront .big-tile{max-width:360px;margin:0 auto;width:100%}
+  .anno{display:flex;flex-direction:column;gap:14px}
+  .anno .arow{display:flex;gap:13px;align-items:flex-start}
+  .anno .arow .an{font-family:var(--serif);font-style:italic;font-size:1.1rem;color:var(--mint);flex:none;width:26px;line-height:1.2}
+  .anno .arow .ab{font-size:13.5px;color:var(--muted);line-height:1.5}
+  .anno .arow .ab b{color:#eafff5;font-weight:500}
+
+  /* ============ (b) connect ============ */
+  .connect{max-width:440px;margin:6px auto;text-align:center;padding:12px 0}
+  .yt-mark{width:66px;height:46px;margin:0 auto 20px;border-radius:13px;display:grid;place-items:center;
+    border:1px solid var(--border-strong);background:rgba(255,255,255,.02);transition:all .4s var(--premium)}
+  .yt-mark svg{width:30px;height:22px}
+  .connect.done .yt-mark{border-color:rgba(110,231,183,.4);background:rgba(110,231,183,.08)}
+  .connect h3{font-family:var(--serif);font-style:italic;font-size:1.5rem;margin-bottom:8px}
+  .connect .cp{color:var(--muted);font-size:13.5px;margin-bottom:20px}
+  .state-post{display:none}
+  .connect.done .state-pre{display:none}
+  .connect.done .state-post{display:block;animation:rise .6s var(--premium) both}
+  .connected-badge{display:inline-flex;align-items:center;gap:11px;border:1px solid rgba(110,231,183,.3);
+    background:rgba(110,231,183,.06);border-radius:14px;padding:12px 18px;margin-bottom:16px}
+  .connected-badge .av{width:36px;height:36px;border-radius:50%;flex:none;
+    background:linear-gradient(150deg,var(--mint),var(--mint-deep));display:grid;place-items:center;
+    font-family:var(--serif);font-style:italic;color:var(--mint-ink);font-size:17px}
+  .connected-badge .who{text-align:left}
+  .connected-badge .who .n{font-size:14px;font-weight:600}
+  .connected-badge .who .s{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .connected-badge .who .s .d{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 6px var(--mint)}
+  .poll{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;color:var(--muted-2);min-height:16px;margin-top:12px}
+  .keyline{margin-top:20px;font-size:12px;color:var(--muted-2);line-height:1.6;display:flex;gap:9px;align-items:flex-start;justify-content:center;text-align:left;max-width:360px;margin-left:auto;margin-right:auto}
+  .keyline svg{width:15px;height:15px;color:var(--mint);flex:none;margin-top:1px;stroke-width:1.9}
+  .keyline b{color:#eafff5;font-weight:500}
+
+  /* ============ (c) video list ============ */
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .seg{display:inline-flex;gap:3px;border:1px solid var(--border);border-radius:999px;padding:3px}
+  .seg button{border:0;background:transparent;color:var(--muted-strong);border-radius:999px;padding:7px 13px;font-size:12px;
+    font-family:var(--sans);cursor:pointer;transition:all .18s var(--premium);display:inline-flex;align-items:center;gap:6px}
+  .seg button .c{font-variant-numeric:tabular-nums;color:var(--muted-2);font-size:11px}
+  .seg button.on{background:var(--card-el);color:#fff}
+  .seg button.on .c{color:var(--muted)}
+  .vlist{display:flex;flex-direction:column;gap:10px}
+  .vrow{display:grid;grid-template-columns:110px 1fr auto;gap:16px;align-items:center;padding:12px;border:1px solid var(--border);
+    border-radius:14px;background:var(--card);cursor:pointer;transition:transform .3s var(--premium),border-color .3s var(--premium),box-shadow .3s var(--premium)}
+  .vrow:hover{border-color:rgba(110,231,183,.3);transform:translateY(-3px);box-shadow:0 24px 46px -30px var(--mint-glow)}
+  .thumb{width:110px;height:62px;border-radius:9px;overflow:hidden;position:relative;flex:none;
+    background:radial-gradient(120% 120% at 32% 22%,rgba(16,42,33,.9),rgba(5,9,8,.7));border:1px solid var(--border)}
+  .thumb .tw{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-style:italic;
+    font-size:14px;color:var(--mint-cool);text-align:center;padding:5px;line-height:1.02}
+  .thumb.ph .tw{color:var(--muted-2);font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase}
+  .vmeta .vt{font-size:14.5px;font-weight:500;margin-bottom:5px;line-height:1.25}
+  .vmeta .vs{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--muted-2);flex-wrap:wrap}
+  .vmeta .vs .sep{opacity:.4}
+  .vmeta .vs .tnum{color:var(--muted)}
+  .status{font-family:var(--mono);font-size:.54rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;border:1px solid var(--border)}
+  .status .d{width:5px;height:5px;border-radius:50%}
+  .status.draft{color:var(--muted-strong)}.status.draft .d{background:var(--muted-2)}
+  .status.sched{color:var(--amber-soft);border-color:rgba(244,197,110,.28)}.status.sched .d{background:var(--amber-soft)}
+  .status.pub{color:var(--mint);border-color:rgba(110,231,183,.3)}.status.pub .d{background:var(--mint);box-shadow:0 0 6px var(--mint)}
+  .vright{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .vright .stat{font-size:11.5px;color:var(--muted)}
+  @media(max-width:600px){.vrow{grid-template-columns:88px 1fr}.vright{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between}.thumb{width:88px;height:50px}}
+
+  /* ============ (d) card detail ============ */
+  .detail{display:grid;grid-template-columns:1.25fr 1fr;gap:22px}
+  @media(max-width:820px){.detail{grid-template-columns:1fr}}
+  .field{margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  .fl{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:10px}
+  .fname{font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-strong)}
+  .fedit{font-size:11px;color:var(--mint);cursor:pointer;opacity:.85;font-family:var(--mono);letter-spacing:.04em}
+  .fedit:hover{opacity:1}
+  .fval{border:1px solid var(--border);background:rgba(255,255,255,.015);border-radius:12px;padding:12px 14px;font-size:13.5px;color:#eafff5}
+  .fval.title{font-size:16px;font-weight:500;line-height:1.32}
+  .fval.alt{margin-top:8px;font-size:13px;color:var(--muted);font-weight:400}
+  .fval.alt .altk{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin-right:8px}
+  .fval.desc{white-space:pre-wrap;color:var(--muted);font-size:12.5px;line-height:1.62;max-height:180px;overflow:auto}
+  .fval.script{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.7;white-space:pre-wrap;max-height:186px;overflow:auto}
+  .det-thumb{aspect-ratio:16/9;border-radius:14px;overflow:hidden;position:relative;margin-bottom:8px;
+    background:radial-gradient(120% 120% at 32% 22%,rgba(16,42,33,.9),rgba(5,9,8,.7));border:1px solid var(--border)}
+  .det-thumb .tw{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-style:italic;
+    font-size:26px;color:var(--mint-cool);text-align:center;padding:16px;line-height:1.04}
+  .det-thumb .slot{position:absolute;left:11px;bottom:11px;font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted-2);background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:6px;padding:3px 7px}
+  .thumb-prompt{border:1px solid rgba(110,231,183,.2);background:rgba(110,231,183,.04);border-radius:11px;padding:11px 13px;margin-bottom:18px}
+  .thumb-prompt .tph{font-family:var(--mono);font-size:.54rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--mint);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .thumb-prompt .tph svg{width:12px;height:12px;stroke-width:2.2}
+  .thumb-prompt .tpb{font-size:12px;color:var(--muted);line-height:1.55}
+  .kv{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .kv .r{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:rgba(255,255,255,.012)}
+  .kv .r .k{font-size:12px;color:var(--muted)}
+  .kv .r .v{font-size:12.5px;color:#fff}
+  .kv .r .v.link{color:var(--mint);font-family:var(--mono);font-size:11px}
+  .kv .r .v.amb{color:var(--amber-soft)}
+  .chapters{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .chapters .cr{display:flex;gap:12px;padding:8px 14px;font-size:12px;border-bottom:1px solid var(--border)}
+  .chapters .cr:last-child{border-bottom:0}
+  .chapters .cr .ts{font-family:var(--mono);font-size:11px;color:var(--mint);flex:none;width:48px}
+  .chapters .cr .ct{color:var(--muted-strong)}
+
+  /* ============ (e) make a script ============ */
+  .drop-zone{border:1.5px dashed rgba(110,231,183,.28);border-radius:16px;padding:28px;text-align:center;
+    background:rgba(110,231,183,.03);transition:all .2s var(--premium);cursor:pointer}
+  .drop-zone:hover{border-color:rgba(110,231,183,.5);background:rgba(110,231,183,.06)}
+  .drop-zone.drag{border-color:var(--mint);background:rgba(110,231,183,.09)}
+  .drop-zone .di{width:48px;height:48px;margin:0 auto 12px;border-radius:13px;display:grid;place-items:center;
+    border:1px solid var(--border-strong);background:rgba(255,255,255,.02);color:var(--mint)}
+  .drop-zone .di svg{width:22px;height:22px;stroke-width:1.7}
+  .drop-zone h4{font-family:var(--serif);font-style:italic;font-size:1.25rem;margin-bottom:6px}
+  .drop-zone .dp{color:var(--muted);font-size:12.5px}
+  .or{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted-2);font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase}
+  .or::before,.or::after{content:'';flex:1;height:1px;background:var(--border)}
+  .paste textarea{width:100%;min-height:96px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:#fff;border-radius:12px;
+    padding:13px 14px;font-size:13px;font-family:var(--sans);resize:vertical;line-height:1.5}
+  .paste textarea:focus{outline:none;border-color:rgba(110,231,183,.4)}
+  .paste textarea::placeholder{color:var(--muted-3)}
+  .paste-row{display:flex;justify-content:flex-end;margin-top:10px}
+  .coming-link{margin-top:16px;border:1px solid var(--border);border-radius:12px;padding:12px 14px;
+    display:flex;align-items:center;gap:12px;background:var(--card)}
+  .coming-link .cli{width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;
+    border:1px solid var(--border);color:var(--muted-strong)}
+  .coming-link .cli svg{width:17px;height:17px;stroke-width:1.8}
+  .coming-link .clt{flex:1}
+  .coming-link .clt .clh{font-size:13px;font-weight:500;color:var(--muted-strong)}
+  .coming-link .clt .clp{font-size:11.5px;color:var(--muted-2);margin-top:2px}
+  .soon{font-family:var(--mono);font-size:.5rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--amber-soft);border:1px solid rgba(244,197,110,.3);border-radius:999px;padding:4px 9px;flex:none}
+
+  .working{display:none;text-align:center;padding:26px 0}
+  .working.on{display:block;animation:rise .4s var(--premium) both}
+  .working .bar{height:3px;width:100%;max-width:300px;margin:0 auto 15px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+  .working .bar i{display:block;height:100%;width:40%;border-radius:99px;background:var(--mint);
+    animation:sweepbar 1.1s var(--ease) infinite;box-shadow:0 0 12px var(--mint)}
+  @keyframes sweepbar{0%{transform:translateX(-120%)}100%{transform:translateX(320%)}}
+  .working .w-step{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;color:var(--muted-strong)}
+
+  .result{display:none}
+  .result.on{display:block;animation:rise .5s var(--premium) both}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+  @media(max-width:720px){.result-grid{grid-template-columns:1fr}}
+  .out-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)}
+  .out-card .oh{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.014)}
+  .out-card .oh .nm{font-family:var(--mono);font-size:.56rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-strong)}
+  .out-card .oh .file{font-family:var(--mono);font-size:.58rem;color:var(--mint);display:inline-flex;align-items:center;gap:6px}
+  .out-card .ob{padding:14px;font-size:12.5px;color:var(--muted);line-height:1.62;white-space:pre-wrap;max-height:220px;overflow:auto}
+  .out-card .ob.mono{font-family:var(--mono);font-size:11px;line-height:1.7}
+  .badge-auto{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.54rem;font-weight:500;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--mint-ink);background:var(--mint);border-radius:999px;padding:4px 10px}
+
+  /* ============ (f) link library ============ */
+  .liblist{display:flex;flex-direction:column;gap:9px}
+  .librow{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:12px 14px;
+    border:1px solid var(--border);border-radius:12px;background:var(--card);transition:border-color .2s}
+  .librow:hover{border-color:var(--border-strong)}
+  .kind{font-family:var(--mono);font-size:.54rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:6px;border:1px solid var(--border);color:var(--muted-strong)}
+  .kind.aff{color:var(--amber-soft);border-color:rgba(244,197,110,.28)}
+  .kind.soc{color:var(--mint);border-color:rgba(110,231,183,.28)}
+  .librow .llabel{font-size:13.5px;font-weight:500}
+  .librow .lurl{font-family:var(--mono);font-size:11px;color:var(--muted-2);margin-top:2px}
+  .librow .def{font-family:var(--mono);font-size:.52rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
+  .ins{border:1px solid var(--border-strong);background:transparent;color:var(--muted-strong);border-radius:9px;
+    padding:6px 12px;font-size:11.5px;font-family:var(--sans);cursor:pointer;transition:all .18s var(--premium);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .ins:hover{color:var(--mint);border-color:var(--mint)}
+  .ins.inserted{color:var(--mint);border-color:rgba(110,231,183,.45);background:transparent;cursor:default}
+  .ins svg{width:12px;height:12px;stroke-width:2.3}
+  @media(max-width:620px){.librow{grid-template-columns:auto 1fr;row-gap:9px}.librow .def,.librow .ins{grid-column:2;justify-self:start}}
+  .std-block{margin-top:18px;border:1px solid rgba(110,231,183,.2);border-radius:14px;overflow:hidden}
+  .std-block .sh{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:rgba(110,231,183,.05);border-bottom:1px solid var(--border)}
+  .std-block .sh .nm{font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
+  .std-block .sb{padding:14px;font-size:12.5px;color:var(--muted);line-height:1.72;white-space:pre-wrap}
+  .std-block .sb b{color:var(--muted-strong);font-weight:500}
+  .ftc{margin-top:12px;font-size:11.5px;color:var(--muted-2);border-left:2px solid rgba(244,197,110,.4);padding-left:13px;line-height:1.62}
+  .ftc b{color:var(--amber-soft);font-weight:500}
+
+  /* ============ (g) stats read ============ */
+  .statread{text-align:center;padding:6px 0 4px}
+  .statread .big{font-family:var(--serif);font-style:italic;font-size:clamp(1.55rem,4vw,2.3rem);line-height:1.24;max-width:26ch;margin:0 auto 24px}
+  .statread .big b{color:var(--mint);font-weight:400}
+  .statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px}
+  @media(max-width:600px){.statgrid{grid-template-columns:repeat(2,1fr)}}
+  .statcell{border:1px solid var(--border);border-radius:14px;padding:16px 12px;background:var(--card);text-align:center}
+  .statcell .n{font-family:var(--serif);font-style:italic;font-size:1.75rem;line-height:1}
+  .statcell .n.mint{color:var(--mint)}
+  .statcell .l{font-family:var(--mono);font-size:.54rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin-top:9px}
+  .statcell .trend{font-size:11px;color:var(--mint);margin-top:6px;display:inline-flex;align-items:center;gap:4px}
+  .statcell .trend svg{width:10px;height:10px;stroke-width:2.4}
+  .vee-line{margin-top:22px;display:flex;align-items:center;gap:12px;justify-content:flex-start;
+    border:1px solid rgba(110,231,183,.2);background:rgba(110,231,183,.04);border-radius:14px;padding:14px 18px;max-width:540px;margin-left:auto;margin-right:auto;text-align:left}
+  .vee-line .av{width:32px;height:32px;border-radius:50%;flex:none;background:linear-gradient(150deg,var(--mint),var(--mint-deep));
+    display:grid;place-items:center;font-family:var(--serif);font-style:italic;color:var(--mint-ink);font-size:15px}
+  .vee-line .msg{font-size:12.5px;color:var(--muted);line-height:1.55}
+  .vee-line .msg b{color:var(--mint-cool);font-weight:500}
+  .report-line{font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;color:var(--muted-2);margin-top:20px;text-align:center}
+  .report-line b{color:var(--mint)}
+
+  /* ============ (h) coming ============ */
+  .coming-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.coming-grid{grid-template-columns:1fr}}
+  .cvcard{border:1px solid var(--border);border-radius:16px;padding:20px;background:var(--card);position:relative;overflow:hidden;transition:border-color .3s var(--premium),transform .3s var(--premium)}
+  .cvcard:hover{border-color:rgba(110,231,183,.24);transform:translateY(-3px)}
+  .cvcard .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .cvcard .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    border:1px solid rgba(110,231,183,.24);background:rgba(110,231,183,.06);color:var(--mint)}
+  .cvcard .ic svg{width:19px;height:19px;stroke-width:1.8}
+  .cvcard .soon2{font-family:var(--mono);font-size:.5rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);border:1px solid var(--border);border-radius:999px;padding:4px 9px}
+  .cvcard h4{font-family:var(--serif);font-style:italic;font-size:1.35rem;margin-bottom:8px;line-height:1.05}
+  .cvcard p{font-size:13px;color:var(--muted);line-height:1.55}
+  .cvcard p b{color:var(--mint-cool);font-weight:500}
+
+  /* ============ footer scope ============ */
+  .scope{margin-top:46px;border:1px solid var(--border);border-radius:20px;padding:26px 26px;background:var(--card)}
+  .scope .sh{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  .scope .sh .si{font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--mint)}
+  .scope .sh h3{font-family:var(--serif);font-style:italic;font-size:1.4rem}
+  .scope .sh .ss{font-size:12px;color:var(--muted);margin-left:auto;max-width:280px;text-align:right}
+  .scope ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .scope li{display:flex;gap:14px;font-size:13px;color:var(--muted);line-height:1.55}
+  .scope li .tag{font-family:var(--mono);font-size:.56rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;flex:none;width:44px;padding-top:2px}
+  .scope li .tag.v1{color:var(--mint)}
+  .scope li .tag.v11{color:var(--muted-strong)}
+  .scope li .tag.ship{color:var(--amber-soft)}
+  .scope li b{color:#eafff5;font-weight:500}
+
+  .foot{margin-top:38px;text-align:center;font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-3)}
+  .foot .d{color:var(--mint)}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+    .panel.on .rise{opacity:1 !important;transform:none !important}
+    .panel.on .hl::before{transform:scaleX(1) !important}
+    .mote{display:none}
+  }
+</style>
+
+<div class="atmos glow"></div>
+<div class="atmos grain"></div>
+<div class="stars" id="stars"></div>
+<div class="motes" id="motes"></div>
+
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="head">
+    <div class="eyebrow">
+      <span class="num">08</span><span class="sep">·</span>
+      <span class="lbl">Vitality · Arts District · Concept B</span>
+    </div>
+    <h1>The <em>Studio</em> tile</h1>
+    <p class="sub">One tile that turns a finished video into a <b>ready-to-upload package</b>. It lives on your dashboard, reads your channel, and writes the title, description, tags and chapters for you. Every field stays yours to edit. This is the product tour.</p>
+    <div class="concept-pill"><span class="d"></span>Concept · click the tabs · not production code</div>
+  </header>
+
+  <!-- ============ DEVICE FRAME: the tile on a dashboard ============ -->
+  <section class="device-shell">
+    <div class="device-caption">
+      <span class="k">The storefront</span>
+      <span class="t">A tile on your dashboard</span>
+      <span class="n">Small face · glanceable · opens the full Studio</span>
+    </div>
+    <div class="device">
+      <div class="device-bar">
+        <span class="lights"><i></i><i></i><i></i></span>
+        <span class="brand"><span class="mark">V</span><span>Vitality</span></span>
+        <span class="now tnum">09:41</span>
+      </div>
+      <div class="device-body">
+        <div class="device-hd">
+          <span class="g">Good morning, Sam</span>
+          <span class="sub2">Thursday · 6 tiles</span>
+        </div>
+        <div class="dash">
+          <!-- other tiles, dimmed -->
+          <div class="tile dim">
+            <span class="idxn">01</span>
+            <div class="art" style="color:var(--mint)"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><g class="bar"><rect x="20" y="52" width="10" height="30" rx="2" fill="currentColor" opacity=".5"/><rect x="38" y="38" width="10" height="44" rx="2" fill="currentColor" opacity=".7"/><rect x="56" y="26" width="10" height="56" rx="2" fill="currentColor"/><rect x="74" y="44" width="10" height="38" rx="2" fill="currentColor" opacity=".6"/></g></svg></div>
+            <span class="lb">Train</span><span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+          </div>
+          <div class="tile dim">
+            <span class="idxn">02</span>
+            <div class="art" style="color:var(--mint)"><svg viewBox="0 0 100 100"><g class="rg"><circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="4" opacity=".28"/><circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="70" transform="rotate(-90 50 50)"/></g></svg></div>
+            <span class="lb">Fuel</span><span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+          </div>
+
+          <!-- THE STUDIO TILE (storefront face) -->
+          <div class="tile studio" id="storeTile" role="button" tabindex="0" aria-label="Open Studio">
+            <div class="studio-face">
+              <div class="top">
+                <span class="kick"><span class="d"></span>Studio</span>
+                <span class="chan"><span class="nm">example</span><span class="sub">connected</span></span>
+              </div>
+              <div class="mid">
+                <span class="cnt tnum">6<small>in&nbsp;flight</small></span>
+                <span class="next">
+                  <span class="nl">Next up</span>
+                  <span class="nv">Deload week <span class="day">· Fri 6pm</span></span>
+                </span>
+              </div>
+              <div class="spark">
+                <span class="pips"><i style="height:5px"></i><i style="height:8px"></i><i style="height:6px"></i><i style="height:11px"></i><i style="height:14px"></i></span>
+                <span><b>11.3k</b> views this week</span>
+              </div>
+              <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+            </div>
+          </div>
+
+          <div class="tile dim">
+            <span class="idxn">03</span>
+            <div class="art" style="color:var(--mint)"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="ln" d="M12 68 Q30 60 42 44 T72 30 88 22"/></svg></div>
+            <span class="lb">Peak</span><span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+          </div>
+          <div class="tile dim">
+            <span class="idxn">04</span>
+            <div class="art" style="color:var(--iris)"><svg viewBox="0 0 100 100"><g class="rg"><circle cx="50" cy="50" r="24" fill="none" stroke="currentColor" stroke-width="3" opacity=".3"/><circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="3" opacity=".18"/><circle cx="50" cy="50" r="4" fill="currentColor"/></g></svg></div>
+            <span class="lb">Vitals</span><span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+          </div>
+          <div class="tile dim">
+            <span class="idxn">05</span>
+            <div class="art" style="color:var(--gold)"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="ln" d="M12 60 Q28 40 44 52 T76 44 88 56" style="opacity:.5"/></svg></div>
+            <span class="lb">Mind</span><span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+          </div>
+        </div>
+        <div class="device-foot">
+          <span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><path d="m6.3 6.3 2.1 2.1M15.6 15.6l2.1 2.1M17.7 6.3l-2.1 2.1M8.4 15.6l-2.1 2.1"/></svg>The lit tile is Studio · connected channel, next scheduled video, a spark stat</span>
+          <span class="install"><span class="d"></span>Installed from Arts District</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TABS ============ -->
+  <div class="tabwrap">
+    <div class="tabs" id="tabs" role="tablist">
+      <button class="tab on" data-p="tile" role="tab"><span class="k">a</span>Tile close-up</button>
+      <button class="tab" data-p="connect" role="tab"><span class="k">b</span>Connect</button>
+      <button class="tab" data-p="videos" role="tab"><span class="k">c</span>Videos</button>
+      <button class="tab" data-p="card" role="tab"><span class="k">d</span>Video card</button>
+      <button class="tab" data-p="make" role="tab"><span class="k">e</span>Make a script</button>
+      <button class="tab" data-p="links" role="tab"><span class="k">f</span>Links</button>
+      <button class="tab" data-p="stats" role="tab"><span class="k">g</span>Stats</button>
+      <button class="tab" data-p="coming" role="tab"><span class="k">h</span>Coming</button>
+    </div>
+  </div>
+
+  <!-- ============ (a) TILE CLOSE-UP ============ -->
+  <section class="panel on" data-panel="tile" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">a</div>
+      <div>
+        <h2>The tile, up close</h2>
+        <p>A calm face that reads at a glance: the <b>connected channel</b>, the <b>next scheduled video</b>, and one <b>spark stat</b>. Nothing more. <span class="hl">This is the thumbnail you install from the Arts District.</span></p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>tile</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div class="storefront">
+          <div class="big-tile">
+            <div class="tile studio" style="height:150px">
+              <div class="studio-face">
+                <div class="top">
+                  <span class="kick"><span class="d"></span>Studio</span>
+                  <span class="chan"><span class="nm">example</span><span class="sub">connected</span></span>
+                </div>
+                <div class="mid">
+                  <span class="cnt tnum">6<small>in&nbsp;flight</small></span>
+                  <span class="next">
+                    <span class="nl">Next up</span>
+                    <span class="nv">Deload week <span class="day">· Fri 6pm</span></span>
+                  </span>
+                </div>
+                <div class="spark">
+                  <span class="pips"><i style="height:5px"></i><i style="height:8px"></i><i style="height:6px"></i><i style="height:11px"></i><i style="height:14px"></i></span>
+                  <span><b>11.3k</b> views this week</span>
+                </div>
+                <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+              </div>
+            </div>
+          </div>
+          <div class="anno">
+            <div class="arow"><span class="an">1</span><span class="ab"><b>Connected channel.</b> Top-right, quiet. The live dot says the stats stream is warm.</span></div>
+            <div class="arow"><span class="an">2</span><span class="ab"><b>Six in flight.</b> A serif figure, tabular. Drafts, scheduled and published, counted as one.</span></div>
+            <div class="arow"><span class="an">3</span><span class="ab"><b>Next up.</b> The soonest scheduled video and its slot, so the tile always answers "what is going out next".</span></div>
+            <div class="arow"><span class="an">4</span><span class="ab"><b>One spark stat.</b> A five-bar sparkline and this week's views. One number, not a chart.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (b) CONNECT ============ -->
+  <section class="panel" data-panel="connect" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">b</div>
+      <div>
+        <h2>Connect YouTube in one click</h2>
+        <p>The button opens the <b>connector you already ship</b>, polls for the result, and flips to a live "Connected as" state. <span class="hl">Confirmed goes ghost-mint, never a new green.</span></p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>channel</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div class="connect" id="connect">
+          <div class="yt-mark">
+            <svg viewBox="0 0 28 20" fill="none"><rect x="1" y="1" width="26" height="18" rx="5" stroke="currentColor" stroke-width="1.4" style="color:rgba(255,255,255,.4)"/><path d="M11.5 6.5 L17.5 10 L11.5 13.5 Z" fill="var(--mint)"/></svg>
+          </div>
+          <div class="state-pre">
+            <h3>Connect your channel</h3>
+            <p class="cp">Read your video stats. We never post for you.</p>
+            <button class="btn go" id="connectBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Connect YouTube
+            </button>
+            <div class="poll tnum" id="pollLine"></div>
+          </div>
+          <div class="state-post">
+            <div class="connected-badge">
+              <div class="av">R</div>
+              <div class="who">
+                <div class="n">example</div>
+                <div class="s"><span class="d"></span>Connected · reading stats</div>
+              </div>
+            </div>
+            <div><button class="btn ghost" id="disconnectBtn">Disconnect</button></div>
+          </div>
+          <div class="keyline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <span>Your key never lives in the tile. <b>Vitality holds it</b>, server-side, and the tile only reads the numbers it hands back.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (c) VIDEOS ============ -->
+  <section class="panel" data-panel="videos" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">c</div>
+      <div>
+        <h2>The video wall</h2>
+        <p>Drafts, scheduled and published in one clean stream. Each is a <span class="hl">card you can open</span>, with a status chip and one small stat. Mixed states, no folders.</p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>videos</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div class="toolbar">
+          <div class="seg" id="seg">
+            <button class="on">All <span class="c">6</span></button>
+            <button>Drafts <span class="c">3</span></button>
+            <button>Scheduled <span class="c">1</span></button>
+            <button>Live <span class="c">2</span></button>
+          </div>
+          <button class="btn go">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            New video
+          </button>
+        </div>
+        <div class="vlist" id="vlist">
+          <div class="vrow" data-open>
+            <div class="thumb"><div class="tw">Built a workout logger in Claude</div></div>
+            <div class="vmeta">
+              <div class="vt">EP3 · The workout logger, from zero</div>
+              <div class="vs"><span class="tnum">12:04</span><span class="sep">·</span><span>Published Jun 28</span><span class="sep">·</span><span>4 tags</span></div>
+            </div>
+            <div class="vright"><span class="status pub"><span class="d"></span>Published</span><span class="stat tnum">8,240 views</span></div>
+          </div>
+          <div class="vrow" data-open>
+            <div class="thumb"><div class="tw">Deload week, explained</div></div>
+            <div class="vmeta">
+              <div class="vt">EP4 · Why a deload week makes you stronger</div>
+              <div class="vs"><span class="tnum">09:31</span><span class="sep">·</span><span>Scheduled Fri 6pm</span><span class="sep">·</span><span>packaged</span></div>
+            </div>
+            <div class="vright"><span class="status sched"><span class="d"></span>Scheduled</span><span class="stat">goes live Fri</span></div>
+          </div>
+          <div class="vrow" data-open>
+            <div class="thumb ph"><div class="tw">no thumb yet</div></div>
+            <div class="vmeta">
+              <div class="vt">Fuel · the macro tile walkthrough</div>
+              <div class="vs"><span>draft</span><span class="sep">·</span><span>script imported</span><span class="sep">·</span><span>auto-packaged</span></div>
+            </div>
+            <div class="vright"><span class="status draft"><span class="d"></span>Draft</span><span class="stat">ready to schedule</span></div>
+          </div>
+          <div class="vrow" data-open>
+            <div class="thumb ph"><div class="tw">no thumb yet</div></div>
+            <div class="vmeta">
+              <div class="vt">Untitled · pasted script</div>
+              <div class="vs"><span>draft</span><span class="sep">·</span><span>needs a title</span></div>
+            </div>
+            <div class="vright"><span class="status draft"><span class="d"></span>Draft</span><span class="stat">not scheduled</span></div>
+          </div>
+          <div class="vrow" data-open>
+            <div class="thumb"><div class="tw">Connect your band in 60s</div></div>
+            <div class="vmeta">
+              <div class="vt">EP2 · Wearables, the easy way</div>
+              <div class="vs"><span class="tnum">07:18</span><span class="sep">·</span><span>Published Jun 14</span></div>
+            </div>
+            <div class="vright"><span class="status pub"><span class="d"></span>Published</span><span class="stat tnum">3,110 views</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (d) VIDEO CARD ============ -->
+  <section class="panel" data-panel="card" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">d</div>
+      <div>
+        <h2>One video, every field in one place</h2>
+        <p>Script, titles, description, tags, chapters, thumbnail and stats. <span class="hl">Type any field by hand, or let the auto step fill it.</span> The card is fully usable before any model runs.</p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>EP3 · workout logger</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div class="detail">
+          <div class="det-left">
+            <div class="field">
+              <div class="fl"><span class="fname">Title · picked</span><span class="fedit">edit</span></div>
+              <div class="fval title">EP3 · I built a workout logger from zero, no fitness app</div>
+              <div class="fval alt"><span class="altk">Alt</span>The workout app I stopped paying for (I built my own)</div>
+            </div>
+            <div class="field">
+              <div class="fl"><span class="fname">Script · script.txt</span><span class="fedit">edit</span></div>
+              <div class="fval script">[00:00] So you finished a workout, and you want to
+log it, but every app wants your email and
+twelve dollars a month. Today we build our own.
+
+[00:42] Open Claude, paste this one prompt, and
+you get a logger that lives in a single file.
+
+[02:15] Here is the split picker. It reads how
+many days you train and builds the week for you.</div>
+            </div>
+            <div class="field">
+              <div class="fl"><span class="fname">Description</span><span class="fedit">edit</span></div>
+              <div class="fval desc">I built a full workout logger in one file. No login, no subscription. In this one I walk through the exact prompt, the split picker, and how the week rebuilds itself.
+
+Get the logger free · link below.
+Some links are affiliate links.</div>
+            </div>
+            <div class="field">
+              <div class="fl"><span class="fname">Chapters · 6 auto</span><span class="fedit">edit</span></div>
+              <div class="chapters">
+                <div class="cr"><span class="ts tnum">00:00</span><span class="ct">The problem with fitness apps</span></div>
+                <div class="cr"><span class="ts tnum">00:42</span><span class="ct">The one prompt</span></div>
+                <div class="cr"><span class="ts tnum">02:15</span><span class="ct">The split picker</span></div>
+                <div class="cr"><span class="ts tnum">05:30</span><span class="ct">Logging a real set</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="det-right">
+            <div class="det-thumb">
+              <div class="tw">Built a workout logger in Claude</div>
+              <span class="slot">thumbnail slot · 1280 × 720</span>
+            </div>
+            <div class="thumb-prompt">
+              <div class="tph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Thumbnail prompt</div>
+              <div class="tpb">Split frame · left, a tired hand on a paywall; right, a clean single-file logger glowing mint on black. Three bold words: BUILT IT MYSELF.</div>
+            </div>
+            <div class="field">
+              <div class="fl"><span class="fname">Tags</span><span class="fedit">edit</span></div>
+              <div class="chiprow">
+                <span class="chip">workout logger</span><span class="chip">claude code</span>
+                <span class="chip">fitness app</span><span class="chip">diy</span><span class="chip">no subscription</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="fl"><span class="fname">Hashtags</span></div>
+              <div class="chiprow">
+                <span class="chip hash">#claude</span><span class="chip hash">#fitness</span><span class="chip hash">#buildinpublic</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="fl"><span class="fname">Fields</span></div>
+              <div class="kv">
+                <div class="r"><span class="k">Scheduled</span><span class="v">not set</span></div>
+                <div class="r"><span class="k">Published</span><span class="v tnum">Jun 28, 2026</span></div>
+                <div class="r"><span class="k">Video ID</span><span class="v link">yt · rTk9q2…</span></div>
+                <div class="r"><span class="k">Links used</span><span class="v tnum">3 attached</span></div>
+                <div class="r"><span class="k">Views · cached</span><span class="v tnum">8,240 · 2h ago</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (e) MAKE A SCRIPT ============ -->
+  <section class="panel" data-panel="make" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">e</div>
+      <div>
+        <h2>Make a script into a package</h2>
+        <p>Paste raw text, or drop a <b>.txt</b> or <b>.srt</b>. It cleans captions to prose <span class="hl">inside the tile</span>, then one call writes the title, description, tags and chapters. No transcription infra, no quota.</p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>make</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div id="makePre">
+          <div class="drop-zone" id="dropZone">
+            <div class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg></div>
+            <h4>Drop your captions</h4>
+            <div class="dp">.srt or .txt from CapCut, Premiere or Descript · cleaned to prose right here</div>
+          </div>
+          <div class="or">or paste the raw text</div>
+          <div class="paste">
+            <textarea id="pasteBox" placeholder="Paste your script or transcript here...">So you finished a workout, and you want to log it, but every app wants your email and twelve dollars a month. Today we build our own logger, in a single file, with one prompt...</textarea>
+            <div class="paste-row">
+              <button class="btn go" id="makeBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Auto-package
+              </button>
+            </div>
+          </div>
+          <div class="coming-link">
+            <div class="cli"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div>
+            <div class="clt">
+              <div class="clh">Transcribe straight from a video link</div>
+              <div class="clp">Paste a YouTube URL, skip the export step entirely. The vision, not v1.</div>
+            </div>
+            <span class="soon">Coming</span>
+          </div>
+        </div>
+
+        <div class="working" id="makeWorking">
+          <div class="bar"><i></i></div>
+          <div class="w-step" id="wStep">Reading captions...</div>
+        </div>
+
+        <div class="result" id="makeResult">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <span class="badge-auto"><span style="width:5px;height:5px;border-radius:50%;background:var(--mint-ink)"></span>Auto-packaged</span>
+            <span style="font-size:12.5px;color:var(--muted)">one call · no transcription · no quota</span>
+          </div>
+          <div class="result-grid">
+            <div class="out-card">
+              <div class="oh"><span class="nm">Cleaned script</span><span class="file"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l5 5v15H6z"/></svg>script.txt</span></div>
+              <div class="ob mono">So you finished a workout, and you want to log it, but every app wants your email and twelve dollars a month. Today we build our own.
+
+Open Claude, paste this one prompt, and you get a logger that lives in a single file. No login, no server.
+
+Here is the split picker. It reads how many days you train and builds the week for you.</div>
+            </div>
+            <div class="out-card">
+              <div class="oh"><span class="nm">Description · tags · chapters</span><span class="badge-auto">auto</span></div>
+              <div class="ob">I built a full workout logger in one file. No login, no subscription.
+
+Chapters
+00:00 The problem with fitness apps
+00:42 The one prompt
+02:15 The split picker
+
+Tags · workout logger, claude code, fitness app, diy
+Hashtags · #claude #fitness #buildinpublic</div>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:18px">
+            <button class="btn ghost" id="makeReset">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 018-8 8 8 0 016 2.7M20 4v4h-4"/></svg>
+              Run another
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (f) LINKS ============ -->
+  <section class="panel" data-panel="links" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">f</div>
+      <div>
+        <h2>Your links, saved once, dropped anywhere</h2>
+        <p>Affiliate links, socials, a Discord invite. One tap inserts any of them into a description. Your <span class="hl">standard footer auto-appends</span>, and the FTC disclosure lands once, automatically.</p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>links</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div class="liblist">
+          <div class="librow">
+            <span class="kind aff">affiliate</span>
+            <div><div class="llabel">Whoop band</div><div class="lurl">join.whoop.com/sam</div></div>
+            <span class="def">default</span>
+            <button class="ins">Insert</button>
+          </div>
+          <div class="librow">
+            <span class="kind">link</span>
+            <div><div class="llabel">The free logger</div><div class="lurl">localhost:3000/create</div></div>
+            <span></span>
+            <button class="ins">Insert</button>
+          </div>
+          <div class="librow">
+            <span class="kind soc">social</span>
+            <div><div class="llabel">X · @ohwisey</div><div class="lurl">x.com/ohwisey</div></div>
+            <span></span>
+            <button class="ins">Insert</button>
+          </div>
+          <div class="librow">
+            <span class="kind soc">social</span>
+            <div><div class="llabel">Inner Circle Discord</div><div class="lurl">discord.gg/vitality</div></div>
+            <span></span>
+            <button class="ins">Insert</button>
+          </div>
+        </div>
+
+        <div class="std-block">
+          <div class="sh"><span class="nm">Standard footer</span><span class="def">auto-appended</span></div>
+          <div class="sb"><b>Follow along</b>
+X · x.com/ohwisey  ·  Discord · discord.gg/vitality
+Get the free tools · localhost:3000/create</div>
+        </div>
+        <div class="ftc"><b>FTC disclosure</b>, appended once per description automatically · "Some links are affiliate links. If you buy through them I may earn a small commission, at no cost to you."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (g) STATS ============ -->
+  <section class="panel" data-panel="stats" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">g</div>
+      <div>
+        <h2>The one-sentence read</h2>
+        <p>No dashboard of graphs. One plain-English line, then the four numbers under it. This is <span class="hl">the stream that lights up Vee.</span></p>
+      </div>
+    </div>
+    <div class="screen rise" style="--i:1">
+      <div class="screen-bar">
+        <span class="path"><b>Studio</b><span class="sl">/</span>stats</span>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="screen-in">
+        <div class="statread">
+          <div class="big">You published <b>two videos</b> this week and picked up <b>11,350 views</b> · your best week yet.</div>
+          <div class="statgrid">
+            <div class="statcell"><div class="n tnum">6</div><div class="l">In flight</div></div>
+            <div class="statcell"><div class="n mint tnum">2</div><div class="l">Published · wk</div><div class="trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>up from 1</div></div>
+            <div class="statcell"><div class="n mint tnum">11.3k</div><div class="l">Views · 7d</div><div class="trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>best week</div></div>
+            <div class="statcell"><div class="n tnum">1</div><div class="l">Scheduled</div></div>
+          </div>
+          <div class="vee-line">
+            <div class="av">V</div>
+            <div class="msg"><b>Vee noticed</b> · your two hardest-work weeks were also your two biggest upload weeks. The momentum is real.</div>
+          </div>
+          <div class="report-line">reports one stream <span style="color:var(--muted-3)">→</span> <b>videos_published</b> · count · up</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ (h) COMING ============ -->
+  <section class="panel" data-panel="coming" role="tabpanel">
+    <div class="lead rise" style="--i:0">
+      <div class="idx">h</div>
+      <div>
+        <h2>Where this is going</h2>
+        <p>Clearly marked as coming, not shipped. The tile earns these once the core proves out. <span class="hl">Each one removes a manual step.</span></p>
+      </div>
+    </div>
+    <div class="coming-grid">
+      <div class="cvcard rise" style="--i:1">
+        <div class="top">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15l4-4 3 3 5-6 6 7"/><path d="M3 20h18"/></svg></span>
+          <span class="soon2">Coming</span>
+        </div>
+        <h4>Hook Doctor</h4>
+        <p>Finds the exact second viewers drop from your retention curve, then <b>rewrites that moment</b> so the next one holds.</p>
+      </div>
+      <div class="cvcard rise" style="--i:2">
+        <div class="top">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></span>
+          <span class="soon2">Coming</span>
+        </div>
+        <h4>Comment Miner</h4>
+        <p>Reads your top comments and turns the questions people keep asking into <b>next-video ideas</b>, ranked.</p>
+      </div>
+      <div class="cvcard rise" style="--i:3">
+        <div class="top">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>
+          <span class="soon2">Coming</span>
+        </div>
+        <h4>Repurpose Engine</h4>
+        <p>One long video becomes <b>a week of shorts scripts</b>, each cut around a single moment that already landed.</p>
+      </div>
+      <div class="cvcard rise" style="--i:4">
+        <div class="top">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg></span>
+          <span class="soon2">Coming</span>
+        </div>
+        <h4>Voice-lock</h4>
+        <p>Learns how you actually write, so every auto draft <b>sounds like you</b>, not like a model with a thesaurus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCOPE ============ -->
+  <div class="scope">
+    <div class="sh">
+      <span class="si">·</span>
+      <h3>What ships, in order</h3>
+      <span class="ss">Highest-confidence code first · the AI magic once the spine is solid</span>
+    </div>
+    <ul>
+      <li><span class="tag v1">v1.0</span><span><b>Link library</b> ships day one. Pure local · no key, no model, no network. Highest value per line in the whole set.</span></li>
+      <li><span class="tag v1">v1.0</span><span><b>Connect + stats</b> ride the existing YouTube connector. Fully shipped code, the single highest-confidence piece.</span></li>
+      <li><span class="tag v1">v1.0</span><span><b>Manual video cards</b>, every field typed by hand. Usable before any AI endpoint exists · stored in a proper <b>studio_videos</b> table, never the 512KB localStorage path.</span></li>
+      <li><span class="tag v11">v1.1</span><span><b>Auto-package</b> from a pasted or dropped script through one Anthropic proxy. The magic, with no transcription and no YouTube quota.</span></li>
+      <li><span class="tag v11">v1.1</span><span><b>Vitality.report</b> one stream · <b>videos_published</b> · so the tile lights up Vee.</span></li>
+      <li><span class="tag ship">ship</span><span>Registered as the <b>first Arts District featured tile</b>, installed through the existing importTile socket with its own /district page.</span></li>
+    </ul>
+  </div>
+
+  <div class="foot">Vitality <span class="d">·</span> Studio tile <span class="d">·</span> concept B</div>
+
+</div>
+
+<script>
+(function(){
+  // ---- deterministic star field ----
+  var stars=document.getElementById('stars');
+  if(stars){
+    var pts=[[6,12],[14,72],[22,30],[29,84],[37,18],[44,58],[52,8],[58,44],[64,78],[71,24],[78,62],[84,14],[90,50],[95,80],[11,46],[33,66],[48,88],[68,10],[81,38],[93,26]];
+    var frag=document.createDocumentFragment();
+    pts.forEach(function(p){var s=document.createElement('i');s.style.left=p[0]+'%';s.style.top=p[1]+'%';s.style.opacity=(0.28+((p[0]*p[1])%22)/60).toFixed(2);frag.appendChild(s);});
+    stars.appendChild(frag);
+  }
+  // ---- floating motes ----
+  var motes=document.getElementById('motes');
+  if(motes && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var mf=document.createDocumentFragment();
+    for(var i=0;i<9;i++){
+      var m=document.createElement('span');m.className='mote';
+      m.style.left=(8+i*10+(i%3)*3)+'%';
+      m.style.animationDuration=(16+i*2.4)+'s';
+      m.style.animationDelay=(-i*2.1)+'s';
+      mf.appendChild(m);
+    }
+    motes.appendChild(mf);
+  }
+
+  // ---- tabs ----
+  var tabs=document.getElementById('tabs');
+  var panels=document.querySelectorAll('.panel');
+  function activate(id){
+    tabs.querySelectorAll('.tab').forEach(function(t){var on=t.getAttribute('data-p')===id;t.classList.toggle('on',on);t.setAttribute('aria-selected',on?'true':'false');});
+    panels.forEach(function(p){
+      var on=p.getAttribute('data-panel')===id;
+      p.classList.toggle('on',on);
+      if(on){ p.querySelectorAll('.rise').forEach(function(el){el.style.animation='none';void el.offsetWidth;el.style.animation='';}); }
+    });
+  }
+  tabs.addEventListener('click',function(e){
+    var b=e.target.closest('.tab'); if(!b) return;
+    activate(b.getAttribute('data-p'));
+    var y=document.querySelector('.tabwrap').getBoundingClientRect().top+window.scrollY-6;
+    window.scrollTo({top:y,behavior:'smooth'});
+  });
+
+  // ---- storefront tile -> tile close-up ----
+  var st=document.getElementById('storeTile');
+  function goTile(){activate('tile');document.querySelector('.tabwrap').scrollIntoView({behavior:'smooth',block:'start'});}
+  st&&st.addEventListener('click',goTile);
+  st&&st.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();goTile();}});
+
+  // ---- (b) connect flow ----
+  var connect=document.getElementById('connect');
+  var poll=document.getElementById('pollLine');
+  var cbtn=document.getElementById('connectBtn');
+  var dbtn=document.getElementById('disconnectBtn');
+  var pt;
+  cbtn&&cbtn.addEventListener('click',function(){
+    var steps=['opening /api/connectors/youtube/connect ...','waiting for OAuth ...','polling /api/connectors ...','reading channel ...'];
+    var i=0; poll.textContent=steps[0]; clearInterval(pt);
+    pt=setInterval(function(){
+      i++;
+      if(i<steps.length){poll.textContent=steps[i];}
+      else{clearInterval(pt);poll.textContent='';connect.classList.add('done');}
+    },560);
+  });
+  dbtn&&dbtn.addEventListener('click',function(){connect.classList.remove('done');poll.textContent='';});
+
+  // ---- (c) filter segment (cosmetic) + open -> card ----
+  var seg=document.getElementById('seg');
+  seg&&seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;seg.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});});
+  document.querySelectorAll('.vrow[data-open]').forEach(function(r){
+    r.addEventListener('click',function(){activate('card');document.querySelector('.tabwrap').scrollIntoView({behavior:'smooth',block:'start'});});
+  });
+
+  // ---- (e) make flow ----
+  var pre=document.getElementById('makePre');
+  var working=document.getElementById('makeWorking');
+  var result=document.getElementById('makeResult');
+  var wStep=document.getElementById('wStep');
+  function runMake(){
+    pre.style.display='none'; result.classList.remove('on'); working.classList.add('on');
+    var steps=['Reading captions...','Stripping cue timestamps...','Cleaning to prose...','Writing title + description...','Generating tags + chapters...'];
+    var i=0; wStep.textContent=steps[0];
+    var t=setInterval(function(){
+      i++;
+      if(i<steps.length){wStep.textContent=steps[i];}
+      else{clearInterval(t);working.classList.remove('on');result.classList.add('on');}
+    },600);
+  }
+  var mbtn=document.getElementById('makeBtn');
+  var dz=document.getElementById('dropZone');
+  var mreset=document.getElementById('makeReset');
+  mbtn&&mbtn.addEventListener('click',runMake);
+  dz&&dz.addEventListener('click',runMake);
+  dz&&dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});
+  dz&&dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});
+  dz&&dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('drag');runMake();});
+  mreset&&mreset.addEventListener('click',function(){result.classList.remove('on');pre.style.display='';});
+
+  // ---- (f) insert -> ghost-mint confirmed, never a new green ----
+  document.querySelectorAll('.librow .ins').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(b.classList.contains('inserted'))return;
+      var o=b.innerHTML;
+      b.classList.add('inserted');
+      b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Inserted';
+      setTimeout(function(){b.classList.remove('inserted');b.innerHTML=o;},1300);
+    });
+  });
+})();
+</script>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maintenance — useful from day 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000; --fg:#fff; --mint:#6EE7B7; --mint-hover:#5dd6a6; --mint-deep:#1f4d3d;
+    --mint-glow:rgba(110,231,183,.4); --muted:rgba(255,255,255,.5); --muted-strong:rgba(255,255,255,.7);
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.16); --card:rgba(255,255,255,.02);
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;padding:44px 20px 130px;background:radial-gradient(900px 460px at 50% -10%,rgba(110,231,183,.05),transparent 62%),var(--bg)}
+  ::selection{background:rgba(110,231,183,.28);color:#fff}
+  .wrap{max-width:680px;margin:0 auto}
+
+  .kick{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.34)}
+  h1{font-family:var(--serif);font-weight:400;font-size:40px;line-height:1.04;letter-spacing:-.01em;margin:12px 0 8px}
+  h1 em{font-style:italic;color:var(--mint)}
+  .sub{color:var(--muted-strong);font-size:15px;line-height:1.55;max-width:56ch}
+  .pitch{margin-top:14px;border-left:1px solid var(--mint-deep);padding:8px 0 8px 14px;color:var(--muted-strong);font-size:14px;line-height:1.55;max-width:58ch}
+  .pitch b{color:var(--mint);font-weight:600}
+
+  .days{display:flex;flex-wrap:wrap;gap:8px;margin:30px 0 10px}
+  .days button{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;border-radius:999px;cursor:pointer;border:1px solid var(--border-strong);background:transparent;color:var(--muted-strong);transition:all .18s cubic-bezier(.16,1,.3,1)}
+  .days button:hover{border-color:var(--mint);color:var(--fg)}
+  .days button[aria-current="true"]{background:var(--mint);border-color:var(--mint);color:#05140d}
+  .dayNote{flex-basis:100%;color:var(--muted);font-size:12px;margin-top:4px}
+
+  /* tile chrome (matches the real Fuel tile) */
+  .eyebrow{display:flex;align-items:center;gap:14px;margin:24px 0 16px}
+  .eyebrowNum{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--mint);line-height:1}
+  .eyebrowLbl{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-strong)}
+  .eyebrowRule{flex:1;height:1px;background:linear-gradient(90deg,var(--border-strong),transparent)}
+  .card{border:1px solid var(--border);border-radius:18px;background:var(--card);padding:28px}
+  .tileTop{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .tileTop .ic{color:var(--mint);display:flex}
+  .tileTop .lbl{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-strong)}
+  .tileTop .gear{margin-left:auto;color:var(--muted);display:flex}
+
+  /* day-1: starting estimate hero */
+  .estLbl{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mint);margin-bottom:10px}
+  .est{display:flex;align-items:baseline;gap:10px}
+  .estNum{font-family:var(--serif);font-size:clamp(3rem,7vw,4.2rem);line-height:.82;letter-spacing:-.02em}
+  .estUnit{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .estLine{color:var(--muted-strong);font-size:14.5px;line-height:1.55;margin-top:14px;max-width:48ch}
+  .estLine b{color:var(--mint);font-weight:600}
+
+  /* filling chart */
+  .chart{margin:20px 0 4px;position:relative}
+  .chartCap{position:absolute;left:0;top:-2px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+  /* progress to first read */
+  .prog{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+  .progTop{display:flex;justify-content:space-between;align-items:baseline}
+  .progN{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-strong)}
+  .progN b{color:var(--mint)}
+  .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--border);overflow:hidden}
+  .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint-deep),var(--mint));box-shadow:0 0 14px var(--mint-glow);transition:width .5s cubic-bezier(.16,1,.3,1)}
+
+  /* first-read state (the full "see your lane") */
+  .youTag{position:absolute;right:0;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mint);background:rgba(0,0,0,.55);padding:2px 5px;border-radius:6px}
+  .readTitle{font-family:var(--serif);font-size:27px;line-height:1.12;margin-top:18px}
+  .readTitle em{font-style:italic;color:var(--mint)}
+  .readBody{color:var(--muted-strong);font-size:15px;margin-top:6px;line-height:1.5}
+  .inline{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:14px;color:var(--muted-strong)}
+  .inline b{color:var(--mint);font-weight:600}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px}
+  .primary{background:var(--mint);color:#06281d;border:none;border-radius:999px;padding:12px 20px;font:600 15px var(--sans);cursor:pointer}
+  .ghost{background:none;border:1px solid var(--border-strong);color:var(--muted-strong);border-radius:999px;padding:12px 20px;font:500 15px var(--sans);cursor:pointer}
+  .grace{background:none;border:none;color:var(--muted);font:400 13.5px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px}
+
+  .badge{margin-left:8px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);border:1px solid var(--mint-deep);border-radius:999px;padding:3px 8px}
+  .foot{margin-top:50px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);line-height:1.9}
+  .fade{animation:fade .4s cubic-bezier(.16,1,.3,1)}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick">Maintenance · useful from day 1</div>
+  <h1>No more <em>"come back in 14 days."</em></h1>
+  <p class="sub">A brand-new user gets a real number and a chart that fills in from the first weigh-in. The "wait" becomes the feature: it gets smarter every day they log. Tap through the days to watch it evolve.</p>
+  <p class="pitch">The ad writes itself: <b>most apps guess your calories once and never change. Vitality gives you a smart number on day one, then re-learns your real maintenance from your results, so it gets more accurate every week.</b></p>
+
+  <div class="days" id="days">
+    <button data-day="1" aria-current="true">Day 1</button>
+    <button data-day="5">Day 5</button>
+    <button data-day="12">Day 12</button>
+    <button data-day="16">Day 16 · first read</button>
+    <span class="dayNote">Same tile, evolving. Days 1-12 = calibrating (now useful). Day 16 = the full read unlocks.</span>
+  </div>
+
+  <div class="eyebrow"><span class="eyebrowNum">·03</span><span class="eyebrowLbl">Maintenance</span><span class="eyebrowRule"></span></div>
+  <div class="card" id="card"><!-- injected --></div>
+
+  <div class="foot">Useful day 1 · fills in as you log · gets smarter every week</div>
+</div>
+
+<script>
+const scale = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v3M5 6h14M7 6l-3 7a4 4 0 0 0 8 0L9 6M17 6l-3 7a4 4 0 0 0 8 0l-3-7M9 21h6"/></svg>';
+const gear = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H23a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>';
+const head = `<div class="tileTop"><span class="ic">${scale}</span><span class="lbl">Maintenance</span><span class="gear">${gear}</span></div>`;
+
+// a small SVG: goal lane + the user's weigh-in dots/line so far
+function chart(points, line){
+  const W=560,H=120;
+  const dots = points.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#6EE7B7"/>`).join('');
+  const path = line ? `<path d="${line}" fill="none" stroke="#6EE7B7" stroke-width="2.4" stroke-linecap="round"/>` : '';
+  return `<div class="chart"><span class="chartCap">your goal lane</span>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" height="130" preserveAspectRatio="none">
+      <defs><linearGradient id="ln" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(110,231,183,.15)"/><stop offset="1" stop-color="rgba(110,231,183,.04)"/></linearGradient></defs>
+      <path d="M0,40 L${W},58 L${W},86 L0,68 Z" fill="url(#ln)"/>
+      <line x1="0" y1="40" x2="${W}" y2="58" stroke="rgba(110,231,183,.32)" stroke-width="1" stroke-dasharray="4 6"/>
+      <line x1="0" y1="68" x2="${W}" y2="86" stroke="rgba(110,231,183,.32)" stroke-width="1" stroke-dasharray="4 6"/>
+      ${path}${dots}
+    </svg></div>`;
+}
+
+// calibrating tile that is USEFUL: starting number + filling chart + progress
+function calib({est, estTrend, weighIns, points, line, line2}){
+  const target = 10;
+  const pct = Math.min(100, Math.round(weighIns/target*100));
+  const left = Math.max(0, target - weighIns);
+  return head + `
+    <div class="estLbl">Your starting maintenance${estTrend?` · ${estTrend}`:''}</div>
+    <div class="est"><span class="estNum">~${est.toLocaleString()}</span><span class="estUnit">kcal / day</span></div>
+    <div class="estLine">${weighIns<=1
+      ? `This is my first estimate from your setup. <b>I'm already learning you</b> — weigh in each morning and I'll sharpen it.`
+      : `Getting sharper. <b>${weighIns} weigh-ins in</b>, and your line is starting to take shape.`}</div>
+    ${chart(points, line)}
+    <div class="prog">
+      <div class="progTop"><span class="progN"><b>${weighIns}</b> weigh-ins logged</span><span class="progN">${left===0?'first read ready':`first full read in ~${left} more`}</span></div>
+      <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+    </div>`;
+}
+
+// the unlocked full read (day 16)
+function read(){
+  const W=560,H=140;
+  return head + `
+    <div class="chart"><span class="chartCap">your goal lane</span>
+      <span class="youTag" style="top:64%">you · -1.4 lb/wk</span>
+      <svg viewBox="0 0 ${W} ${H}" width="100%" height="150" preserveAspectRatio="none">
+        <defs><linearGradient id="ln2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(110,231,183,.16)"/><stop offset="1" stop-color="rgba(110,231,183,.04)"/></linearGradient></defs>
+        <path d="M0,42 L${W},70 L${W},100 L0,66 Z" fill="url(#ln2)"/>
+        <line x1="0" y1="42" x2="${W}" y2="70" stroke="rgba(110,231,183,.32)" stroke-width="1" stroke-dasharray="4 6"/>
+        <line x1="0" y1="66" x2="${W}" y2="100" stroke="rgba(110,231,183,.32)" stroke-width="1" stroke-dasharray="4 6"/>
+        <path d="M0,46 C120,58 220,80 340,98 C430,112 520,120 560,124" fill="none" stroke="#6EE7B7" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="560" cy="124" r="4.4" fill="#6EE7B7"/>
+      </svg></div>
+    <div class="readTitle">A little <em>quick</em> this week.</div>
+    <div class="readBody">Your line is dipping below your lane, so let's ease up just a touch.</div>
+    <div class="inline"><span>Gym day <b>3,000 → 3,130</b></span><span>Rest day <b>2,300 → 2,430</b></span></div>
+    <div class="btns"><button class="primary">Yes, update my targets</button><button class="ghost">Keep current</button><button class="grace">Give me grace this week</button></div>`;
+}
+
+const DAYS = {
+  1:  () => calib({est:2720, estTrend:'', weighIns:1,  points:[[40,60]] }),
+  5:  () => calib({est:2690, estTrend:'sharpening', weighIns:5,  points:[[40,58],[150,60],[260,62],[370,61],[470,63]] }),
+  12: () => calib({est:2740, estTrend:'sharpening', weighIns:12, points:[[40,56],[140,60],[240,63],[340,64],[440,66],[540,67]], line:'M40,56 C140,60 240,63 340,64 C440,66 520,67 540,67' }),
+  16: () => read(),
+};
+
+const card = document.getElementById('card');
+function render(d){
+  document.querySelectorAll('#days button').forEach(b=>b.setAttribute('aria-current', b.dataset.day===String(d)));
+  card.innerHTML = DAYS[d]();
+  card.classList.remove('fade'); void card.offsetWidth; card.classList.add('fade');
+}
+document.querySelectorAll('#days button').forEach(b=>b.addEventListener('click',()=>render(Number(b.dataset.day))));
+render(1);
+</script>
+</body>
+</html>

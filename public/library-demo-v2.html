@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Library tile — Aurora Spatial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000; --bg-elevated:#0a0a0a; --sheet:#070707; --fg:#fff;
+    --mint:#6EE7B7; --mint-hover:#5dd6a6; --mint-deep:#1f4d3d; --mint-glow:rgba(110,231,183,.4); --mint-ink:#042a1c;
+    --amber:#F59E0B; --amber-warm:#d97706;
+    --muted:rgba(255,255,255,.5); --muted-strong:rgba(255,255,255,.7);
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.16);
+    --card:rgba(255,255,255,.02); --card-elevated:rgba(255,255,255,.04);
+    --gold:#cbb87e;
+    --radius-card:18px; --radius-pill:999px; --radius-lg:12px;
+    --font-inter:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --font-serif:'Instrument Serif','Times New Roman',Georgia,serif;
+    --font-mono:'JetBrains Mono',ui-monospace,monospace;
+    --ease:cubic-bezier(.2,.8,.2,1); --ease-premium:cubic-bezier(.16,1,.3,1); --ease-out-soft:cubic-bezier(.32,.72,0,1);
+    --spring:cubic-bezier(.34,1.56,.64,1); --duration:180ms; --duration-fast:120ms; --duration-lift:480ms;
+  }
+  *{box-sizing:border-box; user-select:none}
+  input,textarea,.selectable{user-select:text}
+  html,body{margin:0; height:100%}
+  body{
+    color:var(--fg);
+    font-family:var(--font-inter); -webkit-font-smoothing:antialiased; letter-spacing:-.015em;
+    overflow:hidden;
+    background:#000;
+    background-image:
+      radial-gradient(60% 50% at 50% 28%,rgba(110,231,183,.16) 0%,rgba(110,231,183,.06) 32%,rgba(110,231,183,0) 65%),
+      radial-gradient(120% 80% at 50% 100%,rgba(14,38,30,.5) 0%,rgba(4,6,10,.95) 75%);
+    background-repeat:no-repeat; background-size:100% 100%; background-attachment:fixed;
+  }
+  body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:90; opacity:.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:200px 200px}
+  ::selection{background:rgba(110,231,183,.25)} ::-moz-selection{background:rgba(110,231,183,.25)}
+
+  /* ── keyframes ─────────────────────────────────────────── */
+  @keyframes cozyPop{0%{opacity:0; transform:scale(.88)}100%{opacity:1; transform:scale(1)}}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
+  @keyframes dotIn{0%{opacity:0; transform:scale(0)}60%{opacity:1}100%{transform:scale(1)}}
+  @keyframes dotlive{0%,100%{opacity:.55}50%{opacity:1}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes auroraDrift{0%,100%{transform:translateX(-50%) translateY(0) scale(1)}50%{transform:translateX(-50%) translateY(3%) scale(1.06)}}
+
+  /* faint blurred dashboard behind ── "springs up over your dashboard" */
+  .behind{position:fixed; inset:0; padding:22px; filter:blur(7px) saturate(.65); opacity:.2; z-index:0}
+  .behind .row{display:grid; grid-template-columns:2fr 1fr 1fr; gap:16px; margin-bottom:16px}
+  .behind .row.two{grid-template-columns:1fr 1fr}
+  .behind .b{border:1px solid var(--border); border-radius:18px; background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.01)); height:120px}
+  .behind .b.tall{height:180px}
+
+  /* ── scrim + overlay panel ─────────────────────────────── */
+  .scrim{
+    position:fixed; inset:0; background:rgba(0,0,0,.56); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+    z-index:60; display:grid; place-items:start center; padding:max(26px,env(safe-area-inset-top)) 18px 26px;
+    overflow:auto;
+  }
+  .panel{
+    position:relative; width:min(1100px,100%); border:1px solid var(--border-strong);
+    background:var(--sheet); border-radius:26px; padding:0; overflow:hidden;
+    box-shadow:0 40px 120px -30px rgba(0,0,0,.92), 0 0 0 1px rgba(255,255,255,.02) inset;
+    animation:cozyPop .55s var(--spring) both;
+  }
+  /* aurora glow inside the sheet (depth) */
+  .panel::before{content:''; position:absolute; top:-34%; left:50%; width:92%; height:82%; transform:translateX(-50%);
+    background:radial-gradient(closest-side,rgba(110,231,183,.13),rgba(110,231,183,0) 72%);
+    pointer-events:none; z-index:0; animation:auroraDrift 18s var(--ease) infinite}
+
+  .panel-inner{position:relative; z-index:1; display:grid; grid-template-columns:238px 1fr}
+
+  /* ── header (spans both columns) ───────────────────────── */
+  .head{grid-column:1 / -1; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+    padding:28px 30px 22px; border-bottom:1px solid var(--border)}
+  .title{font-family:var(--font-serif); font-style:italic; font-weight:400; font-size:2.7rem; line-height:1; letter-spacing:-.01em; display:flex; align-items:center; gap:14px}
+  .title .lock{display:inline-flex; width:25px; height:25px; color:var(--mint); filter:drop-shadow(0 0 8px rgba(110,231,183,.35))}
+  .sub{margin:10px 0 0; color:var(--muted); font-size:.85rem; max-width:54ch; line-height:1.55}
+  .x{appearance:none; border:1px solid var(--border-strong); background:transparent; color:var(--fg); width:40px; height:40px; border-radius:var(--radius-pill); font-size:18px; line-height:1; cursor:pointer; flex:none; display:grid; place-items:center; transition:background var(--duration) var(--ease), border-color var(--duration) var(--ease-premium), transform var(--duration) var(--ease)}
+  .x:hover{background:var(--card-elevated); border-color:var(--border-strong); transform:rotate(90deg)}
+
+  /* ── sidebar (Finder collections) ──────────────────────── */
+  .sidebar{border-right:1px solid var(--border); padding:22px 14px 24px; display:flex; flex-direction:column; gap:22px; min-width:0}
+  .sgroup-label{font-family:var(--font-inter); text-transform:uppercase; font-size:.7rem; font-weight:600; letter-spacing:.16em; color:var(--muted); margin:0 8px 10px}
+  .snav{display:flex; flex-direction:column; gap:3px}
+  .snav-item{
+    display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:11px; cursor:pointer;
+    color:var(--muted-strong); font-size:.86rem; font-weight:500; letter-spacing:-.015em; border:1px solid transparent;
+    transition:background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease-premium);
+    opacity:0; animation:fadeUp .5s var(--ease-premium) forwards;
+  }
+  .snav-item svg{width:16px; height:16px; flex:none; opacity:.7; transition:opacity var(--duration) var(--ease)}
+  .snav-item .label{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .snav-item .cnt{font-variant-numeric:tabular-nums; font-size:.74rem; color:var(--muted); opacity:.85}
+  .snav-item:hover{background:var(--card-elevated); color:var(--fg)}
+  .snav-item:hover svg{opacity:.95}
+  .snav-item.active{background:rgba(110,231,183,.1); border-color:rgba(110,231,183,.22); color:var(--mint)}
+  .snav-item.active svg{opacity:1}
+  .snav-item.active .cnt{color:var(--mint); opacity:.9}
+
+  /* ── main column ───────────────────────────────────────── */
+  .main{display:flex; flex-direction:column; min-width:0; max-height:min(80vh,840px); overflow:auto}
+  .main::-webkit-scrollbar{width:9px} .main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08); border-radius:9px; border:2px solid transparent; background-clip:padding-box}
+  .main::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.14); background-clip:padding-box}
+
+  /* toolbar */
+  .toolbar{position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px; padding:16px 24px;
+    background:linear-gradient(180deg,rgba(7,7,7,.97),rgba(7,7,7,.84)); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid var(--border)}
+  .search{flex:1; position:relative; min-width:0}
+  .search svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--muted); pointer-events:none; transition:color var(--duration) var(--ease)}
+  .search input{
+    width:100%; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-pill);
+    color:var(--fg); font-family:inherit; font-size:.86rem; font-weight:500; letter-spacing:-.015em; padding:10px 14px 10px 38px;
+    transition:border-color var(--duration) var(--ease-premium), box-shadow var(--duration) var(--ease-premium);
+  }
+  .search input::placeholder{color:var(--muted)}
+  .search input:focus{outline:none; border-color:var(--mint); box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--mint); caret-color:var(--mint)}
+  .search input:focus + .nothing,.search:focus-within svg{color:var(--mint)}
+  .seg{display:flex; gap:3px; padding:3px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-pill); flex:none}
+  .seg button{appearance:none; border:none; background:transparent; color:var(--muted); cursor:pointer; padding:7px 14px; border-radius:var(--radius-pill); font-family:inherit; font-size:.78rem; font-weight:600; letter-spacing:-.01em; display:inline-flex; align-items:center; gap:6px; transition:background var(--duration) var(--ease), color var(--duration) var(--ease)}
+  .seg button svg{width:14px; height:14px}
+  .seg button.on{background:rgba(110,231,183,.14); color:var(--mint)}
+
+  .body{padding:18px 24px 8px}
+
+  /* upload affordance */
+  .uploadBtn{
+    margin:0 0 6px; width:100%; display:flex; align-items:center; justify-content:center; gap:9px;
+    border:1px dashed rgba(110,231,183,.4); background:rgba(110,231,183,.05); color:var(--mint);
+    font-family:inherit; font-size:.875rem; font-weight:600; letter-spacing:-.015em; padding:14px; border-radius:14px; cursor:pointer;
+    transition:background var(--duration) var(--ease), border-color var(--duration) var(--ease-premium), transform var(--duration) var(--ease);
+    opacity:0; animation:fadeUp .5s var(--ease-premium) .04s forwards;
+  }
+  .uploadBtn:hover{background:rgba(110,231,183,.1); border-color:rgba(110,231,183,.6); transform:translateY(-1px)}
+  .uploadBtn svg{width:17px; height:17px}
+
+  .paste{display:none; margin:12px 0 4px; border:1px solid var(--border); background:var(--card); border-radius:16px; padding:16px}
+  .paste.open{display:block; animation:fadeUp .3s var(--ease-premium) both}
+  .paste label{display:block; font-family:var(--font-inter); font-size:.72rem; font-weight:600; color:var(--muted); letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px}
+  .paste textarea{
+    width:100%; min-height:120px; resize:vertical; background:#040404; color:#cfeede;
+    border:1px solid var(--border); border-radius:11px; padding:13px; font-family:var(--font-mono); font-size:.78rem; line-height:1.6;
+    transition:border-color var(--duration) var(--ease-premium), box-shadow var(--duration) var(--ease-premium);
+  }
+  .paste textarea:focus{outline:none; border-color:var(--mint); box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--mint); caret-color:var(--mint)}
+  .paste .prow{display:flex; gap:10px; justify-content:flex-end; margin-top:13px}
+  .btn{font-family:inherit; font-size:.84rem; font-weight:600; letter-spacing:-.015em; border-radius:11px; padding:10px 18px; cursor:pointer; border:1px solid var(--border-strong); background:transparent; color:var(--fg); transition:transform var(--duration) var(--ease), background var(--duration) var(--ease), border-color var(--duration) var(--ease)}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.primary{background:var(--mint); color:var(--mint-ink); border-color:transparent; box-shadow:0 0 24px -8px var(--mint-glow)}
+  .btn.primary:hover{background:var(--mint-hover)}
+  .btn.ghost{color:var(--muted-strong)}
+  .btn.ghost:hover{color:var(--fg); border-color:var(--border-strong)}
+
+  /* ── focused hero strip: the selected / most-recent tile, celebratory ── */
+  .hero{
+    position:relative; border:1px solid rgba(110,231,183,.22); border-radius:var(--radius-card); overflow:hidden;
+    padding:20px 22px; margin:14px 0 24px; display:flex; align-items:center; gap:18px;
+    background:
+      radial-gradient(120% 160% at 0% 0%,rgba(110,231,183,.15),rgba(110,231,183,0) 55%),
+      linear-gradient(135deg,rgba(110,231,183,.06),rgba(255,255,255,.015));
+    box-shadow:0 0 50px -20px rgba(110,231,183,.3);
+    opacity:0; animation:cozyPop .6s var(--spring) .08s forwards;
+  }
+  .hero::after{content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(80% 120% at 100% 100%,rgba(110,231,183,.09),transparent 60%)}
+  .hero-art{position:relative; z-index:1; width:84px; height:84px; border-radius:16px; flex:none; display:grid; place-items:center; overflow:hidden;
+    background:linear-gradient(150deg,var(--g1,rgba(110,231,183,.5)),var(--g2,rgba(31,77,61,.6))); box-shadow:0 8px 30px -10px rgba(0,0,0,.6)}
+  .hero-art svg{width:38px; height:38px; color:#042a1c; opacity:.92}
+  .hero-meta{position:relative; z-index:1; flex:1; min-width:0}
+  .hero-eyebrow{font-family:var(--font-inter); text-transform:uppercase; font-size:.7rem; font-weight:600; letter-spacing:.18em; color:var(--mint); margin-bottom:7px; display:flex; align-items:center; gap:8px}
+  .hero-eyebrow .ld{width:6px; height:6px; border-radius:50%; background:var(--mint); box-shadow:0 0 10px var(--mint); animation:dotlive 2.6s var(--ease) infinite}
+  .hero-name{font-family:var(--font-serif); font-style:italic; font-weight:400; font-size:1.95rem; line-height:1; letter-spacing:-.01em}
+  .hero-row2{margin-top:9px; display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.8rem}
+  .hero-acts{position:relative; z-index:1; display:flex; align-items:center; gap:9px; flex:none}
+
+  /* ── groups + rows ─────────────────────────────────────── */
+  .group{margin-top:8px}
+  .group + .group{margin-top:26px}
+  .glabel{font-family:var(--font-inter); font-size:.72rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 2px 13px; display:flex; align-items:center; gap:9px}
+  .glabel .count{font-variant-numeric:tabular-nums; color:var(--muted); opacity:.7; font-weight:500}
+  .list{display:flex; flex-direction:column; gap:9px}
+
+  .item{
+    position:relative; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px;
+    border:1px solid var(--border); background:var(--card-elevated); border-radius:var(--radius-card); padding:13px 16px;
+    transition:transform var(--duration) var(--ease), border-color var(--duration) var(--ease-premium), box-shadow var(--duration) var(--ease-premium);
+    opacity:0; animation:fadeUp .5s var(--ease-premium) forwards;
+  }
+  .item:hover{transform:translateY(-2px); border-color:rgba(110,231,183,.28); box-shadow:0 0 44px rgba(110,231,183,.07)}
+
+  /* gradient art thumbnail */
+  .thumb{width:42px; height:42px; border-radius:12px; flex:none; display:grid; place-items:center; overflow:hidden;
+    background:linear-gradient(150deg,var(--g1,rgba(110,231,183,.45)),var(--g2,rgba(31,77,61,.55)))}
+  .thumb svg{width:20px; height:20px; color:#042a1c; opacity:.9}
+  .thumb.gold{background:linear-gradient(150deg,rgba(245,200,120,.5),rgba(120,95,40,.5))}
+  .thumb.gold svg{color:#2a1f04}
+  .thumb.locked{background:linear-gradient(150deg,rgba(255,255,255,.14),rgba(255,255,255,.04))}
+  .thumb.locked svg{color:rgba(255,255,255,.72)}
+
+  .meta{min-width:0}
+  .name{font-size:.92rem; font-weight:600; letter-spacing:-.015em; display:flex; align-items:center; gap:9px}
+  .name .dot{width:7px; height:7px; border-radius:50%; background:var(--mint); flex:none; box-shadow:0 0 8px rgba(110,231,183,.75); animation:dotlive 2.6s var(--ease) infinite}
+  .name .lockmini{display:inline-flex; width:13px; height:13px; color:var(--muted); opacity:.8}
+  .row2{margin-top:6px; display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.78rem}
+  .chip{border:1px solid var(--border); border-radius:var(--radius-pill); padding:3px 10px; font-size:.69rem; font-weight:600; letter-spacing:.02em; color:var(--muted)}
+  .chip.core{color:var(--gold); border-color:rgba(245,200,120,.28)}
+  .chip.mine{color:var(--mint); border-color:rgba(110,231,183,.3)}
+  .sep{opacity:.4}
+
+  .acts{display:flex; align-items:center; gap:7px; flex:none}
+  .a{font-family:inherit; font-size:.78rem; font-weight:600; letter-spacing:-.01em; border-radius:10px; padding:8px 13px; cursor:pointer; border:1px solid var(--border-strong); background:transparent; color:var(--fg); white-space:nowrap; transition:transform var(--duration) var(--ease), background var(--duration) var(--ease), border-color var(--duration) var(--ease), color var(--duration) var(--ease)}
+  .a:hover{transform:translateY(-1px)}
+  .a.add{background:var(--mint); color:var(--mint-ink); border-color:transparent; box-shadow:0 0 22px -8px var(--mint-glow)}
+  .a.add:hover{background:var(--mint-hover)}
+  .a.sub{color:var(--muted-strong); border-color:var(--border)}
+  .a.sub:hover{color:var(--fg); border-color:var(--border-strong)}
+  .a.del{color:var(--amber); border-color:rgba(245,158,11,.3)}
+  .a.del:hover{background:rgba(245,158,11,.08)}
+  .a.icon{width:34px; height:34px; padding:0; display:grid; place-items:center; color:var(--muted-strong); border-color:var(--border)}
+  .a.icon:hover{color:var(--fg); border-color:var(--border-strong)}
+  .a.icon svg{width:15px; height:15px}
+  .a.locked{opacity:.45; cursor:default; border-style:dashed; color:var(--muted)}
+  .a.locked:hover{transform:none}
+
+  /* ── footer ────────────────────────────────────────────── */
+  .foot{grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:18px 30px; border-top:1px solid var(--border); background:rgba(7,7,7,.6)}
+  .foot a{color:var(--mint); text-decoration:none; font-size:.85rem; font-weight:600; display:inline-flex; align-items:center; gap:7px; transition:gap var(--duration) var(--ease)}
+  .foot a svg{width:15px; height:15px}
+  .foot a:hover{gap:10px}
+  .foot .done{border:1px solid var(--border-strong); background:transparent; color:var(--fg); font-family:inherit; font-weight:600; font-size:.85rem; border-radius:11px; padding:10px 20px; cursor:pointer; transition:transform var(--duration) var(--ease), background var(--duration) var(--ease)}
+  .foot .done:hover{transform:translateY(-1px); background:var(--card-elevated)}
+
+  /* ── post-upload popup ─────────────────────────────────── */
+  .pop{position:fixed; inset:0; z-index:80; display:none; place-items:center; padding:24px; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px)}
+  .pop.open{display:grid; animation:fadeUp .25s var(--ease-premium) both}
+  .pop .card{position:relative; width:min(390px,100%); border:1px solid var(--border-strong); background:var(--sheet); border-radius:22px; padding:28px; text-align:center; overflow:hidden; animation:cozyPop .5s var(--spring) both; box-shadow:0 30px 80px -20px rgba(0,0,0,.85)}
+  .pop .card::before{content:''; position:absolute; top:-40%; left:50%; width:80%; height:80%; transform:translateX(-50%); background:radial-gradient(closest-side,rgba(110,231,183,.17),transparent 70%); pointer-events:none}
+  .pop .tick{position:relative; width:50px; height:50px; margin:2px auto 16px; border-radius:50%; display:grid; place-items:center; background:rgba(110,231,183,.12); color:var(--mint); box-shadow:0 0 26px -6px var(--mint-glow)}
+  .pop .tick svg{width:26px; height:26px}
+  .pop .tick svg path{stroke-dasharray:30; stroke-dashoffset:30; animation:draw .7s var(--ease) .15s forwards}
+  .pop h4{position:relative; margin:0 0 9px; font-family:var(--font-serif); font-style:italic; font-size:1.55rem; font-weight:400; letter-spacing:-.01em}
+  .pop p{position:relative; margin:0 0 20px; color:var(--muted); font-size:.86rem; line-height:1.55}
+  .pop p b{color:var(--fg); font-weight:600}
+  .pop .prow{position:relative; display:flex; gap:10px}
+  .pop .prow .btn{flex:1; justify-content:center}
+
+  .hint{position:fixed; left:0; right:0; bottom:13px; text-align:center; color:var(--muted); font-size:.72rem; z-index:70; pointer-events:none}
+
+  /* empty state when a filter has no matches */
+  .empty{display:none; padding:42px 20px; text-align:center; color:var(--muted)}
+  .empty.show{display:block; animation:fadeUp .3s var(--ease-premium) both}
+  .empty svg{width:28px; height:28px; opacity:.4; margin-bottom:12px}
+  .empty p{margin:0; font-size:.85rem}
+
+  /* hidden when filtered */
+  .item.hide,.group.hide,.hero.hide{display:none}
+
+  /* ── responsive ────────────────────────────────────────── */
+  @media(max-width:880px){
+    .panel-inner{grid-template-columns:1fr}
+    .sidebar{flex-direction:row; gap:8px; overflow-x:auto; border-right:none; border-bottom:1px solid var(--border); padding:14px 16px; scrollbar-width:none}
+    .sidebar::-webkit-scrollbar{display:none}
+    .sgroup{display:flex; align-items:center; gap:6px; flex:none}
+    .sgroup-label{display:none}
+    .snav{flex-direction:row; gap:6px}
+    .snav-item{padding:8px 13px; border:1px solid var(--border); background:var(--card); white-space:nowrap}
+    .snav-item .cnt{margin-left:2px}
+    .main{max-height:none}
+  }
+  @media(max-width:560px){
+    .scrim{padding:14px 12px}
+    .panel{border-radius:22px}
+    .head{padding:20px 18px 16px}
+    .title{font-size:2.1rem}
+    .sub{font-size:.82rem}
+    .toolbar{flex-wrap:wrap; padding:14px 16px}
+    .search{order:2; flex-basis:100%}
+    .seg{order:1}
+    .body{padding:16px}
+    .hero{flex-direction:column; align-items:flex-start; gap:14px}
+    .hero-art{width:64px; height:64px}
+    .hero-art svg{width:30px; height:30px}
+    .hero-acts{width:100%}
+    .hero-acts .a{flex:1; text-align:center; justify-content:center}
+    .item{grid-template-columns:auto 1fr; row-gap:12px}
+    .acts{grid-column:1 / -1; justify-content:flex-start; flex-wrap:wrap}
+    .foot{padding:16px 18px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms !important; animation-delay:0ms !important; transition-duration:.001ms !important}
+    .item,.snav-item,.uploadBtn,.hero{opacity:1 !important}
+  }
+</style>
+</head>
+<body>
+  <!-- faint blurred dashboard behind -->
+  <div class="behind" aria-hidden="true">
+    <div class="row"><div class="b tall"></div><div class="b"></div><div class="b"></div></div>
+    <div class="row two"><div class="b"></div><div class="b"></div></div>
+    <div class="row"><div class="b"></div><div class="b"></div><div class="b"></div></div>
+  </div>
+
+  <!-- Library overlay -->
+  <div class="scrim">
+    <div class="panel" role="dialog" aria-label="Library">
+     <div class="panel-inner">
+
+      <!-- header -->
+      <div class="head">
+        <div>
+          <div class="title">
+            <span class="lock" title="Always on your dashboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            </span>
+            Library
+          </div>
+          <p class="sub">Your apps. Add core tiles back, place the tiles you built, or upload a new one.</p>
+        </div>
+        <button class="x" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- sidebar -->
+      <nav class="sidebar" aria-label="Collections">
+        <div class="sgroup">
+          <div class="sgroup-label">Tiles</div>
+          <div class="snav" data-nav="state">
+            <div class="snav-item active" data-filter="all" style="animation-delay:.06s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
+              <span class="label">All tiles</span><span class="cnt">8</span>
+            </div>
+            <div class="snav-item" data-filter="placed" style="animation-delay:.12s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8.5 12 2.4 2.4L16 9.5"/></svg>
+              <span class="label">On dashboard</span><span class="cnt">5</span>
+            </div>
+            <div class="snav-item" data-filter="library" style="animation-delay:.18s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H9a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M10.5 5.5 12.6 4.6a1.5 1.5 0 0 1 1.9.8l5 12.3"/><path d="M4 20h16"/></svg>
+              <span class="label">In library</span><span class="cnt">3</span>
+            </div>
+          </div>
+        </div>
+        <div class="sgroup">
+          <div class="sgroup-label">Categories</div>
+          <div class="snav" data-nav="cat">
+            <div class="snav-item" data-filter="cat-core" style="animation-delay:.24s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 14.6 8.5 20.5 9.4 16.2 13.6 17.3 19.5 12 16.7 6.7 19.5 7.8 13.6 3.5 9.4 9.4 8.5Z"/></svg>
+              <span class="label">Core</span><span class="cnt">7</span>
+            </div>
+            <div class="snav-item" data-filter="cat-intake" style="animation-delay:.30s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="m8.5 7.5 3.5 3.5 3.5-3.5"/><path d="M5 13.5h14L17.5 21h-11Z"/></svg>
+              <span class="label">Intake</span><span class="cnt">1</span>
+            </div>
+            <div class="snav-item" data-filter="cat-count" style="animation-delay:.36s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/></svg>
+              <span class="label">Count</span><span class="cnt">1</span>
+            </div>
+            <div class="snav-item" data-filter="cat-duration" style="animation-delay:.42s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M9 2h6"/></svg>
+              <span class="label">Duration</span><span class="cnt">0</span>
+            </div>
+            <div class="snav-item" data-filter="cat-measure" style="animation-delay:.48s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 9 11l3 3 4.5-4.5"/><path d="M21 17H3"/><path d="M14 9.5h3.5V13"/></svg>
+              <span class="label">Measure</span><span class="cnt">0</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- main -->
+      <div class="main">
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="Sort">
+            <button class="on" data-sort="recent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Recent</button>
+            <button data-sort="name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="m3 7 3-3 3 3"/><path d="M13 6h8"/><path d="M13 12h6"/><path d="M13 18h4"/></svg>Name</button>
+          </div>
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+            <input id="search" type="text" placeholder="Search your tiles" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="body">
+          <!-- upload affordance -->
+          <button class="uploadBtn" id="uploadToggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg>
+            Upload a tile
+          </button>
+
+          <div class="paste" id="paste">
+            <label>Paste your tile envelope</label>
+            <textarea id="env" spellcheck="false">{
+  "name": "Beer tracker",
+  "category": "Intake",
+  "kind": "intake",
+  "goalDirection": "down",
+  "html": "<!doctype html> ... your sealed tile ..."
+}</textarea>
+            <div class="prow">
+              <button class="btn ghost" id="cancelPaste">Cancel</button>
+              <button class="btn primary" id="installBtn">Install</button>
+            </div>
+          </div>
+
+          <!-- focused hero strip: the selected / most-recent tile, celebratory -->
+          <div class="hero" id="hero" data-state="placed" data-cat="count" data-name="reading log">
+            <div class="hero-art" style="--g1:rgba(110,231,183,.6);--g2:rgba(31,77,61,.65)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H9a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M10.5 5.5 12.6 4.6a1.5 1.5 0 0 1 1.9.8l5 12.3"/><path d="M4 20h16"/></svg>
+            </div>
+            <div class="hero-meta">
+              <div class="hero-eyebrow"><span class="ld"></span>On your dashboard</div>
+              <div class="hero-name">Reading log</div>
+              <div class="hero-row2"><span class="chip mine">Count</span><span class="sep">·</span>Added Jun 26</div>
+            </div>
+            <div class="hero-acts">
+              <button class="a icon" title="Open in Create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+              <button class="a del">Delete</button>
+              <button class="a sub">Remove</button>
+            </div>
+          </div>
+
+          <!-- On your dashboard -->
+          <div class="group" data-group="placed">
+            <div class="glabel">On your dashboard <span class="count">5</span></div>
+            <div class="list">
+              <div class="item" data-state="placed" data-cat="core" data-name="train" style="animation-delay:.06s">
+                <div class="thumb gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M4 9.5v5M20 9.5v5M6.5 12h11"/></svg></div>
+                <div class="meta">
+                  <div class="name"><span class="dot"></span>Train</div>
+                  <div class="row2"><span class="chip core">Core</span><span class="sep">·</span>Built in</div>
+                </div>
+                <div class="acts"><button class="a sub">Remove</button></div>
+              </div>
+              <div class="item" data-state="placed" data-cat="core" data-name="fuel" style="animation-delay:.12s">
+                <div class="thumb gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-3.5 0-6-2.6-6-6 0-4 6-12 6-12s6 8 6 12c0 3.4-2.5 6-6 6Z"/></svg></div>
+                <div class="meta">
+                  <div class="name"><span class="dot"></span>Fuel</div>
+                  <div class="row2"><span class="chip core">Core</span><span class="sep">·</span>Built in</div>
+                </div>
+                <div class="acts"><button class="a sub">Remove</button></div>
+              </div>
+              <div class="item" data-state="placed" data-cat="core" data-name="vee" style="animation-delay:.18s">
+                <div class="thumb gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 6.5 12 21l9-14.5Z"/><path d="M12 3v18"/></svg></div>
+                <div class="meta">
+                  <div class="name"><span class="dot"></span>Vee</div>
+                  <div class="row2"><span class="chip core">Core</span><span class="sep">·</span>Built in</div>
+                </div>
+                <div class="acts"><button class="a sub">Remove</button></div>
+              </div>
+              <div class="item" data-state="placed" data-cat="count" data-name="reading log" style="animation-delay:.24s">
+                <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H9a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M10.5 5.5 12.6 4.6a1.5 1.5 0 0 1 1.9.8l5 12.3"/><path d="M4 20h16"/></svg></div>
+                <div class="meta">
+                  <div class="name"><span class="dot"></span>Reading log</div>
+                  <div class="row2"><span class="chip mine">Count</span><span class="sep">·</span>Added Jun 26</div>
+                </div>
+                <div class="acts">
+                  <button class="a icon" title="Open in Create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+                  <button class="a del">Delete</button>
+                  <button class="a sub">Remove</button>
+                </div>
+              </div>
+              <div class="item" data-state="placed" data-cat="core" data-name="library" style="animation-delay:.30s">
+                <div class="thumb locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></div>
+                <div class="meta">
+                  <div class="name">
+                    <span class="lockmini" title="Always on your dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></span>
+                    Library
+                  </div>
+                  <div class="row2"><span class="chip core">Core</span><span class="sep">·</span>Always on</div>
+                </div>
+                <div class="acts"><span class="a locked">Locked</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- In your library, not placed -->
+          <div class="group" data-group="library">
+            <div class="glabel">In your library <span class="count">3</span></div>
+            <div class="list">
+              <div class="item" data-state="library" data-cat="intake" data-name="beer tracker" style="animation-delay:.06s">
+                <div class="thumb" style="--g1:rgba(245,200,120,.5);--g2:rgba(110,231,183,.45)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h8v11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2Z"/><path d="M15 10h2.5A1.5 1.5 0 0 1 19 11.5v3A1.5 1.5 0 0 1 17.5 16H15"/><path d="M8 5.5c0-1 1-1.5 2-1.5s2 .5 2-.5"/></svg></div>
+                <div class="meta">
+                  <div class="name">Beer tracker</div>
+                  <div class="row2"><span class="chip mine">Intake</span><span class="sep">·</span>Added Jun 27</div>
+                </div>
+                <div class="acts">
+                  <button class="a icon" title="Open in Create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+                  <button class="a del">Delete</button>
+                  <button class="a add">Add to dashboard</button>
+                </div>
+              </div>
+              <div class="item" data-state="library" data-cat="core" data-name="peak" style="animation-delay:.12s">
+                <div class="thumb gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 18 5.5-7 4 4.5L17 8l4 10Z"/></svg></div>
+                <div class="meta">
+                  <div class="name">Peak</div>
+                  <div class="row2"><span class="chip core">Core</span><span class="sep">·</span>Built in</div>
+                </div>
+                <div class="acts"><button class="a add">Add to dashboard</button></div>
+              </div>
+              <div class="item" data-state="library" data-cat="core" data-name="finance" style="animation-delay:.18s">
+                <div class="thumb gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10M9.5 9.2c0-1 1.1-1.7 2.5-1.7s2.5.7 2.5 1.7c0 2.6-5 1.4-5 4 0 1 1.1 1.8 2.5 1.8s2.5-.8 2.5-1.8"/></svg></div>
+                <div class="meta">
+                  <div class="name">Finance</div>
+                  <div class="row2"><span class="chip core">Core</span><span class="sep">·</span>Built in</div>
+                </div>
+                <div class="acts"><button class="a add">Add to dashboard</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- empty state (filter / search yields nothing) -->
+          <div class="empty" id="empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+            <p>No tiles here yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div class="foot">
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Build a new tile in Create
+        </a>
+        <button class="done">Done</button>
+      </div>
+
+     </div>
+    </div>
+  </div>
+
+  <!-- post-upload popup -->
+  <div class="pop" id="pop">
+    <div class="card">
+      <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></div>
+      <h4>New tile added</h4>
+      <p><b>Beer tracker</b> is in your library. Add it to your dashboard? You can design it your own way next.</p>
+      <div class="prow">
+        <button class="btn ghost" id="notNow">Not now</button>
+        <button class="btn primary" id="addIt">Add it</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">demo: click "Upload a tile" then "Install" to see the add-to-dashboard popup</div>
+
+  <script>
+    (function(){
+      const $ = s => document.querySelector(s);
+      const $$ = s => Array.from(document.querySelectorAll(s));
+
+      // upload paste box
+      const paste = $('#paste');
+      $('#uploadToggle').onclick = () => {
+        paste.classList.toggle('open');
+        if(paste.classList.contains('open')) $('#env').focus();
+      };
+      $('#cancelPaste').onclick = () => paste.classList.remove('open');
+
+      // popup
+      const pop = $('#pop');
+      $('#installBtn').onclick = () => { paste.classList.remove('open'); pop.classList.add('open'); };
+      $('#notNow').onclick = () => pop.classList.remove('open');
+      $('#addIt').onclick = () => pop.classList.remove('open');
+      pop.addEventListener('click', e => { if(e.target === pop) pop.classList.remove('open'); });
+      document.addEventListener('keydown', e => { if(e.key === 'Escape') pop.classList.remove('open'); });
+
+      // sidebar filtering + search
+      const items = $$('.item');
+      const groups = $$('.group');
+      const hero = $('#hero');
+      const search = $('#search');
+      const empty = $('#empty');
+      let activeFilter = 'all';
+
+      function matchesFilter(el){
+        if(activeFilter === 'all') return true;
+        if(activeFilter === 'placed') return el.dataset.state === 'placed';
+        if(activeFilter === 'library') return el.dataset.state === 'library';
+        if(activeFilter.startsWith('cat-')) return el.dataset.cat === activeFilter.slice(4);
+        return true;
+      }
+      function apply(){
+        const q = search.value.trim().toLowerCase();
+        let visible = 0;
+        items.forEach(it=>{
+          const ok = matchesFilter(it) && (!q || it.dataset.name.includes(q));
+          it.classList.toggle('hide', !ok);
+          if(ok) visible++;
+        });
+        const heroOk = matchesFilter(hero) && (!q || hero.dataset.name.includes(q));
+        hero.classList.toggle('hide', !heroOk);
+        groups.forEach(g=>{
+          const any = Array.from(g.querySelectorAll('.item')).some(i=>!i.classList.contains('hide'));
+          g.classList.toggle('hide', !any);
+        });
+        empty.classList.toggle('show', visible === 0);
+      }
+
+      $$('.snav-item').forEach(nav=>{
+        nav.onclick = () => {
+          $$('.snav-item').forEach(n=>n.classList.remove('active'));
+          nav.classList.add('active');
+          activeFilter = nav.dataset.filter;
+          apply();
+        };
+      });
+      search.addEventListener('input', apply);
+
+      // sort toggle (visual)
+      $$('.seg button').forEach(b=>{
+        b.onclick = () => { $$('.seg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
+      });
+
+      // close affordances (demo: collapse paste)
+      $('.x').onclick = () => paste.classList.remove('open');
+      $('.done').onclick = () => paste.classList.remove('open');
+    })();
+  </script>
+</body>
+</html>

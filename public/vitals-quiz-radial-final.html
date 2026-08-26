@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>the radial · final polish</title>
+<style>
+  :root{
+    --bg:#07100c; --mint:#6ee7b7; --mint-soft:#a7f3d0; --ink:#f0fff5;
+    --muted:#7d978c; --line:rgba(110,231,183,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    background:
+      radial-gradient(900px 640px at 50% 4%, rgba(110,231,183,.12), transparent 62%),
+      radial-gradient(700px 500px at 50% 116%, rgba(110,231,183,.06), transparent 60%),
+      var(--bg);
+    padding:54px 24px 80px}
+  .eyebrow{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--mint);opacity:.85}
+  h1{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:500;
+    font-size:clamp(28px,4.4vw,40px);margin:12px 0 4px;letter-spacing:-.01em}
+  .lede{color:var(--muted);font-size:14.5px;line-height:1.6;max-width:540px;text-align:center;margin:0 0 30px}
+  .hero{cursor:pointer}
+  .hero canvas{width:380px;height:380px;display:block}
+  .scales{display:flex;align-items:center;gap:40px;margin-top:30px;
+    border-top:1px solid var(--line);padding-top:30px}
+  .scales .col{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scales .lbl{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .speed{margin-top:30px;display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px}
+  .speed button{font:inherit;color:var(--muted);background:transparent;border:1px solid var(--line);
+    border-radius:999px;padding:6px 14px;cursor:pointer;letter-spacing:.06em}
+  .speed button.on{background:var(--mint);color:#04140d;border-color:var(--mint);font-weight:600}
+  .foot{color:var(--muted);font-size:13px;margin-top:34px;text-align:center;line-height:1.7;max-width:520px}
+  .foot b{color:var(--mint-soft)}
+</style>
+</head>
+<body>
+  <div class="eyebrow">vitals · the radial · final</div>
+  <h1>your quiz is complete</h1>
+  <p class="lede">A progress ring sweeps swiftly to full, snaps to confirm, and the check draws inside the ring,
+    the same check-inside signature as the link, breathes, and dissolves. Forever, no choppiness.</p>
+
+  <div class="hero" id="hero"><canvas width="760" height="760"></canvas></div>
+
+  <div class="scales">
+    <div class="col"><canvas data-s="280" width="560" height="560" style="width:280px;height:280px"></canvas><span class="lbl">gem · 280</span></div>
+    <div class="col"><canvas data-s="120" width="240" height="240" style="width:120px;height:120px"></canvas><span class="lbl">card · 120</span></div>
+    <div class="col"><canvas data-s="56" width="112" height="112" style="width:56px;height:56px"></canvas><span class="lbl">chip · 56</span></div>
+  </div>
+
+  <div class="speed">
+    <span>speed</span>
+    <button data-sp="1.2" class="on">calm</button>
+    <button data-sp="1">normal</button>
+    <button data-sp="0.82">swift</button>
+  </div>
+
+  <div class="foot">Tap the big mark to replay. Happy? Say <b>ship it</b> and I'll engrave it as the quiz mark next to the link,
+    then build <b>both congrats pages</b>.</div>
+
+<script>
+/* ── shared engraving glow stack (identical to the gem + the link) ── */
+const LAYERS = [
+  ['rgba(110, 231, 183, 0.10)', 18, 90],
+  ['rgba(110, 231, 183, 0.22)', 13, 52],
+  ['rgba(167, 243, 208, 0.50)',  7, 26],
+  ['rgba(196, 250, 220, 0.85)',  4, 12],
+  ['rgba(240, 255, 245, 1.00)', 1.8, 4],
+];
+function engrave(ctx, draw, t){
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+  const s = ctx.canvas.width/512;
+  ctx.setTransform(s,0,0,s,0,0);
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  for(const [color,w,blur] of LAYERS){
+    ctx.shadowColor='#6EE7B7'; ctx.shadowBlur=blur;
+    ctx.strokeStyle=color; ctx.lineWidth=w;
+    draw(ctx,t);
+  }
+  ctx.shadowBlur=0;
+}
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp01=x=>Math.max(0,Math.min(1,x));
+const span=(t,a,b)=>clamp01((t-a)/(b-a));
+const ss=t=>{t=clamp01(t);return t*t*t*(t*(6*t-15)+10);};       // smootherstep
+const easeOut=p=>{p=clamp01(p);return 1-Math.pow(1-p,3);};      // swift launch, soft land
+function ring(ctx,x,y,r,alpha){if(alpha<=0||r<=0)return;ctx.save();ctx.globalAlpha=Math.min(1,alpha);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();ctx.restore();}
+function arcStroke(ctx,cx,cy,r,a0,a1,alpha){if(alpha<=0||r<=0||a1<=a0)return;ctx.save();ctx.globalAlpha=Math.min(1,alpha);ctx.beginPath();ctx.arc(cx,cy,r,a0,a1);ctx.stroke();ctx.restore();}
+function checkMark(ctx, cx, cy, scale, reveal, alpha){
+  if(reveal<=0||alpha<=0) return;
+  const pts=[[cx-15*scale,cy+2*scale],[cx-4*scale,cy+13*scale],[cx+18*scale,cy-14*scale]];
+  let total=0; const slen=[];
+  for(let i=1;i<pts.length;i++){const l=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);slen.push(l);total+=l;}
+  const rev=reveal*total;
+  ctx.save(); ctx.globalAlpha=Math.min(1,alpha);
+  ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
+  let acc=0;
+  for(let i=1;i<pts.length;i++){
+    if(acc+slen[i-1]<=rev){ctx.lineTo(pts[i][0],pts[i][1]);acc+=slen[i-1];}
+    else{const r=(rev-acc)/slen[i-1];ctx.lineTo(lerp(pts[i-1][0],pts[i][0],r),lerp(pts[i-1][1],pts[i][1],r));break;}
+  }
+  ctx.stroke(); ctx.restore();
+}
+
+/* ── timeline (fractions of one loop) — swift sweep, eased crossfades ── */
+const R=128;
+const SWEEP0=0.06, SWEEPDONE=0.45;          // ring fills (easeOut: fast then settle)
+const CHK0=0.43, CHKDONE=0.64;              // check draws inside, overlaps the snap
+const HOLD=0.84;                            // breathe, then dissolve to 1
+const A0=-Math.PI/2;                        // start at 12 o'clock
+
+function drawRadial(ctx,t){
+  const cx=256,cy=256;
+  const fade=1-ss(span(t,HOLD,1));
+
+  // faint track the ring fills into
+  ring(ctx,cx,cy,R,0.12*fade);
+
+  const prog=easeOut(span(t,SWEEP0,SWEEPDONE));
+
+  if(prog<1){
+    // ── sweeping arc with a brighter comet head + leading dot ──
+    const a1=A0+Math.PI*2*prog;
+    arcStroke(ctx,cx,cy,R,A0,a1,0.82*fade);
+    const lead=Math.min(a1-A0,0.42);
+    arcStroke(ctx,cx,cy,R,a1-lead,a1,0.55*fade);            // extra glow near the head
+    const hx=cx+Math.cos(a1)*R, hy=cy+Math.sin(a1)*R;
+    ring(ctx,hx,hy,8.5,0.95*fade);
+  } else {
+    // ── settled container ring, with a gentle breath under the check ──
+    const breathR=(t>=CHKDONE&&t<HOLD)?R*(1+0.012*Math.sin(span(t,CHKDONE,HOLD)*Math.PI*2)):R;
+    ring(ctx,cx,cy,breathR,0.85*fade);
+  }
+
+  // ── confirm "snap" — a soft halo blooms out the instant the ring closes ──
+  const conf=span(t,SWEEPDONE-0.02,SWEEPDONE+0.2);
+  if(conf>0&&conf<1) ring(ctx,cx,cy,lerp(R,R+26,ss(conf)),(1-ss(conf))*0.5*fade);
+
+  // ── the check, drawn INSIDE the ring (signature shared with the link) ──
+  if(t>=CHK0){
+    const rev=ss(span(t,CHK0,CHKDONE));
+    const breath=(t>=CHKDONE&&t<HOLD)?0.94+0.06*Math.sin(span(t,CHKDONE,HOLD)*Math.PI*2):1;
+    const flash=1+0.45*Math.max(0,1-Math.abs(t-CHKDONE)/0.045);
+    checkMark(ctx,cx,cy,1.85,rev,fade*breath*flash);
+  }
+}
+
+/* ── one clock, all canvases in sync ── */
+let SPEED=1.2; const PERIOD=2.4;
+const all=[...document.querySelectorAll('canvas')];
+let start=performance.now();
+function frame(){
+  const el=((performance.now()-start)/1000)/SPEED;
+  const t=(el%PERIOD)/PERIOD;
+  for(const cv of all) engrave(cv.getContext('2d'), drawRadial, t);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+document.getElementById('hero').addEventListener('click',()=>start=performance.now());
+document.querySelectorAll('.speed button').forEach(b=>b.addEventListener('click',()=>{
+  SPEED=parseFloat(b.dataset.sp);
+  document.querySelectorAll('.speed button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vitality · gem marks gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --mint:#6EE7B7; --mint-2:#A7F3D0; --ink:#eafff7;
+    --serif:'Instrument Serif',Georgia,serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;color:var(--ink);background:
+    radial-gradient(130% 90% at 50% -10%, rgba(110,231,183,0.10), transparent 55%), #000;
+    font-family:var(--mono);-webkit-font-smoothing:antialiased}
+  body{padding:72px 28px 120px}
+
+  header{text-align:center;max-width:720px;margin:0 auto 18px}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--mint)}
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(2.2rem,5vw,3.2rem);margin:10px 0 4px;color:#fff}
+  .tag{color:rgba(233,239,233,0.55);font-size:12px;letter-spacing:0.06em;line-height:1.6;margin:8px auto 0;max-width:46ch}
+
+  .controls{display:flex;justify-content:center;gap:10px;margin:26px 0 4px}
+  .controls button{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
+    border-radius:999px;padding:9px 16px;cursor:pointer;border:1px solid rgba(110,231,183,0.3);background:transparent;color:var(--mint);transition:.2s}
+  .controls button.on{background:var(--mint);color:#06281d;border-color:var(--mint)}
+
+  section{max-width:1180px;margin:64px auto 0}
+  .sectionHead{display:flex;align-items:center;gap:14px;margin:0 6px 26px}
+  .sectionHead .rule{height:1px;flex:1;background:linear-gradient(90deg,rgba(110,231,183,0.4),transparent)}
+  .sectionHead h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.5rem;margin:0;color:var(--mint-2);white-space:nowrap}
+  .sectionHead .count{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(233,239,233,0.4)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:20px}
+  .card{position:relative;border:1px solid rgba(110,231,183,0.12);border-radius:22px;
+    background:rgba(255,255,255,0.012);padding:18px 14px 16px;text-align:center;
+    transition:border-color .35s ease,transform .35s cubic-bezier(0.34,1.56,0.64,1)}
+  .card:hover{border-color:rgba(110,231,183,0.32);transform:translateY(-3px)}
+  canvas{width:186px;height:186px;display:block;margin:0 auto}
+  .name{margin-top:8px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--mint)}
+  .sub{margin-top:4px;font-size:10.5px;color:rgba(233,239,233,0.5);line-height:1.45;min-height:2.6em}
+
+  footer{max-width:720px;margin:70px auto 0;text-align:center;color:rgba(233,239,233,0.4);font-size:11px;line-height:1.7}
+  @media (prefers-reduced-motion: reduce){ /* JS checks this too */ }
+</style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">— vitality gem language</div>
+    <h1>Friendly hellos &amp; warm marks</h1>
+    <p class="tag">Engraved on the gem face in the same mint-glow language as the V. Greetings pair with the gem's happy eyes. Pick any to wire onto the gem.</p>
+  </header>
+
+  <div class="controls">
+    <button id="motionBtn" class="on">motion: on</button>
+    <button id="eyesBtn" class="on">eyes on hellos: on</button>
+  </div>
+
+  <section>
+    <div class="sectionHead"><h2>Hellos</h2><span class="count" id="cA"></span><span class="rule"></span></div>
+    <div class="grid" id="gridA"></div>
+  </section>
+
+  <section>
+    <div class="sectionHead"><h2>Warm Vitality marks</h2><span class="count" id="cB"></span><span class="rule"></span></div>
+    <div class="grid" id="gridB"></div>
+  </section>
+
+  <footer>512² engraved-glyph space · real mint-glow stroke stack · drops straight into <code>traceHelloOn</code> / the glyph library</footer>
+
+<script>
+  // ── engraved mint-glow stroke stack (balanced: native to the gem, crisp core) ──
+  const LAYERS = [
+    ['rgba(110, 231, 183, 0.10)', 15, 58],
+    ['rgba(110, 231, 183, 0.22)', 10, 32],
+    ['rgba(167, 243, 208, 0.52)', 5.5, 17],
+    ['rgba(220, 255, 242, 1.00)', 2.6, 6],
+  ];
+  const EYE_LAYERS = [
+    ['rgba(110, 231, 183, 0.16)', 7, 24],
+    ['rgba(200, 250, 226, 0.7)', 3, 8],
+  ];
+
+  // The gem's happy closed eyes (∩ ∩) — drawn faintly above greeting marks.
+  function eyes(c){
+    c.lineCap='round'; c.lineJoin='round';
+    for(const [color,lw,blur] of EYE_LAYERS){
+      c.shadowColor='#6EE7B7'; c.shadowBlur=blur; c.strokeStyle=color; c.lineWidth=lw;
+      c.beginPath(); c.arc(214,190,22, Math.PI*1.18, Math.PI*1.82); c.stroke();
+      c.beginPath(); c.arc(298,190,22, Math.PI*1.18, Math.PI*1.82); c.stroke();
+    }
+    c.shadowBlur=0;
+  }
+
+  // ── traces (512 space, center 256). Some take t for self-animation. ──
+  const T = {
+    smile:(c)=>{ c.beginPath(); c.arc(256,256,58, Math.PI*0.18, Math.PI*0.82); c.stroke(); },
+    grin:(c)=>{ c.beginPath(); c.arc(256,252,72, Math.PI*0.13, Math.PI*0.87); c.stroke(); },
+    sparkle:(c)=>{ c.beginPath(); c.moveTo(256,150);
+      c.quadraticCurveTo(282,230,364,256); c.quadraticCurveTo(282,282,256,362);
+      c.quadraticCurveTo(230,282,148,256); c.quadraticCurveTo(230,230,256,150); c.closePath(); c.stroke(); },
+    bloom:(c)=>{ for(const r of [42,76,110]){ c.beginPath(); c.arc(256,256,r,0,Math.PI*2); c.stroke(); } },
+    heart:(c)=>{ c.beginPath(); c.moveTo(256,202);
+      c.bezierCurveTo(236,172,190,178,188,214); c.bezierCurveTo(186,250,226,282,256,324);
+      c.bezierCurveTo(286,282,326,250,324,214); c.bezierCurveTo(322,178,276,172,256,202); c.stroke(); },
+    wave:(c,t)=>{ // the "hello wave" reimagined as a flowing wave (no hand)
+      const ph = t*1.6;
+      for(let row=0; row<2; row++){
+        const yc = 238 + row*40, amp = 26 - row*6;
+        c.beginPath();
+        for(let x=150;x<=362;x+=3){
+          const y = yc - amp*Math.sin((x-150)/(362-150)*Math.PI*3 + ph + row*0.5);
+          x===150?c.moveTo(x,y):c.lineTo(x,y);
+        }
+        c.stroke();
+      }
+    },
+    star:(c)=>{ const R=108,r=46,cx=256,cy=258; c.beginPath();
+      for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rad=i%2?r:R;
+        const x=cx+Math.cos(a)*rad, y=cy+Math.sin(a)*rad; i?c.lineTo(x,y):c.moveTo(x,y);} c.closePath(); c.stroke(); },
+    sun:(c)=>{ c.beginPath(); c.arc(256,256,46,0,Math.PI*2); c.stroke();
+      for(let i=0;i<8;i++){ const a=i*Math.PI/4; c.beginPath();
+        c.moveTo(256+Math.cos(a)*68,256+Math.sin(a)*68); c.lineTo(256+Math.cos(a)*104,256+Math.sin(a)*104); c.stroke(); } },
+    pulse:(c)=>{ c.beginPath(); c.moveTo(146,256); c.lineTo(212,256); c.lineTo(234,210);
+      c.lineTo(256,318); c.lineTo(278,196); c.lineTo(300,256); c.lineTo(366,256); c.stroke(); },
+    sprout:(c)=>{ c.beginPath(); c.moveTo(256,346); c.lineTo(256,246); c.stroke();
+      c.beginPath(); c.moveTo(256,296); c.bezierCurveTo(212,294,196,262,206,230); c.bezierCurveTo(238,242,256,268,256,296); c.stroke();
+      c.beginPath(); c.moveTo(256,286); c.bezierCurveTo(300,284,316,252,306,220); c.bezierCurveTo(274,232,256,258,256,286); c.stroke(); },
+    flame:(c)=>{ c.beginPath(); c.moveTo(256,162);
+      c.bezierCurveTo(304,206,316,250,300,288); c.bezierCurveTo(294,316,276,332,256,334);
+      c.bezierCurveTo(236,332,218,316,212,288); c.bezierCurveTo(196,250,208,206,256,162); c.stroke();
+      c.beginPath(); c.moveTo(256,228); c.bezierCurveTo(278,250,278,278,256,298); c.bezierCurveTo(234,278,234,250,256,228); c.stroke(); },
+    spark:(c)=>{ c.beginPath(); c.moveTo(256,156); c.lineTo(256,356); c.moveTo(156,256); c.lineTo(356,256);
+      c.moveTo(196,196); c.lineTo(316,316); c.moveTo(316,196); c.lineTo(196,316); c.stroke(); },
+    note:(c)=>{ c.save(); c.lineCap='round';
+      c.beginPath(); c.ellipse(214,302,20,14,-0.32,0,Math.PI*2); c.stroke();
+      c.beginPath(); c.ellipse(300,286,20,14,-0.32,0,Math.PI*2); c.stroke();
+      c.beginPath(); c.moveTo(232,298); c.lineTo(232,206); c.moveTo(318,282); c.lineTo(318,190); c.stroke();
+      c.beginPath(); c.moveTo(232,206); c.lineTo(318,190); c.stroke(); c.restore(); },
+    moon:(c)=>{ c.beginPath(); c.arc(246,258,82, Math.PI*0.32, Math.PI*1.68, false);
+      c.arc(282,258,72, Math.PI*1.6, Math.PI*0.40, true); c.closePath(); c.stroke();
+      const sx=330,sy=176,sr=22; c.beginPath();
+      for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rad=i%2?sr*0.42:sr; const x=sx+Math.cos(a)*rad,y=sy+Math.sin(a)*rad; i?c.lineTo(x,y):c.moveTo(x,y);} c.closePath(); c.stroke(); },
+    check:(c)=>{ c.beginPath(); c.moveTo(184,256); c.lineTo(232,306); c.lineTo(334,188); c.stroke(); },
+  };
+
+  // motion: applies a transform around (256,256) before tracing. t in seconds.
+  const breath = (c,t)=>{ const s=1+0.018*Math.sin(t*1.6); c.scale(s,s); };
+  const twinkle = (c,t)=>{ const s=1+0.06*Math.sin(t*3.4); c.scale(s,s); c.rotate(0.05*Math.sin(t*1.2)); };
+  const pulse = (c,t)=>{ const s=1+0.05*Math.sin(t*2.2); c.scale(s,s); };
+  const beat = (c,t)=>{ const p=t%1.4; const e=p<0.16?Math.sin(p/0.16*Math.PI):(p<0.34?0.5*Math.sin((p-0.18)/0.16*Math.PI):0); const s=1+0.10*e; c.scale(s,s); };
+  const sway = (c,t)=>{ c.rotate(0.06*Math.sin(t*1.4)); };
+  const flicker = (c,t)=>{ c.scale(1-0.025*Math.sin(t*9), 1+0.05*Math.sin(t*9)); };
+  const bob = (c,t)=>{ c.translate(0, 6*Math.sin(t*2)); };
+  const spin = (c,t)=>{ c.rotate(t*0.12); };
+
+  const HELLOS = [
+    { key:'smile',   name:'Smile',    sub:'eyes + this = the gem becomes a happy face.', trace:T.smile, motion:breath },
+    { key:'grin',    name:'Big grin', sub:'wider, warmer — a real beam.', trace:T.grin, motion:breath },
+    { key:'wave',    name:'Wave',     sub:'the wave, reimagined as an actual wave. no hand.', trace:T.wave, motion:null, anim:true },
+    { key:'sparkle', name:'Sparkle',  sub:'a twinkle of delight to greet you.', trace:T.sparkle, motion:twinkle },
+    { key:'bloom',   name:'Bloom',    sub:'soft rings open outward — a warm hi.', trace:T.bloom, motion:pulse },
+    { key:'heart',   name:'Heart',    sub:'a warm welcome. doubles as the love mood.', trace:T.heart, motion:beat },
+  ];
+  const MARKS = [
+    { key:'star',    name:'Star',     sub:'achieve · favorite · a little pride.', trace:T.star, motion:twinkle },
+    { key:'sun',     name:'Sun',      sub:'morning warmth, energy, a good day.', trace:T.sun, motion:pulse },
+    { key:'pulse',   name:'Pulse',    sub:'alive · heartbeat · vitality itself.', trace:T.pulse, motion:beat },
+    { key:'sprout',  name:'Sprout',   sub:'growth · progress · taking care.', trace:T.sprout, motion:sway },
+    { key:'flame',   name:'Flame',    sub:'streak · warmth · keep it lit.', trace:T.flame, motion:flicker },
+    { key:'spark',   name:'Spark',    sub:'add · new · a burst of energy.', trace:T.spark, motion:pulse },
+    { key:'note',    name:'Note',     sub:'groove · joy · the gem feeling good.', trace:T.note, motion:bob },
+    { key:'moon',    name:'Moon',     sub:'rest · recovery · cozy wind-down.', trace:T.moon, motion:breath },
+    { key:'check',   name:'Done',     sub:'proud · complete · nice work.', trace:T.check, motion:breath },
+  ];
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let motionOn = !reduce, eyesOn = true;
+
+  function build(grid, list, withEyes){
+    return list.map(m=>{
+      const card=document.createElement('div'); card.className='card';
+      const cv=document.createElement('canvas');
+      const DPR=Math.min(window.devicePixelRatio||1,2);
+      cv.width=186*DPR; cv.height=186*DPR; card.appendChild(cv);
+      const name=document.createElement('div'); name.className='name'; name.textContent=m.name; card.appendChild(name);
+      const sub=document.createElement('div'); sub.className='sub'; sub.textContent=m.sub; card.appendChild(sub);
+      grid.appendChild(card);
+      return { m, ctx:cv.getContext('2d'), DPR, withEyes };
+    });
+  }
+
+  const cellsA = build(document.getElementById('gridA'), HELLOS, true);
+  const cellsB = build(document.getElementById('gridB'), MARKS, false);
+  const cells = [...cellsA, ...cellsB];
+  document.getElementById('cA').textContent = HELLOS.length + ' marks';
+  document.getElementById('cB').textContent = MARKS.length + ' marks';
+
+  document.getElementById('motionBtn').addEventListener('click', e=>{ motionOn=!motionOn; e.target.classList.toggle('on',motionOn); e.target.textContent='motion: '+(motionOn?'on':'off'); });
+  document.getElementById('eyesBtn').addEventListener('click', e=>{ eyesOn=!eyesOn; e.target.classList.toggle('on',eyesOn); e.target.textContent='eyes on hellos: '+(eyesOn?'on':'off'); });
+
+  function strokeGlow(ctx, fn, t){
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    for(const [color,lw,blur] of LAYERS){
+      ctx.shadowColor='#6EE7B7'; ctx.shadowBlur=blur; ctx.strokeStyle=color; ctx.lineWidth=lw;
+      fn(ctx, t);
+    }
+    ctx.shadowBlur=0;
+  }
+
+  function render(cell, t){
+    const { m, ctx, DPR, withEyes } = cell;
+    const W=186*DPR, H=186*DPR;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,W,H);
+    // faux gem-face glow backdrop
+    const g=ctx.createRadialGradient(W/2,H*0.46,0,W/2,H*0.46,W*0.56);
+    g.addColorStop(0,'rgba(110,231,183,0.13)'); g.addColorStop(0.55,'rgba(110,231,183,0.04)'); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    const s=W/512;
+    ctx.setTransform(s,0,0,s,0,0);
+
+    if(withEyes && eyesOn){ ctx.save(); eyes(ctx); ctx.restore(); }
+
+    ctx.save();
+    if(motionOn && m.motion){ ctx.translate(256,256); m.motion(ctx,t); ctx.translate(-256,-256); }
+    strokeGlow(ctx, (c,tt)=>m.trace(c, motionOn?tt:0), t);
+    ctx.restore();
+  }
+
+  let t0=null;
+  function frame(ts){ if(t0===null)t0=ts; const t=(ts-t0)/1000; for(const cell of cells) render(cell,t); requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

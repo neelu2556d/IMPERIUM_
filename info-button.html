@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#000000" />
+<title>Info Button · Vitality</title>
+
+<!-- Step 1: the Vitality look, one line. -->
+<script src="vitality-theme.js"></script>
+
+<style>
+  /* ========================================================================
+     The Vitality "info button": a small round mark that sits to the RIGHT of
+     any title and opens a popup of that title's content. It is a BASE
+     component — the same button works on a workout, a nutrition guide, or
+     anything else; the popup is built from a plain content object.
+     Default: circled-i · ghost ring · 26px · spring-pop open. All four
+     variants + all five open animations ship below and are switchable in the
+     little demo bar at the bottom.
+     ===================================================================== */
+  :root { --ib-size: 26px; --spring: cubic-bezier(0.34,1.56,0.64,1); }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; padding: max(30px, env(safe-area-inset-top)) 16px 60px; }
+  .shell { max-width: 560px; margin: 0 auto; }
+  .eyebrow { font-family: var(--vt-mono, ui-monospace, monospace); font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  h1.page { font-size: 2.3rem; margin: 6px 0 6px; }
+  .lede { color: var(--muted-strong); font-size: 0.95rem; margin: 0 0 22px; line-height: 1.5; }
+
+  /* a title row with the info button to its right */
+  .titleRow { display: flex; align-items: center; gap: 10px; padding: 20px 0; border-top: 1px solid var(--border); }
+  .titleRow h2 { font-size: 1.6rem; margin: 0; }
+  .titleKind { margin-left: auto; font-family: var(--vt-mono, ui-monospace, monospace); font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+  /* THE INFO BUTTON — all four variants from one base ---------------------- */
+  .ib { --d: var(--ib-size); width: var(--d); height: var(--d); min-width: var(--d); display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; padding: 0; position: relative; flex-shrink: 0; color: var(--mint);
+        font-family: var(--vt-serif, Georgia, serif); font-style: italic; font-weight: 600; line-height: 1;
+        transition: transform 160ms var(--ease), border-color 160ms var(--ease), background 160ms var(--ease), box-shadow 200ms var(--ease); }
+  .ib::before { content: ""; position: absolute; inset: -9px; }   /* 44px tap target, no visual growth */
+  .ib:hover { transform: scale(1.1); }
+  .ib:active { transform: scale(0.94); }
+  .ib:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+  .ib .i { font-size: calc(var(--d) * 0.52); }
+  .ib .eye { width: calc(var(--d) * 0.74); height: calc(var(--d) * 0.74); stroke: currentColor; fill: none; stroke-width: 1.6; }
+  .ib .eyei { font-size: calc(var(--d) * 0.42); margin-left: 1px; }
+  .ib .dot { width: calc(var(--d) * 0.34); height: calc(var(--d) * 0.34); border-radius: 50%; background: currentColor; }
+  .ib.eyei-v { gap: calc(var(--d) * 0.06); }
+  /* fills */
+  .ib.ghost { background: rgba(110,231,183,0.05); border: 1px solid rgba(110,231,183,0.25); }
+  .ib.ghost:hover { background: rgba(110,231,183,0.12); border-color: var(--mint); }
+  .ib.soft { background: var(--mint-soft, rgba(110,231,183,0.14)); border: 1px solid transparent; }
+  .ib.soft:hover { box-shadow: 0 0 16px var(--mint-glow, rgba(110,231,183,0.4)); }
+  .ib.solid { background: var(--mint); color: var(--mint-ink, #042a1c); border: 1px solid var(--mint); }
+  .ib.solid:hover { box-shadow: 0 0 20px var(--mint-glow, rgba(110,231,183,0.4)); }
+  /* pulsing-dot variant gets a halo ring */
+  .ib.dotpulse::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--mint); opacity: 0; animation: ibPulse 1.8s var(--ease) infinite; }
+  @keyframes ibPulse { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0; transform: scale(1.8); } }
+
+  /* THE POPUP + the five open animations ----------------------------------- */
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: flex-start; justify-content: center; padding: max(24px, env(safe-area-inset-top)) 14px 40px; overflow-y: auto; z-index: 100; opacity: 0; animation: scrimIn 180ms var(--ease) forwards; }
+  @keyframes scrimIn { to { opacity: 1; } }
+  .modal { width: 100%; max-width: 520px; border: 1px solid var(--border); background: var(--bg-elevated, #0a0a0a); border-radius: 24px; padding: 24px 22px 26px; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+  .modal .x { position: absolute; top: 16px; right: 16px; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); color: var(--fg); cursor: pointer; }
+  .modal .x:hover { border-color: var(--mint); color: var(--mint); }
+  .modal .x svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+  .a-fade { animation: aFade 0.22s var(--ease) forwards; }
+  @keyframes aFade { from { opacity: 0; } to { opacity: 1; } }
+  .a-scale { animation: aScale 0.24s var(--ease) forwards; }
+  @keyframes aScale { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+  .a-slide { animation: aSlide 0.28s var(--ease-premium, ease) forwards; }
+  @keyframes aSlide { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+  .a-spring { animation: aSpring 0.5s var(--spring) forwards; }
+  @keyframes aSpring { 0% { opacity: 0; transform: scale(.8); } 60% { opacity: 1; transform: scale(1.03); } 100% { transform: scale(1); } }
+  .a-zoom { animation: aZoom 0.3s var(--ease) forwards; }
+  @keyframes aZoom { from { opacity: 0; transform: scale(1.08); filter: blur(6px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
+
+  .mEyebrow { font-family: var(--vt-mono, ui-monospace, monospace); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); }
+  .mTitle { font-size: 2rem; margin: 4px 0 0; }
+  .mMeta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-family: var(--vt-mono, ui-monospace, monospace); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mMeta .primary { color: var(--mint); } .mMeta .secondary { color: var(--muted-strong); } .mMeta .sep { opacity: 0.4; }
+  .tier { padding: 2px 8px; border: 1px solid rgba(110,231,183,0.4); border-radius: 999px; color: var(--mint); font-size: 0.66rem; letter-spacing: 0.14em; }
+  .mGist { font-size: 1.2rem; font-weight: 600; margin: 16px 0 0; }
+  .mSteps { display: flex; flex-direction: column; gap: 13px; margin-top: 16px; }
+  .mStep { display: flex; gap: 14px; align-items: baseline; }
+  .mStep .n { font-family: var(--vt-serif, serif); font-style: italic; color: var(--mint); width: 22px; flex-shrink: 0; }
+  .mStep .t { font-size: 1.02rem; font-weight: 500; }
+  .mCues { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .cue { border: 1px solid var(--border-strong); border-radius: 999px; padding: 8px 15px; color: var(--muted-strong); font-size: 0.9rem; }
+
+  /* tiny demo bar so you can feel each variant + animation ----------------- */
+  .demoBar { margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--border); display: grid; gap: 12px; }
+  .demoBar .lbl { font-family: var(--vt-mono, ui-monospace, monospace); font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { background: var(--card); border: 1px solid var(--border); color: var(--muted-strong); border-radius: 999px; padding: 6px 13px; font-size: 0.78rem; cursor: pointer; transition: border-color 150ms var(--ease), color 150ms var(--ease); }
+  .pill:hover { border-color: var(--mint); color: var(--mint); }
+  .pill[aria-pressed="true"] { background: var(--mint); color: var(--mint-ink, #042a1c); border-color: var(--mint); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modal[class*="a-"], .ib.dotpulse::after { animation: none !important; }
+    *, .scrim { animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="eyebrow">Vitality · component</div>
+  <h1 class="page">The info button</h1>
+  <p class="lede">A small mark to the right of any title that opens that title's content. Tap one.</p>
+
+  <div id="rows" data-no-vitality></div>
+
+  <div class="demoBar">
+    <div><div class="lbl">Button variant</div><div class="pills" id="vars"></div></div>
+    <div><div class="lbl">Open animation</div><div class="pills" id="anims"></div></div>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+/* The button is a BASE function: it attaches to ANY title and opens that
+   title's content from a plain object. Two examples below. */
+const TARGETS = {
+  bench: {
+    eyebrow: 'Form', title: 'Barbell bench', kind: 'Workout',
+    meta: { primary: ['Chest'], secondary: ['Front delts', 'Triceps'], tier: 'TIER 1' },
+    gist: 'The barbell chest builder.',
+    steps: ['Unrack over your chest', 'Lower slow to your neck', 'Press up and squeeze'],
+    cues: ['Lower slower than you press', 'Squeeze chest at lockout'],
+  },
+  macros: {
+    eyebrow: 'Guide', title: 'Track your macros', kind: 'Nutrition', subtitle: 'How to log a meal',
+    gist: 'Photograph it, log it, hit your targets.',
+    steps: ['Put the whole plate in frame, from above', 'Good light, no shadow over the food', 'Snap it before your first bite', 'Check the portions it detects', 'Confirm — it logs your macros'],
+    cues: ['Shoot from above', 'Natural light wins'],
+  },
+};
+
+const VARIANTS = ['i', 'eye', 'eyei', 'dot'];
+const ANIMS = ['fade', 'scale', 'slide', 'spring', 'zoom'];
+let variant = 'i';   // default: circled i
+let anim = 'spring';  // default: spring pop (the part people feel)
+
+const eyeSvg = () => '<svg class="eye" viewBox="0 0 24 24"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+function iconFor(v) {
+  return v === 'i' ? '<span class="i">i</span>'
+    : v === 'eye' ? eyeSvg()
+    : v === 'eyei' ? eyeSvg() + '<span class="eyei">i</span>'
+    : '<span class="dot"></span>';
+}
+function buttonHTML(key) {
+  const cls = `ib ghost ${variant === 'eyei' ? 'eyei-v' : ''} ${variant === 'dot' ? 'dotpulse' : ''}`;
+  return `<button class="${cls}" aria-label="More info about ${TARGETS[key].title}" data-info="${key}">${iconFor(variant)}</button>`;
+}
+
+function renderRows() {
+  document.getElementById('rows').innerHTML = Object.keys(TARGETS).map(k => {
+    const t = TARGETS[k];
+    return `<div class="titleRow"><h2 data-no-vitality style="font-family:var(--vt-serif);font-style:italic">${t.title}</h2>${buttonHTML(k)}<span class="titleKind">${t.kind}</span></div>`;
+  }).join('');
+  document.querySelectorAll('[data-info]').forEach(b => b.onclick = () => openInfo(b.dataset.info));
+}
+
+/* the popup, built from ANY target object */
+function openInfo(key) {
+  const t = TARGETS[key];
+  const roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
+  let meta = '';
+  if (t.meta) {
+    const m = t.meta;
+    const parts = [...m.primary.map(x => `<span class="primary">${x}</span>`), ...m.secondary.map(x => `<span class="secondary">${x}</span>`)].join('<span class="sep">·</span>');
+    meta = `<div class="mMeta">${parts}<span class="sep">·</span><span class="tier">${m.tier}</span></div>`;
+  } else if (t.subtitle) {
+    meta = `<div class="mMeta"><span class="secondary">${t.subtitle}</span></div>`;
+  }
+  document.getElementById('modalRoot').innerHTML = `<div class="scrim" id="scrim"><div class="modal a-${anim}" role="dialog" aria-modal="true" aria-label="${t.title}">
+    <button class="x" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="mEyebrow">${t.eyebrow}</div><h2 class="mTitle" data-no-vitality style="font-family:var(--vt-serif);font-style:italic">${t.title}</h2>
+    ${meta}<p class="mGist">${t.gist}</p>
+    <div class="mSteps">${t.steps.map((s, i) => `<div class="mStep"><span class="n">${roman[i] || i + 1}</span><span class="t">${s}</span></div>`).join('')}</div>
+    <div class="mCues">${t.cues.map(c => `<span class="cue">${c}</span>`).join('')}</div>
+  </div></div>`;
+  const scrim = document.getElementById('scrim');
+  scrim.addEventListener('click', e => { if (e.target === scrim) closeInfo(); });
+  scrim.querySelector('.x').onclick = closeInfo;
+  document.addEventListener('keydown', escClose);
+}
+function closeInfo() { document.getElementById('modalRoot').innerHTML = ''; document.removeEventListener('keydown', escClose); }
+function escClose(e) { if (e.key === 'Escape') closeInfo(); }
+
+/* demo bar */
+function chips(host, items, getCur, on) {
+  const el = document.getElementById(host);
+  el.innerHTML = items.map(x => `<button class="pill" data-k="${x}" aria-pressed="${x === getCur()}">${x}</button>`).join('');
+  el.querySelectorAll('.pill').forEach(b => b.onclick = () => {
+    on(b.dataset.k);
+    el.querySelectorAll('.pill').forEach(p => p.setAttribute('aria-pressed', String(p.dataset.k === b.dataset.k)));
+  });
+}
+chips('vars', VARIANTS, () => variant, k => { variant = k; renderRows(); });
+chips('anims', ANIMS, () => anim, k => { anim = k; openInfo('bench'); });   // preview the animation on change
+renderRows();
+</script>
+</body>
+</html>

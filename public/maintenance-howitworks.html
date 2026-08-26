@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How it works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000; --fg:#fff; --mint:#6EE7B7; --mint-soft:#a7f3d0; --mint-deep:#1f4d3d; --mint-glow:rgba(110,231,183,.4);
+    --muted:rgba(255,255,255,.5); --muted-strong:rgba(255,255,255,.72);
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.16); --card:rgba(255,255,255,.02);
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;padding:48px 22px 130px;background:radial-gradient(900px 460px at 50% -12%,rgba(110,231,183,.06),transparent 62%),var(--bg)}
+  ::selection{background:rgba(110,231,183,.28);color:#fff}
+  .wrap{max-width:520px;margin:0 auto}
+
+  .kick{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.34)}
+  h1{font-family:var(--serif);font-weight:400;font-size:36px;line-height:1.05;letter-spacing:-.01em;margin:12px 0 8px}
+  .lead{color:var(--muted-strong);font-size:14.5px;line-height:1.55;max-width:50ch}
+
+  /* the link that lives on the tile */
+  .trigger{display:inline-flex;align-items:center;gap:8px;margin:22px 0 8px;font-family:var(--sans);font-size:13px;color:var(--mint);background:none;border:none;cursor:default}
+  .trigger svg{display:block;opacity:.85}
+  .arrowHint{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:30px;display:block}
+
+  /* the explainer sheet, minimal and professional */
+  .sheet{border:1px solid var(--border-strong);border-radius:22px;background:#070807;overflow:hidden;box-shadow:0 50px 100px -55px rgba(0,0,0,.95)}
+  .sheetHead{display:flex;align-items:flex-start;justify-content:space-between;padding:26px 28px 0}
+  .sheetEy{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mint);margin-bottom:8px}
+  .sheetTitle{font-family:var(--serif);font-size:30px;line-height:1.02;letter-spacing:-.01em}
+  .x{color:var(--muted);font-size:24px;line-height:1;cursor:default;margin-top:2px}
+  .intro{padding:10px 28px 4px;color:var(--muted-strong);font-size:15px;line-height:1.5;max-width:42ch}
+  .intro b{color:var(--mint);font-weight:600}
+
+  /* three steps as a clean timeline */
+  .steps{padding:24px 28px 8px;position:relative}
+  .rail{position:absolute;left:47px;top:46px;bottom:58px;width:1px;background:linear-gradient(var(--mint-deep),rgba(110,231,183,.06))}
+  .step{display:flex;gap:18px;align-items:flex-start;padding:14px 0;position:relative}
+  .stepN{width:38px;height:38px;flex:none;border-radius:50%;background:#070807;border:1px solid var(--mint-deep);display:grid;place-items:center;color:var(--mint);position:relative;z-index:2}
+  .stepN svg{display:block}
+  .stepBody{padding-top:3px}
+  .stepBody h3{font-size:15.5px;font-weight:600;letter-spacing:-.005em;margin-bottom:3px}
+  .stepBody p{color:var(--muted-strong);font-size:13.5px;line-height:1.5;max-width:40ch}
+  .stepBody b{color:var(--mint);font-weight:600}
+
+  .sheetFoot{padding:14px 28px 26px}
+  .got{width:100%;background:var(--mint);color:#06281d;border:none;border-radius:999px;padding:13px;font:600 14.5px var(--sans);cursor:default}
+
+  .foot{margin-top:54px;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);line-height:1.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick">Maintenance · how it works · refined</div>
+  <h1>The simplest version.</h1>
+  <p class="lead">A quiet link on the tile opens this. Three steps, one line each, nothing extra. A new user understands the whole system in seconds.</p>
+
+  <button class="trigger">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+    How it works
+  </button>
+  <span class="arrowHint">↑ this link sits on the tile · tapping it opens ↓</span>
+
+  <div class="sheet">
+    <div class="sheetHead">
+      <div>
+        <div class="sheetEy">Maintenance</div>
+        <div class="sheetTitle">How it works</div>
+      </div>
+      <span class="x">&times;</span>
+    </div>
+    <p class="intro">Your plan <b>adjusts itself</b> from your real results.</p>
+
+    <div class="steps">
+      <span class="rail"></span>
+      <div class="step">
+        <span class="stepN"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v3M5 6h14M7 6l-3 7a4 4 0 0 0 8 0L9 6M17 6l-3 7a4 4 0 0 0 8 0l-3-7M9 21h6"/></svg></span>
+        <div class="stepBody">
+          <h3>You log</h3>
+          <p>Weigh in each morning. Log your meals.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="stepN"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5-5 4 3 8-8"/><path d="M21 7v5h-5"/></svg></span>
+        <div class="stepBody">
+          <h3>It learns you</h3>
+          <p>Vitality finds your <b>true calories</b> from the results, and sharpens every day.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="stepN"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></span>
+        <div class="stepBody">
+          <h3>It adjusts, weekly</h3>
+          <p>It suggests one small change. <b>You approve it</b>, nothing moves on its own.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheetFoot"><button class="got">Got it</button></div>
+  </div>
+
+  <div class="foot">Three steps · one line each · understood in seconds</div>
+</div>
+</body>
+</html>

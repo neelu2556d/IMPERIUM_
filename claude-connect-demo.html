@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hydromaxxing</title>
+  <style>
+    /* This is just a tiny example dashboard so you can see the Ask Claude button work.
+       Your real YouTube dashboard goes here instead. The only thing that matters is the
+       one <script> line near the bottom. */
+    :root {
+      --bg-deep: #050506;
+      --glass-bg: rgba(255,255,255,0.04);
+      --glass-shadow: 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 12px 40px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.25);
+      --text-primary: #FAFAFA; --text-secondary: #B8B6B0; --text-tertiary: #76746E;
+      --accent: #6BE3A4;
+      --radius-md: 12px; --radius-xl: 22px;
+      --font: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+      color-scheme: dark;
+    }
+    html, body { margin: 0; padding: 24px 16px; background: var(--bg-deep); color: var(--text-primary); font-family: var(--font); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+    .section { max-width: 680px; margin: 0 auto 24px; }
+    .section-title { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 34px; letter-spacing: -0.02em; margin: 0 0 14px; font-weight: 400; }
+    .card { background: var(--glass-bg); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius-xl); padding: 22px; margin-bottom: 12px; box-shadow: var(--glass-shadow); }
+    .count { font-size: 56px; font-weight: 700; letter-spacing: -0.02em; }
+    .count small { font-size: 16px; color: var(--text-tertiary); font-weight: 500; }
+    .row { display: flex; gap: 8px; margin-top: 16px; }
+    .btn { flex: 1; min-height: 48px; border-radius: var(--radius-md); cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 600; transition: transform 0.12s ease, background 0.18s ease; }
+    .btn:active { transform: scale(0.98); }
+    .btn-add { background: linear-gradient(180deg, #FFFFFF 0%, #E8E5DD 100%); color: #0A0A0B; border: 1px solid rgba(255,255,255,0.85); }
+    .btn-clear { background: rgba(255,255,255,0.04); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.10); }
+    .hint { font-size: 12px; color: var(--text-tertiary); font-style: italic; margin: 18px auto 0; max-width: 680px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="section">
+    <h1 class="section-title">Hydromaxxing</h1>
+    <div class="card">
+      <div class="count"><span id="count">0</span><small> / 8 glasses today</small></div>
+      <div class="row">
+        <button class="btn btn-add" id="add">Add a glass</button>
+        <button class="btn btn-clear" id="clear">Reset</button>
+      </div>
+    </div>
+  </div>
+  <p class="hint">Example dashboard. Tap Ask Claude in the corner to see the drop-in work.</p>
+
+  <script>
+    // A 10-line water tracker, just to have real data in localStorage to send to Claude.
+    var KEY = 'vitality_water_v1';
+    var state = JSON.parse(localStorage.getItem(KEY) || 'null') || { date: new Date().toLocaleDateString(), glasses: 0 };
+    function save() { localStorage.setItem(KEY, JSON.stringify(state)); render(); }
+    function render() { document.getElementById('count').textContent = state.glasses; }
+    document.getElementById('add').addEventListener('click', function () { state.glasses++; save(); });
+    document.getElementById('clear').addEventListener('click', function () { state.glasses = 0; save(); });
+    render();
+  </script>
+
+  <!-- THIS is the whole integration. One line. Name + color are optional. -->
+  <script>window.ClaudeConnect = { name: 'Hydromaxxing', accent: '#6BE3A4' };</script>
+  <script src="claude-connect.js"></script>
+</body>
+</html>

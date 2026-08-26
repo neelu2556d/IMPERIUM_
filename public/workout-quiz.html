@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Build your workout plan · Vitality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#050506; --elev:#0c0e0d; --fg:#e9efe9; --muted:#8a938c; --muted-strong:#aab3ab;
+    --mint:#6ee7b7; --mint-soft:#a7f3d0; --mint-glow:rgba(110,231,183,.45);
+    --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
+    --serif:'Instrument Serif',Georgia,serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+    --spring:cubic-bezier(0.34,1.56,0.64,1); --ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:
+      radial-gradient(80% 50% at 50% -5%,rgba(110,231,183,.05),transparent 60%),var(--bg);
+    color:var(--fg);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+    min-height:100%;display:flex;flex-direction:column;align-items:center;padding:26px 18px 60px}
+  ::selection{background:rgba(110,231,183,.28)}
+  button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+  .top{width:100%;max-width:640px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .top .ey{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mint);opacity:.85}
+  .restart{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:lowercase;color:var(--muted-strong);
+    border:1px solid var(--border2);border-radius:9px;padding:6px 11px;transition:all .18s var(--ease)}
+  .restart:hover{color:#04150f;background:var(--mint);border-color:var(--mint)}
+
+  #stage{width:100%;max-width:640px}
+
+  .card{position:relative;background:radial-gradient(120% 60% at 50% 0%,rgba(110,231,183,.07),transparent 55%),var(--elev);
+    border:1px solid var(--border2);border-radius:24px;padding:26px 30px 22px;overflow:hidden}
+  .card.out{opacity:0;transform:translateY(-10px) scale(.99);transition:opacity .2s var(--ease),transform .2s var(--ease)}
+
+  /* progress stepper */
+  .bar{display:flex;gap:5px;margin-bottom:20px}
+  .seg{flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+  .seg .f{display:block;height:100%;width:0;background:var(--mint);box-shadow:0 0 10px var(--mint-glow);
+    border-radius:99px;transition:width .5s var(--ease)}
+  .seg.past .f{width:100%}
+  .seg.now .f{width:100%;transition:width .6s var(--ease) .1s}
+
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(110,231,183,.7)}
+  .eyebrow .ct{color:var(--muted)}
+  .question{font-family:var(--serif);font-style:italic;font-weight:400;font-size:2.05rem;line-height:1.12;
+    letter-spacing:0;margin:11px 0 4px;max-width:24ch}
+  .question .w{display:inline-block;white-space:pre}
+  .subcap{display:flex;align-items:center;gap:8px;color:var(--muted-strong);font-size:.9rem;margin:4px 0 2px}
+  .subcap .hi{color:var(--mint-soft);font-weight:500}
+  .info{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;
+    border:1px solid rgba(110,231,183,.5);color:var(--mint);font-size:11px;font-style:italic;font-family:var(--serif);
+    cursor:help;position:relative;flex:none}
+  .info:hover .tip,.info.open .tip{opacity:1;transform:translateY(0);pointer-events:auto}
+  .info.open{border-color:var(--mint);background:rgba(110,231,183,.12)}
+  .tip{position:absolute;left:-4px;bottom:160%;transform:translateY(6px);width:208px;background:#0e1512;
+    border:1px solid rgba(110,231,183,.28);border-radius:14px;padding:12px 14px;
+    font-family:Inter,sans-serif;font-style:normal;opacity:0;pointer-events:none;transition:.18s ease;z-index:6;
+    box-shadow:0 16px 44px rgba(0,0,0,.55)}
+  .tip::after{content:'';position:absolute;left:16px;top:100%;border:6px solid transparent;border-top-color:rgba(110,231,183,.28)}
+  .tipT{display:block;font-size:.74rem;font-weight:600;color:var(--mint-soft);margin-bottom:4px}
+  .tipD{display:block;font-size:.82rem;line-height:1.45;color:rgba(233,239,233,.82)}
+  .hint{color:var(--muted);opacity:.85;font-style:italic;font-family:var(--serif);font-size:.92rem;margin:6px 0 0}
+
+  /* ── tappable lift words (Q2) ── */
+  .lkrow{display:inline}
+  .lk{display:inline;font:inherit;color:var(--muted-strong);text-decoration:underline;
+    text-decoration-color:rgba(110,231,183,.55);text-decoration-thickness:1.5px;text-underline-offset:3px;
+    padding:0;cursor:pointer;transition:color .15s}
+  .lk:hover{color:var(--mint-soft);text-decoration-color:var(--mint)}
+
+  /* ── form-reference sheet ── */
+  .liftSheet{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:20px}
+  .liftSheet.open{display:flex}
+  .liftSheet .scrim{position:absolute;inset:0;background:rgba(2,4,3,.74);backdrop-filter:blur(4px);
+    opacity:0;transition:opacity .25s ease}
+  .liftSheet.open .scrim{opacity:1}
+  .liftCard{position:relative;width:100%;max-width:560px;max-height:88vh;overflow:auto;
+    background:radial-gradient(120% 55% at 50% 0%,rgba(110,231,183,.07),transparent 55%),var(--elev);
+    border:1px solid var(--border2);border-radius:22px;padding:26px 28px 28px;
+    transform:translateY(16px) scale(.98);opacity:0;transition:transform .32s var(--spring),opacity .25s ease}
+  .liftSheet.open .liftCard{transform:none;opacity:1}
+  .liftClose{position:absolute;top:15px;right:15px;width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--border2);color:var(--muted-strong);display:grid;place-items:center;transition:all .16s}
+  .liftClose svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .liftClose:hover{border-color:var(--mint);color:var(--mint)}
+  .liftEy{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(110,231,183,.7)}
+  .liftName{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.95rem;margin:8px 0 11px;line-height:1.05}
+  .liftTags{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--mint);margin-bottom:18px}
+  .liftTags .sep{color:var(--muted);opacity:.6}
+  .liftPhotos{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  .liftPhotos img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;border:1px solid var(--border);background:#0a0c0b}
+  .liftWhat{font-family:var(--serif);font-style:italic;font-size:1.08rem;color:var(--fg);margin:0 0 18px;line-height:1.4}
+  .liftCues{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:13px}
+  .liftCues li{display:flex;gap:12px;color:rgba(233,239,233,.84);font-size:.95rem;line-height:1.45}
+  .liftCues li .n{flex:none;width:23px;height:23px;border-radius:50%;border:1px solid rgba(110,231,183,.4);
+    color:var(--mint);font-family:var(--mono);font-size:11px;display:grid;place-items:center;margin-top:1px}
+
+  /* ── tiles ── */
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  .tile{display:flex;align-items:center;gap:13px;text-align:left;padding:14px 16px;border-radius:15px;
+    border:1px solid var(--border2);background:rgba(255,255,255,.02);transition:border-color .18s,background .18s,transform .12s var(--spring)}
+  .tile:hover{border-color:rgba(110,231,183,.45);transform:translateY(-1px)}
+  .tile.sel{border-color:var(--mint);background:rgba(110,231,183,.07);box-shadow:0 0 0 1px rgba(110,231,183,.3),0 0 26px -10px var(--mint-glow)}
+  .full{grid-column:1/-1}
+  .ico{width:40px;height:40px;border-radius:12px;border:1px solid var(--border2);background:rgba(255,255,255,.02);
+    display:grid;place-items:center;flex:none;color:var(--mint)}
+  .ico svg{width:21px;height:21px;stroke:var(--mint);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .tl{font-family:var(--serif);font-style:italic;font-size:1.06rem;line-height:1.15}
+  .ts{display:block;color:var(--muted);font-size:.8rem;margin-top:2px;font-style:normal}
+  .check{margin-left:auto;width:22px;height:22px;border-radius:50%;background:var(--mint);color:#04110b;display:grid;place-items:center;flex:none;
+    transform:scale(0);transition:transform .26s var(--spring)}
+  .tile.sel .check{transform:scale(1)}
+  .check svg{width:12px;height:12px;stroke:#04110b;stroke-width:2.6}
+
+  /* ── chips ── */
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  .chip{padding:10px 16px;border-radius:99px;border:1px solid var(--border2);background:rgba(255,255,255,.02);
+    font-size:.92rem;display:inline-flex;align-items:center;gap:7px;transition:all .16s var(--ease)}
+  .chip:hover{border-color:rgba(110,231,183,.45)}
+  .chip.sel{border-color:var(--mint);background:rgba(110,231,183,.09);color:var(--mint-soft)}
+  .chip .ci{width:14px;height:14px;display:none}.chip.sel .ci{display:flex}
+  .chip .ci svg{stroke:var(--mint)}
+  .chip .cig{width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;margin-left:-2px}
+  .chip .cig svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .chip.sel .cig{display:none}
+
+  /* ── journey trail (Q1) ── */
+  .trail{margin:24px 4px 6px}
+  .trailRow{position:relative;display:flex;justify-content:space-between}
+  .trailLine{position:absolute;left:10%;right:10%;top:23px;height:2px;background:rgba(255,255,255,.1);border-radius:2px}
+  .trailLine .f{position:absolute;left:0;top:0;height:100%;width:0;background:var(--mint);box-shadow:0 0 10px var(--mint-glow);
+    border-radius:2px;transition:width .45s var(--ease)}
+  .node{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:9px;width:19%}
+  .dot{width:46px;height:46px;border-radius:50%;border:1px solid var(--border2);background:var(--elev);
+    display:grid;place-items:center;color:var(--muted-strong);transition:all .2s var(--spring)}
+  .dot svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .node:hover .dot{border-color:rgba(110,231,183,.5);color:var(--mint)}
+  .node.sel .dot{border-color:var(--mint);color:#04150f;background:var(--mint);box-shadow:0 0 0 5px rgba(110,231,183,.16),0 0 22px var(--mint-glow);transform:scale(1.08)}
+  .node .nl{font-family:var(--serif);font-style:italic;font-size:.82rem;line-height:1.1;text-align:center;color:var(--muted-strong)}
+  .node.sel .nl{color:var(--fg)}
+  .trailCap{min-height:20px;text-align:center;color:var(--muted);font-size:.85rem;margin-top:16px;font-style:italic;font-family:var(--serif)}
+
+  /* ── energy / charge bar (Q3) ── */
+  .energy{margin:16px 2px 2px}
+  .energyHead{display:flex;align-items:center;gap:11px;margin-bottom:18px;min-height:34px}
+  .energyHead .ebolt{width:32px;height:32px;border-radius:9px;border:1px solid var(--border2);display:grid;place-items:center;flex:none;transition:all .2s}
+  .energyHead .ebolt svg{width:17px;height:17px;stroke:var(--mint);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .energyHead.set .ebolt{border-color:var(--mint);background:rgba(110,231,183,.1);box-shadow:0 0 18px -6px var(--mint-glow)}
+  .energyHead .eword{font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.05;color:var(--muted-strong);display:block}
+  .energyHead.set .eword{color:var(--mint-soft)}
+  .energyHead .esub{display:block;font-family:Inter,sans-serif;font-size:.78rem;color:var(--muted);margin-top:1px}
+  .meter{display:flex;gap:12px;align-items:flex-end;min-height:120px;margin-top:2px}
+  .ebar{flex:1;position:relative;border-radius:14px 14px 10px 10px;border:1px solid var(--border2);overflow:hidden;cursor:pointer;
+    background:rgba(255,255,255,.02);transition:transform .14s var(--spring),border-color .18s,box-shadow .22s}
+  .ebar:hover{transform:translateY(-3px);border-color:rgba(110,231,183,.55)}
+  .ebar .lvl{position:absolute;inset:0;
+    background:linear-gradient(180deg,#c7ffe9 0%,var(--mint-soft) 26%,#2bc88a 68%,#149668 100%);
+    opacity:.32;transition:opacity .45s var(--ease)}
+  /* glossy top sheen on the lit fill */
+  .ebar .lvl::after{content:'';position:absolute;inset:0 0 auto 0;height:42%;
+    background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.04) 70%,transparent);
+    opacity:0;transition:opacity .45s var(--ease)}
+  .ebar.lit .lvl{opacity:1}
+  .ebar.lit .lvl::after{opacity:1}
+  .ebar.lit{border-color:var(--mint);box-shadow:0 0 24px -10px var(--mint-glow),inset 0 1px 0 rgba(255,255,255,.25)}
+  .ebar.sel{box-shadow:0 0 36px -3px var(--mint-glow),inset 0 1px 0 rgba(255,255,255,.3)}
+  .ebar .bz{position:absolute;top:10px;left:0;right:0;display:grid;place-items:center;opacity:0;transition:opacity .2s}
+  .ebar .bz svg{width:18px;height:18px;stroke:#04150f;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+  .ebar.sel .bz{opacity:1}
+  .energyLabels{display:flex;gap:10px;margin-top:11px}
+  .eL{flex:1;text-align:center;font-family:Inter,sans-serif;font-size:.88rem;color:var(--muted);cursor:pointer;transition:color .16s}
+  .eL:hover{color:var(--muted-strong)}
+  .eL.on{color:var(--mint-soft);font-weight:500}
+
+  /* ── body map (Q5) ── */
+  .bodywrap{display:flex;gap:18px;align-items:center;margin:18px 2px 2px;flex-wrap:wrap}
+  .figs{display:flex;gap:14px;flex:none}
+  .fig{width:108px;height:226px}
+  .fig .base{fill:rgba(255,255,255,.04);stroke:none}
+  .region{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.14);stroke-width:1.2;cursor:pointer;transition:all .18s var(--spring)}
+  .region:hover{fill:rgba(110,231,183,.18);stroke:rgba(110,231,183,.55)}
+  .region.sel{fill:rgba(110,231,183,.45);stroke:var(--mint);filter:drop-shadow(0 0 7px var(--mint-glow))}
+  .figcap{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;fill:var(--muted)}
+  .bodylist{flex:1;min-width:180px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+
+  /* ── slider (Q9 days · Q10 session) ── */
+  .slid{margin:22px 4px 2px}
+  .slidN{font-family:var(--serif);font-style:italic;font-size:2.7rem;color:var(--mint);line-height:.9}
+  .slidU{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-left:9px}
+  .slidS{display:block;color:var(--muted);font-size:.86rem;margin-top:7px;min-height:18px;font-style:italic;font-family:var(--serif)}
+  .track{position:relative;height:5px;border-radius:99px;background:rgba(255,255,255,.12);margin:26px 8px 10px;touch-action:none}
+  .track .fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--mint);box-shadow:0 0 12px var(--mint-glow)}
+  .knob{position:absolute;top:50%;width:24px;height:24px;border-radius:50%;background:var(--mint);transform:translate(-50%,-50%);
+    box-shadow:0 0 0 6px rgba(110,231,183,.16),0 0 16px var(--mint-glow);cursor:grab}
+  .knob:active{cursor:grabbing}
+  .ticks{display:flex;justify-content:space-between;margin:0 4px;font-family:var(--serif);font-style:italic;color:rgba(233,239,233,.4);font-size:.9rem}
+  .ticks b{color:var(--mint);font-weight:400}
+
+  /* ── footer ── */
+  .foot{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:15px;border-top:1px solid var(--border)}
+  .footR{display:flex;align-items:center;gap:14px}
+  .back{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:.92rem;transition:color .16s}
+  .back:hover{color:var(--fg)}
+  .replay{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:lowercase;color:var(--muted-strong);
+    border:1px solid var(--border2);border-radius:9px;padding:6px 11px;transition:all .16s var(--ease)}
+  .replay:hover{color:#04150f;background:var(--mint);border-color:var(--mint)}
+  .next{font-family:var(--serif);font-style:italic;font-size:.95rem;color:var(--muted);transition:color .16s}
+  .next:hover{color:var(--mint)}
+  .cont{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:lowercase;color:var(--muted);
+    font-style:normal;font-family:var(--serif)}
+  .contBtn{font-family:var(--serif);font-style:italic;font-size:1rem;color:#04150f;background:var(--mint);
+    border-radius:11px;padding:9px 20px;box-shadow:0 0 22px -8px var(--mint-glow);transition:transform .12s var(--spring),opacity .18s}
+  .contBtn:hover{transform:translateY(-1px)}
+  .contBtn[disabled]{opacity:.4;cursor:default;transform:none;background:rgba(255,255,255,.08);color:var(--muted)}
+
+  /* done */
+  .done{text-align:center;padding:30px 10px 18px}
+  .done .glyph{width:62px;height:62px;margin:0 auto 18px;border-radius:50%;border:1px solid var(--mint);
+    display:grid;place-items:center;color:var(--mint);box-shadow:0 0 30px -8px var(--mint-glow);animation:wFlex .6s var(--spring) both}
+  .done .glyph svg{width:30px;height:30px;stroke:var(--mint);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .done h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.7rem;margin:0 0 8px}
+  .done p{color:var(--muted);font-size:.95rem;max-width:34ch;margin:0 auto 22px;line-height:1.55}
+
+  /* ── entrance keyframes (workout-specific personalities) ── */
+  @keyframes wStamp     { 0%{opacity:0;transform:scale(1.32);filter:blur(6px)} 55%{opacity:1;transform:scale(.97);filter:blur(0)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes wTitleRise { 0%{opacity:0;transform:translateY(16px);filter:blur(4px)} 100%{opacity:1;transform:translateY(0);filter:blur(0)} }
+  @keyframes wTitlePop  { 0%{opacity:0;transform:scale(.84) translateY(8px);filter:blur(4px)} 60%{opacity:1;transform:scale(1.03);filter:blur(0)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes wTitleDrop { 0%{opacity:0;transform:translateY(-18px);filter:blur(4px)} 60%{opacity:1;transform:translateY(4px)} 100%{opacity:1;transform:translateY(0);filter:blur(0)} }
+  @keyframes wWord      { 0%{opacity:0;transform:translateY(13px) scale(.92);filter:blur(3px)} 60%{opacity:1;transform:translateY(0) scale(1.03);filter:blur(0)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes wPlate     { 0%{opacity:0;transform:translateX(-30px) rotate(-3deg)} 60%{opacity:1;transform:translateX(4px) rotate(.6deg)} 100%{opacity:1;transform:none} }
+  @keyframes wLift      { 0%{opacity:0;transform:translateY(26px) scale(.96)} 60%{opacity:1;transform:translateY(-4px) scale(1.01)} 100%{opacity:1;transform:none} }
+  @keyframes wCharge    { 0%{opacity:0;transform:scale(.9);filter:blur(4px)} 50%{opacity:1;transform:scale(1.05);filter:blur(0)} 72%{transform:scale(.99)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes wFlex      { 0%{opacity:0;transform:scale(.7)} 65%{opacity:1;transform:scale(1.12)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes wDrop      { 0%{opacity:0;transform:translateY(-20px) scale(.95)} 60%{opacity:1;transform:translateY(3px)} 100%{opacity:1;transform:none} }
+  @keyframes wDeal      { 0%{opacity:0;transform:translateY(20px) scale(.95) rotate(var(--rot,-2deg))} 100%{opacity:1;transform:none} }
+  @keyframes wIcoPop    { 0%{opacity:0;transform:scale(.3) rotate(-12deg)} 70%{opacity:1;transform:scale(1.18) rotate(4deg)} 100%{opacity:1;transform:scale(1) rotate(0)} }
+
+  .tStamp{display:inline-block;transform-origin:center top;opacity:0;animation:wStamp .58s var(--spring) both}
+  .tRise {display:inline-block;opacity:0;animation:wTitleRise .5s var(--ease) both}
+  .tPop  {display:inline-block;opacity:0;animation:wTitlePop .55s var(--spring) both}
+  .tDrop {display:inline-block;opacity:0;animation:wTitleDrop .56s var(--spring) both}
+  .eWord {opacity:0;animation:wWord .56s var(--spring) both;animation-delay:var(--wd,0s)}
+  .ePlate{opacity:0;animation:wPlate .42s var(--spring) both;animation-delay:var(--d,0s)}
+  .eLift {opacity:0;animation:wLift .42s var(--spring) both;animation-delay:var(--d,0s)}
+  .eCharge{opacity:0;animation:wCharge .44s var(--spring) both;animation-delay:var(--d,0s)}
+  .eFlex {opacity:0;animation:wFlex .42s var(--spring) both;animation-delay:var(--d,0s)}
+  .eDrop {opacity:0;animation:wDrop .42s var(--spring) both;animation-delay:var(--d,0s)}
+  .eDeal {opacity:0;animation:wDeal .44s var(--spring) both;animation-delay:var(--d,0s)}
+  .eIco  {opacity:0;animation:wIcoPop .5s var(--spring) both;animation-delay:var(--id,0s)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.eWord,.tStamp,.tRise,.tPop,.tDrop,.ePlate,.eLift,.eCharge,.eFlex,.eDrop,.eDeal,.eIco{opacity:1!important}}
+
+  @media (max-width:560px){
+    .card{padding:22px 18px 18px;border-radius:20px}
+    .question{font-size:1.5rem}
+    .opts{grid-template-columns:1fr}
+    .node .nl{font-size:.74rem}
+    .dot{width:42px;height:42px}
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="ey">workout intake · animated revamp</div>
+    <button class="restart" id="restart">restart ↺</button>
+  </div>
+  <div id="stage"></div>
+
+<script>
+/* ───────── icons ───────── */
+const I = {
+  check:'<svg viewBox="0 0 16 16"><path d="M3 8.5 7 12l6-7.5"/></svg>',
+  seed:'<svg viewBox="0 0 24 24"><path d="M12 21v-7"/><path d="M12 14c-3.3 0-5-2-5-5.5 3.3 0 5 2 5 5.5z"/><path d="M12 13c0-2.6 1.7-4.5 4.5-4.5C16.5 11 14.8 13 12 13z"/></svg>',
+  steps:'<svg viewBox="0 0 24 24"><path d="M4 18h3v-4h4v-4h4V6h4"/></svg>',
+  peak:'<svg viewBox="0 0 24 24"><path d="M3 18l5.5-9 3.5 4.5L15 8l6 10z"/></svg>',
+  cycle:'<svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 0 1 12-4.5"/><path d="M19 12a7 7 0 0 1-12 4.5"/><path d="M17 4v3.5h-3.5M7 20v-3.5h3.5"/></svg>',
+  refresh:'<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 5v6h-6"/></svg>',
+  dumbbell:'<svg viewBox="0 0 24 24"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/></svg>',
+  shuffle:'<svg viewBox="0 0 24 24"><path d="M3 6h4l10 12h4M3 18h4l3-3.5M21 6h-4l-3 3.5"/><path d="M18 3l3 3-3 3M18 15l3 3-3 3"/></svg>',
+  growth:'<svg viewBox="0 0 24 24"><polyline points="4 15 9 10 13 14 20 6"/><polyline points="15 6 20 6 20 11"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24"><path d="M13 3 4 14h6l-1 7 9-11h-6l1-7z"/></svg>',
+  heart:'<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-9.5-9C1 8 2.5 4.5 6 4.5c2 0 3 1.3 4 2.5 1-1.2 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 15.5 12 20 12 20z"/></svg>',
+  grid1:'<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="12" cy="12" r="2.4"/></svg>',
+  dots3:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>',
+  rows:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="5" rx="1.5"/></svg>',
+  grid4:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="8" cy="8" r="1.8"/><circle cx="16" cy="8" r="1.8"/><circle cx="8" cy="16" r="1.8"/><circle cx="16" cy="16" r="1.8"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
+  barbell:'<svg viewBox="0 0 24 24"><path d="M2 12h2M20 12h2M5 8v8M7 9v6M17 9v6M19 8v8M7 12h10"/></svg>',
+  building:'<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>',
+  clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  home:'<svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/></svg>',
+  person:'<svg viewBox="0 0 24 24"><circle cx="12" cy="6" r="2.5"/><path d="M12 9v6M8 11l4 1 4-1M9 20l3-5 3 5"/></svg>',
+  desk:'<svg viewBox="0 0 24 24"><rect x="4" y="6" width="14" height="9" rx="1"/><path d="M3 19h18M9 19v-4"/></svg>',
+  walk:'<svg viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="1.8"/><path d="M13 8l-2 5 3 3 1 4M11 13l-3 1M14 11l3 1"/></svg>',
+  ball:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12a9 9 0 0 0 18 0"/></svg>',
+  run:'<svg viewBox="0 0 24 24"><circle cx="14" cy="4.5" r="1.8"/><path d="M14 8l-3 3 2 3-1 5M11 11l-4 2M13 14l3 1 1 3"/></svg>',
+  bike:'<svg viewBox="0 0 24 24"><circle cx="6" cy="17" r="3.2"/><circle cx="18" cy="17" r="3.2"/><path d="M6 17l4-7h5l3 7M10 10l-1-3h-2"/></svg>',
+  flame:'<svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 4.5 4.5 4.5 8.5A4.5 4.5 0 0 1 12 16a4.5 4.5 0 0 1-4.5-4.5c0-1.6.7-2.6 1.7-3.6C10 11 11.5 9 12 3z"/></svg>',
+  gauge:'<svg viewBox="0 0 24 24"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l3.5-3"/><circle cx="12" cy="15" r="1.2" fill="currentColor" stroke="none"/></svg>',
+  target:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/></svg>',
+  // Q12 avoid-chip glyphs (simple)
+  avNothing:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4 4L19 7"/></svg>',
+  avSquat:'<svg viewBox="0 0 24 24"><path d="M12 4v8"/><path d="M8.5 9.5 12 13l3.5-3.5"/><path d="M5 19h14"/></svg>',
+  avDead:'<svg viewBox="0 0 24 24"><path d="M5 18h14"/><path d="M12 18V8"/><path d="M8.5 8h7"/></svg>',
+  avPress:'<svg viewBox="0 0 24 24"><path d="M12 19V9"/><path d="M8.5 12.5 12 9l3.5 3.5"/><path d="M5 5h14"/></svg>',
+  avPull:'<svg viewBox="0 0 24 24"><path d="M4 12h9"/><path d="M9.5 8.5 13 12l-3.5 3.5"/><path d="M19 5v14"/></svg>',
+  avJump:'<svg viewBox="0 0 24 24"><path d="M12 4 8.5 9h2.5v5h2V9h2.5z"/><path d="M6 19h12"/></svg>',
+  avBench:'<svg viewBox="0 0 24 24"><path d="M4 13h16"/><path d="M6 13v5M18 13v5"/><path d="M9 9.5h6"/></svg>',
+  avSpine:'<svg viewBox="0 0 24 24"><path d="M12 4v15"/><path d="M12 7.5h4M12 11h4M12 14.5h4"/></svg>',
+};
+const ic = n => `<span class="ico"><svg viewBox="0 0 24 24">${(I[n]||'').replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg></span>`;
+
+/* ───────── animation personalities ───────── */
+const P = {
+  hoist :{word:'eWord',   opt:'eLift'},
+  rack  :{title:'tStamp', opt:'ePlate'},
+  charge:{title:'tStamp', opt:'eCharge'},
+  flex  :{title:'tPop',   opt:'eFlex'},
+  drop  :{title:'tDrop',  opt:'eDrop'},
+  deal  :{title:'tPop',   opt:'eDeal', tilt:true},
+  rise  :{title:'tRise',  opt:'eLift'},
+};
+
+/* ───────── questions ───────── */
+const Q = [
+ {ch:'who you are', anim:'hoist', type:'journey',
+  q:'How long have you been training?',
+  nodes:[['seed','New'],['steps','A few years'],['peak','Seasoned'],['cycle','Coming back'],['refresh','Starting over']],
+  caps:['Under a year, or just starting.','One to three years in.','Three years plus under the bar.','Lifted before, off under 6 months.','Off 6+ months, basically fresh.']},
+
+ {ch:'who you are', anim:'deal', type:'tiles',
+  q:'How are you with the big lifts?',
+  subcap:'<span class="lkrow"><button class="lk" data-lift="squat">Squat</button>, <button class="lk" data-lift="bench">bench</button>, <button class="lk" data-lift="deadlift">deadlift</button>. Tap any to see it. New to them is totally fine.</span>',
+  opts:[['dumbbell','Rock solid','feel like home'],['dumbbell','Getting there','still on form'],['dumbbell','Still learning','keep them light'],['shuffle','I skip them','I prefer machines']]},
+
+ {ch:'who you are', anim:'charge', type:'energy',
+  q:"How's recovery been, sleep and stress?",
+  levels:[['Rough',"right now it's a lot"],['Stressed','short on sleep'],['Okay','normal busy life'],['Great','7+ hrs, feels good']]},
+
+ {ch:'what you want', anim:'flex', type:'tiles',
+  q:'What should your training focus on?',
+  opts:[['dumbbell','Get stronger','heavier on the bar'],['growth','Build muscle','size and shape'],['bolt','Athletic','power and conditioning'],['heart','Health','feel good, stay mobile']]},
+
+ {ch:'what you want', anim:'rise', type:'bodymap',
+  q:'Any muscles you want to bring up?',
+  subcap:'<span class="lkrow"><span class="hi">Tap the body</span>, or <span class="hi">skip</span> if it\'s all even.</span>',
+  muscles:['Chest','Back','Shoulders','Arms','Legs','Glutes']},
+
+ {ch:'how you train', anim:'rack', type:'tiles',
+  q:'How do you like to split your week?',
+  info:['What\'s a split?','How you divide your training week. Not sure? Pick "build it for me".'],
+  opts:[['grid1','One group a day','the classic bro split'],['dots3','Push, pull, legs','grouped by movement'],['rows','Upper, then lower','alternate top and bottom'],['grid4','Full body','everything each session'],['star','Build it for me','I trust the engine']]},
+
+ {ch:'how you train', anim:'drop', type:'tiles',
+  q:'What do you reach for first?',
+  opts:[['barbell','Barbell','give me the bar'],['dumbbell','Dumbbells','feels best on my body'],['building','Machines','locked-in, dialed-in'],['shuffle','Cables','constant tension'],['grid4','Mix it all','no strong preference']]},
+
+ {ch:'how you train', anim:'deal', type:'tiles',
+  q:'When a set gets hard, where do you stop?',
+  info:['Reps in reserve','How close to your limit you stop. No wrong answer.'],
+  opts:[['flame','At failure','nothing left in the tank'],['gauge','A rep or two left','clean, grindy reps'],['target','Three-ish left','quality reps only'],['shuffle','Depends on the lift','hard on isolations']]},
+
+ {ch:'how you train', anim:'rise', type:'slider',
+  q:'How many days a week do you want to train?',
+  subcap:'<span class="lkrow">This <span class="hi">builds your split</span>. Land between two for a half, like <span class="hi">4 to 5</span>.</span>',
+  range:{min:2,max:7,step:.5,val:4.5}, unit:'days a week',
+  blurb:v=>v<=2.5?'lean and focused':v<=4?'a steady rhythm':v<=5.5?'serious volume':'you live in the gym'},
+
+ {ch:'how you train', anim:'hoist', type:'slider',
+  q:'How long are your sessions?',
+  stops:[['Under 45','in, work, out'],['45–60','the standard session'],['60–75','room for accessories'],['75+','no rush, full programming']],
+  val:1, unit:'minutes'},
+
+ {ch:'how you train', anim:'flex', type:'tiles',
+  q:'What do you have to train with?',
+  opts:[['building','Full gym','racks, machines, cables'],['home','Home gym','barbell, plates, rack'],['dumbbell','Dumbbells only','plus maybe a bench'],['person','Bodyweight + bands','no free weights'],['shuffle','It varies','gym some, home others']]},
+
+ {ch:'your body', anim:'rack', type:'chips',
+  q:'Anything your body needs you to avoid?',
+  subcap:'<span class="lkrow">Flag a lift you <span class="hi">hate</span> or simply <span class="hi">can\'t do</span>.</span>',
+  chips:[['avNothing','Nothing'],['avSquat','Heavy squats'],['avDead','Heavy deadlifts'],['avPress','Overhead pressing'],['avPull','Heavy pulling'],['avJump','Jumping'],['avBench','Bench press'],['avSpine','Lower-back loading']]},
+
+ {ch:'your body', anim:'drop', type:'tiles',
+  q:'Outside lifting, how active is your week?',
+  opts:[['desk','Mostly sitting','desk job, lifting is the workout'],['walk','Daily movement','active, not training'],['ball','I play a sport','BJJ, soccer, climbing'],['run','I run regularly','3+ runs a week'],['bike','Low-impact cardio','cycling, rowing'],['heart','Cardio first','lifting supports it']]},
+];
+const TOTAL = Q.length;
+
+/* ───────── state ───────── */
+let cur = 0;
+const ans = {};
+const stage = document.getElementById('stage');
+
+/* ───────── builders ───────── */
+function splitTitle(t){return t.split(' ').map(w=>`<span class="w">${w} </span>`).join('');}
+function stepper(){
+  let s='';
+  for(let i=0;i<TOTAL;i++) s+=`<div class="seg ${i<cur?'past':i===cur?'now':''}"><span class="f"></span></div>`;
+  return `<div class="bar">${s}</div>`;
+}
+function head(c){
+  const infoTip = c.info?`<span class="info">i<span class="tip"><span class="tipT">${c.info[0]}</span><span class="tipD">${c.info[1]}</span></span></span>`:'';
+  const sub = c.subcap?`<div class="subcap">${c.subcap}${infoTip}</div>`:'';
+  const qInfo = (c.info && !c.subcap)?` ${infoTip}`:'';
+  const hint = c.hint?`<p class="hint">${c.hint}</p>`:'';
+  return `${stepper()}
+    <div class="eyebrow">${c.ch} <span class="ct">· ${cur+1} of ${TOTAL}</span></div>
+    <h2 class="question">${splitTitle(c.q)}${qInfo}</h2>${sub}${hint}`;
+}
+
+function body(c){
+  if(c.type==='tiles'){
+    const odd = c.opts.length%2===1;
+    return `<div class="opts">`+c.opts.map((o,i)=>{
+      const sel = ans[cur]===i;
+      const fz = (odd && i===c.opts.length-1)?'full':'';
+      return `<button class="tile stg ${fz} ${sel?'sel':''}" data-i="${i}">${ic(o[0])}
+        <span><span class="tl">${o[1]}</span><span class="ts">${o[2]}</span></span>
+        <span class="check">${I.check}</span></button>`;
+    }).join('')+`</div>`;
+  }
+  if(c.type==='chips'){
+    const set = ans[cur]||[];
+    return `<div class="chips">`+c.chips.map((l,i)=>{
+      const label = Array.isArray(l)?l[1]:l;
+      const icon = Array.isArray(l)?`<span class="cig">${I[l[0]]||''}</span>`:'';
+      return `<button class="chip stg ${set.includes(i)?'sel':''}" data-i="${i}"><span class="ci">${I.check}</span>${icon}${label}</button>`;
+    }).join('')+`</div>`;
+  }
+  if(c.type==='journey'){
+    const sel = ans[cur];
+    const pct = sel==null?0:(sel/(c.nodes.length-1))*100;
+    return `<div class="trail">
+      <div class="trailRow"><div class="trailLine"><div class="f" style="width:${pct}%"></div></div>`+
+      c.nodes.map((n,i)=>`<button class="node stg ${ans[cur]===i?'sel':''}" data-i="${i}">
+        <span class="dot">${ic(n[0]).replace('class="ico"','class="dotic"')}</span><span class="nl">${n[1]}</span></button>`
+      ).join('')+`</div>
+      <div class="trailCap">${sel==null?'Tap where you are.':c.caps[sel]}</div></div>`;
+  }
+  if(c.type==='energy'){
+    const sel = ans[cur];
+    const head = `<div class="energyHead ${sel!=null?'set':''}">
+      <span class="ebolt">${I.bolt}</span>
+      <span><span class="eword">${sel==null?'How charged do you feel?':c.levels[sel][0]}</span>${sel!=null?`<span class="esub">${c.levels[sel][1]}</span>`:''}</span></div>`;
+    const heights=[42,64,86,108];
+    const bars = c.levels.map((l,i)=>{
+      const lit = sel!=null && i<=sel;
+      return `<button class="ebar stg ${lit?'lit':''} ${sel===i?'sel':''}" data-i="${i}" style="height:${heights[i]}px">
+        <span class="lvl"></span><span class="bz">${I.bolt}</span></button>`;
+    }).join('');
+    const labels = c.levels.map((l,i)=>`<div class="eL ${sel===i?'on':''}" data-i="${i}">${l[0]}</div>`).join('');
+    return `<div class="energy">${head}<div class="meter">${bars}</div><div class="energyLabels">${labels}</div></div>`;
+  }
+  if(c.type==='bodymap'){
+    const set = ans[cur]||[];
+    const isSel = m => set.includes(c.muscles.indexOf(m));
+    const R = (m,d)=>`<path class="region ${isSel(m)?'sel':''}" data-m="${m}" d="${d}"/>`;
+    // smooth anatomical silhouette built from muscle-group paths + neutral base filler
+    const SILHOUETTE = "M54,30 C50,38 46,40 40,42 C33,43 28,47 27,55 L25,104 C25,116 27,124 30,128 C32,131 35,130 36,126 C38,118 38,110 38,100 L40,66 C41,60 43,56 45,52 C47,70 46,95 45,110 C44,116 43,120 44,126 L45,176 C46,200 48,224 50,238 C50,242 56,242 56,238 C57,224 58,200 58,176 L59,130 C59,128 60,127 60,127 C60,127 61,128 61,130 L61,176 C62,200 64,224 64,238 C64,242 70,242 70,238 C72,224 74,200 75,176 L76,126 C77,120 76,116 75,110 C74,95 73,70 75,52 C77,56 79,60 80,66 L82,100 C82,110 82,118 84,126 C85,130 88,131 90,128 C93,124 95,116 95,104 L93,55 C92,47 87,43 80,42 C74,40 70,38 66,30 Z";
+    const front = `<svg class="fig stg" viewBox="0 0 120 250">
+      <path class="base" d="${SILHOUETTE}"/>
+      <circle class="base" cx="60" cy="18" r="13"/>
+      ${R('Shoulders','M31,47 Q30,43 36,42 Q44,42 47,49 Q48,55 42,57 Q34,57 31,52 Z')}
+      ${R('Shoulders','M89,47 Q90,43 84,42 Q76,42 73,49 Q72,55 78,57 Q86,57 89,52 Z')}
+      ${R('Chest','M48,54 Q60,52 72,54 Q75,62 71,71 Q66,75 60,73 Q54,75 49,71 Q45,62 48,54 Z')}
+      ${R('Arms','M30,52 Q25,54 24,63 L26,103 Q27,117 31,126 Q34,128 36,125 Q38,115 37,103 L39,65 Q39,57 35,53 Z')}
+      ${R('Arms','M90,52 Q95,54 96,63 L94,103 Q93,117 89,126 Q86,128 84,125 Q82,115 83,103 L81,65 Q81,57 85,53 Z')}
+      ${R('Legs','M49,121 Q43,125 43,137 L45,182 Q46,205 49,228 Q50,240 54,240 Q58,239 58,225 L59,178 Q60,148 59,127 Q58,121 53,120 Z')}
+      ${R('Legs','M71,121 Q77,125 77,137 L75,182 Q74,205 71,228 Q70,240 66,240 Q62,239 62,225 L61,178 Q60,148 61,127 Q62,121 67,120 Z')}
+      <text class="figcap" x="60" y="247" text-anchor="middle">front</text></svg>`;
+    const back = `<svg class="fig stg" viewBox="0 0 120 250">
+      <path class="base" d="${SILHOUETTE}"/>
+      <circle class="base" cx="60" cy="18" r="13"/>
+      ${R('Shoulders','M31,47 Q30,43 36,42 Q44,42 47,49 Q48,55 42,57 Q34,57 31,52 Z')}
+      ${R('Shoulders','M89,47 Q90,43 84,42 Q76,42 73,49 Q72,55 78,57 Q86,57 89,52 Z')}
+      ${R('Back','M47,45 Q60,42 73,45 Q77,60 74,86 Q67,94 60,92 Q53,94 46,86 Q43,60 47,45 Z')}
+      ${R('Arms','M30,52 Q25,54 24,63 L26,103 Q27,117 31,126 Q34,128 36,125 Q38,115 37,103 L39,65 Q39,57 35,53 Z')}
+      ${R('Arms','M90,52 Q95,54 96,63 L94,103 Q93,117 89,126 Q86,128 84,125 Q82,115 83,103 L81,65 Q81,57 85,53 Z')}
+      ${R('Glutes','M48,90 Q60,96 72,90 Q76,103 72,117 Q60,124 48,117 Q44,103 48,90 Z')}
+      ${R('Legs','M49,118 Q43,124 43,137 L45,182 Q46,205 49,228 Q50,240 54,240 Q58,239 58,225 L59,178 Q60,148 59,124 Q58,118 53,117 Z')}
+      ${R('Legs','M71,118 Q77,124 77,137 L75,182 Q74,205 71,228 Q70,240 66,240 Q62,239 62,225 L61,178 Q60,148 61,124 Q62,118 67,117 Z')}
+      <text class="figcap" x="60" y="247" text-anchor="middle">back</text></svg>`;
+    const list = c.muscles.map((m,i)=>
+      `<button class="chip mchip ${set.includes(i)?'sel':''}" data-m="${m}"><span class="ci">${I.check}</span>${m}</button>`
+    ).join('');
+    return `<div class="bodywrap"><div class="figs">${front}${back}</div><div class="bodylist">${list}</div></div>`;
+  }
+  if(c.type==='slider'){
+    return `<div class="slid stg" id="slid"></div>`;
+  }
+  return '';
+}
+
+function footer(c){
+  const back = cur>0?`<button class="back" id="back">← back</button>`:`<button class="back" id="back" style="visibility:hidden">.</button>`;
+  const single = c.type==='tiles'||c.type==='journey'||c.type==='energy';
+  const replay = `<button class="replay" id="replay">replay ▶</button>`;
+  let right;
+  if(single){
+    right = `<button class="next" id="next">${cur===TOTAL-1?'finish →':'next →'}</button>`;
+  } else {
+    const label = cur===TOTAL-1?'see your split →':'continue →';
+    right = `<button class="contBtn" id="cont">${label}</button>`;
+  }
+  return `<div class="foot">${back}<div class="footR">${replay}${right}</div></div>`;
+}
+
+/* ───────── render + animate ───────── */
+function render(dir){
+  const c = Q[cur];
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = head(c)+body(c)+footer(c);
+  stage.innerHTML=''; stage.appendChild(card);
+  if(c.type==='slider') mountSlider(card,c);
+  wire(card,c);
+  requestAnimationFrame(()=>animateIn(card,c));
+}
+
+function animateIn(card,c){
+  const cfg = P[c.anim]||P.rise;
+  const title = card.querySelector('.question');
+  if(cfg.word){
+    [...title.querySelectorAll('.w')].forEach((w,i)=>{w.classList.add(cfg.word);w.style.setProperty('--wd',(i*0.05)+'s');});
+  } else {
+    title.classList.add(cfg.title);
+  }
+  const items = [...card.querySelectorAll('.stg')];
+  items.forEach((el,i)=>{
+    const d = 0.22 + i*0.085;   // title leads, items follow in a clean, non-overlapping cascade
+    el.classList.add(cfg.opt);
+    el.style.setProperty('--d', d+'s');
+    if(cfg.tilt) el.style.setProperty('--rot', i%2?'1.2deg':'-1.2deg');
+    const icn = el.querySelector('.ico');
+    if(icn){ icn.classList.add('eIco'); icn.style.setProperty('--id',(d+0.06)+'s'); }
+  });
+}
+
+const ALL_ENT = ['eWord','tStamp','tRise','tPop','tDrop','ePlate','eLift','eCharge','eFlex','eDrop','eDeal','eIco'];
+function replayAnim(card,c){
+  const title=card.querySelector('.question');
+  title.classList.remove(...ALL_ENT);
+  [...title.querySelectorAll('.w')].forEach(w=>{w.classList.remove(...ALL_ENT);w.style.removeProperty('--wd');});
+  card.querySelectorAll('.stg').forEach(el=>{el.classList.remove(...ALL_ENT);el.style.removeProperty('--d');
+    const i=el.querySelector('.ico'); if(i){i.classList.remove(...ALL_ENT);i.style.removeProperty('--id');}});
+  void card.offsetWidth; // reflow so the animation re-triggers
+  animateIn(card,c);
+}
+
+function leave(then){
+  const card = stage.querySelector('.card');
+  if(!card){then();return;}
+  card.classList.add('out');
+  setTimeout(then,190);
+}
+function go(n){
+  if(n>=TOTAL){ finish(); return; }
+  if(n<0) n=0;
+  const dir = n>cur?1:-1;
+  leave(()=>{ cur=n; render(dir); });
+}
+
+/* ───────── wiring ───────── */
+/* ───────── lift form-reference sheet ───────── */
+const LIFTS = {
+  squat:{name:'Squat', tags:['Legs','Glutes','Core'],
+    imgs:['/exercise-refs/back_squat/0.jpg','/exercise-refs/back_squat/1.jpg'],
+    what:'A bar rests across your upper back. You sit down, then stand back up.',
+    cues:['Bar on your upper back, feet about shoulder-width apart.','Sit down like into a low chair until your thighs reach parallel.','Drive through your heels and stand back up tall.']},
+  bench:{name:'Bench press', tags:['Chest','Shoulders','Triceps'],
+    imgs:['/exercise-refs/bench_bb/0.jpg','/exercise-refs/bench_bb/1.jpg'],
+    what:'Lying flat on a bench, you press a bar up off your chest.',
+    cues:['Lie back and grip the bar a little wider than your shoulders.','Lower it slowly to your mid-chest.','Press it back up until your arms are straight.']},
+  deadlift:{name:'Deadlift', tags:['Back','Glutes','Hamstrings'],
+    imgs:['/exercise-refs/conv_dl/0.jpg','/exercise-refs/conv_dl/1.jpg'],
+    what:'Lifting a loaded bar from the floor up to standing.',
+    cues:['Stand with the bar over your mid-foot, hands just outside your knees.','Keep your back flat and your chest up.','Push the floor away to stand tall, then lower it back down.']},
+};
+let liftSheetEl=null;
+const xIcon='<svg viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15"/></svg>';
+function buildLiftSheet(){
+  const el=document.createElement('div'); el.className='liftSheet';
+  el.innerHTML='<div class="scrim"></div><div class="liftCard" role="dialog" aria-modal="true"></div>';
+  document.body.appendChild(el);
+  el.querySelector('.scrim').onclick=closeLift;
+  liftSheetEl=el; return el;
+}
+function openLift(key){
+  const L=LIFTS[key]; if(!L) return;
+  const el=liftSheetEl||buildLiftSheet();
+  const tags=L.tags.map(t=>`<span>${t}</span>`).join('<span class="sep">·</span>');
+  const photos=L.imgs.map(s=>`<img src="${s}" alt="${L.name}" loading="lazy">`).join('');
+  const cues=L.cues.map((c,i)=>`<li><span class="n">${i+1}</span><span>${c}</span></li>`).join('');
+  el.querySelector('.liftCard').innerHTML=
+    `<button class="liftClose" aria-label="Close">${xIcon}</button>
+     <div class="liftEy">Form reference</div>
+     <h3 class="liftName">${L.name}</h3>
+     <div class="liftTags">${tags}</div>
+     <div class="liftPhotos">${photos}</div>
+     <p class="liftWhat">${L.what}</p>
+     <ol class="liftCues">${cues}</ol>`;
+  el.querySelector('.liftClose').onclick=closeLift;
+  el.classList.add('open');
+  document.addEventListener('keydown',escClose);
+}
+function closeLift(){ if(liftSheetEl) liftSheetEl.classList.remove('open'); document.removeEventListener('keydown',escClose); }
+function escClose(e){ if(e.key==='Escape') closeLift(); }
+
+function wire(card,c){
+  const back = card.querySelector('#back'); if(back) back.onclick=()=>go(cur-1);
+  const cont = card.querySelector('#cont'); if(cont) cont.onclick=()=>go(cur+1);
+  const next = card.querySelector('#next'); if(next) next.onclick=()=>go(cur+1);
+  const rep = card.querySelector('#replay'); if(rep) rep.onclick=()=>replayAnim(card,c);
+  card.querySelectorAll('.info').forEach(inf=>inf.onclick=e=>{
+    e.stopPropagation();
+    const wasOpen=inf.classList.contains('open');
+    card.querySelectorAll('.info').forEach(x=>x.classList.remove('open'));
+    if(!wasOpen) inf.classList.add('open');
+  });
+  card.querySelectorAll('.lk').forEach(b=>b.onclick=e=>{ e.stopPropagation(); openLift(b.dataset.lift); });
+
+  if(c.type==='tiles'){
+    card.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{
+      const i=+t.dataset.i; ans[cur]=i;
+      card.querySelectorAll('.tile').forEach(x=>x.classList.toggle('sel',x===t));
+      setTimeout(()=>go(cur+1),300);
+    });
+  }
+  if(c.type==='journey'){
+    card.querySelectorAll('.node').forEach(n=>n.onclick=()=>{
+      const i=+n.dataset.i; ans[cur]=i;
+      card.querySelectorAll('.node').forEach(x=>x.classList.toggle('sel',x===n));
+      const pct=(i/(c.nodes.length-1))*100;
+      card.querySelector('.trailLine .f').style.width=pct+'%';
+      card.querySelector('.trailCap').textContent=c.caps[i];
+      setTimeout(()=>go(cur+1),360);
+    });
+  }
+  if(c.type==='energy'){
+    const bars=[...card.querySelectorAll('.ebar')], labs=[...card.querySelectorAll('.eL')];
+    const apply=i=>{
+      ans[cur]=i;
+      bars.forEach((x,xi)=>{ x.classList.toggle('lit',xi<=i); x.classList.toggle('sel',xi===i); });
+      labs.forEach((x,xi)=>x.classList.toggle('on',xi===i));
+      const head=card.querySelector('.energyHead');
+      if(head){ head.classList.add('set'); head.querySelector('.eword').textContent=c.levels[i][0];
+        let es=head.querySelector('.esub'); if(!es){es=document.createElement('span');es.className='esub';head.querySelector('.eword').after(es);} es.textContent=c.levels[i][1]; }
+      setTimeout(()=>go(cur+1),470);
+    };
+    bars.forEach(b=>b.onclick=()=>apply(+b.dataset.i));
+    labs.forEach(l=>l.onclick=()=>apply(+l.dataset.i));
+  }
+  if(c.type==='chips'){
+    const set = ans[cur]||(ans[cur]=[]);
+    card.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>{
+      const i=+ch.dataset.i; const k=set.indexOf(i);
+      if(i===0){ set.length=0; set.push(0); } // "Nothing" clears others
+      else { const z=set.indexOf(0); if(z>-1) set.splice(z,1); if(k>-1) set.splice(k,1); else set.push(i); }
+      card.querySelectorAll('.chip').forEach(x=>x.classList.toggle('sel',set.includes(+x.dataset.i)));
+    });
+  }
+  if(c.type==='bodymap'){
+    const set = ans[cur]||(ans[cur]=[]);
+    const sync=()=>{
+      card.querySelectorAll('.region').forEach(rg=>rg.classList.toggle('sel',set.includes(c.muscles.indexOf(rg.dataset.m))));
+      card.querySelectorAll('.mchip').forEach(ch=>ch.classList.toggle('sel',set.includes(c.muscles.indexOf(ch.dataset.m))));
+    };
+    const toggle=m=>{ const i=c.muscles.indexOf(m); const k=set.indexOf(i); if(k>-1)set.splice(k,1); else set.push(i); sync(); };
+    card.querySelectorAll('.region').forEach(rg=>rg.onclick=()=>toggle(rg.dataset.m));
+    card.querySelectorAll('.mchip').forEach(ch=>ch.onclick=()=>toggle(ch.dataset.m));
+  }
+}
+
+/* ───────── slider component (continuous + discrete) ───────── */
+function mountSlider(card,c){
+  const host = card.querySelector('#slid');
+  const discrete = !!c.stops;
+  let val = ans[cur]!=null ? ans[cur] : (discrete?c.val:c.range.val);
+  const min = discrete?0:c.range.min, max = discrete?c.stops.length-1:c.range.max, step = discrete?1:c.range.step;
+
+  function disp(){
+    if(discrete) return c.stops[val][0];
+    return Number.isInteger(val)?val:(Math.floor(val)+'–'+Math.ceil(val));
+  }
+  function subline(){
+    if(discrete) return c.stops[val][1];
+    return c.blurb?c.blurb(val):'';
+  }
+  function ticks(){
+    if(discrete) return c.stops.map((s,i)=>`<span>${i===val?`<b>${s[0]}</b>`:s[0]}</span>`).join('');
+    const out=[]; for(let v=c.range.min;v<=c.range.max;v++) out.push(`<span>${v===Math.round(val)&&Number.isInteger(val)?`<b>${v}</b>`:v}</span>`);
+    return out.join('');
+  }
+  function draw(){
+    const pct=((val-min)/(max-min))*100;
+    host.innerHTML=`<span class="slidN">${disp()}</span><span class="slidU">${c.unit}</span>
+      <span class="slidS">${subline()}</span>
+      <div class="track" id="trk"><div class="fill" style="width:${pct}%"></div><div class="knob" id="knb" style="left:${pct}%"></div></div>
+      <div class="ticks">${ticks()}</div>`;
+    ans[cur]=val;
+    bind();
+  }
+  function setFromX(clientX){
+    const trk=host.querySelector('#trk'); const r=trk.getBoundingClientRect();
+    let p=(clientX-r.left)/r.width; p=Math.max(0,Math.min(1,p));
+    let raw=min+p*(max-min);
+    val=Math.round(raw/step)*step;
+    val=Math.max(min,Math.min(max,val));
+    if(!discrete) val=Math.round(val/step)*step;
+    draw();
+  }
+  function bind(){
+    const trk=host.querySelector('#trk'), knb=host.querySelector('#knb');
+    trk.onpointerdown=e=>{ trk.setPointerCapture(e.pointerId); setFromX(e.clientX);
+      const mv=ev=>setFromX(ev.clientX);
+      const up=()=>{trk.removeEventListener('pointermove',mv);trk.removeEventListener('pointerup',up);};
+      trk.addEventListener('pointermove',mv); trk.addEventListener('pointerup',up); };
+    knb.onpointerdown=e=>{e.stopPropagation();knb.setPointerCapture(e.pointerId);
+      const mv=ev=>setFromX(ev.clientX);
+      const up=()=>{knb.removeEventListener('pointermove',mv);knb.removeEventListener('pointerup',up);};
+      knb.addEventListener('pointermove',mv); knb.addEventListener('pointerup',up); };
+  }
+  function animateMount(){
+    const fill=host.querySelector('.fill'), knb=host.querySelector('#knb'), numEl=host.querySelector('.slidN');
+    if(!fill||!knb||!numEl) return;
+    const finalPct=((val-min)/(max-min))*100;
+    fill.style.transition='none'; knb.style.transition='none';
+    fill.style.width='0%'; knb.style.left='0%';
+    void host.offsetWidth;
+    fill.style.transition='width .8s cubic-bezier(.22,1,.36,1)';
+    knb.style.transition='left .8s cubic-bezier(.34,1.56,.64,1)';
+    requestAnimationFrame(()=>{ fill.style.width=finalPct+'%'; knb.style.left=finalPct+'%'; });
+    const t0=performance.now(), dur=800, startV=min;
+    (function frame(t){
+      const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3), cv=startV+(val-startV)*e;
+      if(discrete){ const idx=Math.max(0,Math.min(c.stops.length-1,Math.round(cv))); numEl.textContent=c.stops[idx][0]; }
+      else { const s=Math.round(cv/step)*step; numEl.textContent=Number.isInteger(s)?s:(Math.floor(s)+'–'+Math.ceil(s)); }
+      if(p<1) requestAnimationFrame(frame); else draw();
+    })(t0);
+  }
+  draw();
+  setTimeout(animateMount,260);
+}
+
+/* ───────── finish ───────── */
+function finish(){
+  leave(()=>{
+    cur=TOTAL;
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`<div class="done">
+      <div class="glyph">${I.barbell}</div>
+      <h2>Building your split.</h2>
+      <p>That's everything. Your plan is being shaped around how you train, what you've got, and what your body needs to dodge.</p>
+      <button class="restart" id="again">take it again ↺</button>
+    </div>`;
+    stage.innerHTML=''; stage.appendChild(card);
+    card.querySelector('#again').onclick=()=>{cur=0;for(const k in ans)delete ans[k];render(1);};
+  });
+}
+
+document.addEventListener('click',e=>{ if(!e.target.closest('.info')) document.querySelectorAll('.info.open').forEach(x=>x.classList.remove('open')); });
+document.getElementById('restart').onclick=()=>{cur=0;for(const k in ans)delete ans[k];leave(()=>render(1));};
+render(1);
+</script>
+</body>
+</html>

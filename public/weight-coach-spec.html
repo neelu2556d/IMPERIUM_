@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maintenance Tracker — Spec</title>
+<style>
+  :root{
+    --bg:#050506; --panel:#0c0d0f; --panel2:#101113; --line:#1d1f22;
+    --ink:#f3f4f2; --mut:#9aa0a0; --dim:#6c7270; --mint:#7ef0c2; --mint-dim:#3f6f5d;
+    --amber:#f0c27e; --iris:#9ab0f0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;letter-spacing:.005em;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:72px 28px 140px}
+  .eyebrow{display:flex;align-items:center;gap:12px;color:var(--mint);
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:22px}
+  .eyebrow .rule{height:1px;flex:1;background:linear-gradient(90deg,var(--mint-dim),transparent)}
+  h1{font-size:38px;line-height:1.12;font-weight:600;margin:0 0 14px;letter-spacing:-.02em}
+  .lede{font-size:18px;color:var(--mut);margin:0 0 10px}
+  .meta{font-size:13px;color:var(--dim);margin:0 0 6px}
+  h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mint);
+    margin:56px 0 18px;font-weight:600}
+  h3{font-size:19px;font-weight:600;margin:30px 0 8px;letter-spacing:-.01em}
+  p{margin:0 0 14px;color:#d8dbd8}
+  strong{color:var(--ink);font-weight:600}
+  em{color:var(--mint);font-style:normal}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:24px 26px;margin:18px 0}
+  .card.mint{border-color:var(--mint-dim);box-shadow:0 0 0 1px rgba(126,240,194,.06),0 18px 50px -30px rgba(126,240,194,.25)}
+  .card.warm{border-left:2px solid var(--mint)}
+  ul{margin:0 0 14px;padding:0;list-style:none}
+  li{position:relative;padding-left:22px;margin:0 0 11px;color:#d8dbd8}
+  li::before{content:"";position:absolute;left:2px;top:10px;width:6px;height:6px;
+    border-radius:50%;background:var(--mint);opacity:.7}
+  li em{color:var(--mint)}
+  .flow{font:13px/1.7 "SF Mono",ui-monospace,Menlo,monospace;color:var(--mut);
+    background:#080809;border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;white-space:pre;overflow-x:auto;margin:18px 0}
+  .flow .hl{color:var(--mint)} .flow .am{color:var(--amber)}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mint);font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  td{color:#cdd0cd}
+  td code,p code,li code{font:12.5px "SF Mono",ui-monospace,Menlo,monospace;
+    background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--mint)}
+  .lane{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 0}
+  .pill{font-size:13px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);
+    background:var(--panel2);color:#cdd0cd}
+  .pill b{color:var(--ink)} .pill.you{border-color:var(--mint-dim);color:var(--mint)}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--bg);background:var(--mint);border-radius:6px;padding:3px 9px;font-weight:700;margin-bottom:14px}
+  .tag.done{background:var(--mint-dim);color:var(--ink)}
+  .foot{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}h1{font-size:30px}}
+  a{color:var(--mint);text-decoration:none;border-bottom:1px solid var(--mint-dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow"><span>Design spec</span><span class="rule"></span><span>review-approved 06 · 06</span></div>
+  <h1>The Maintenance Tracker</h1>
+  <p class="lede">The weight tracker and the macro tracker, connected — so the coach keeps you in your goal lane, warmly.</p>
+  <p class="meta">Build home: <code>fuel-macros</code> worktree (off clean main) · Status: review-approved, ready for the build plan</p>
+
+  <div class="card mint">
+    <span class="tag">The one-liner</span>
+    <p style="margin:0">You weigh in every morning and log your food. The coach watches your <em>real weekly trend</em>, learns your <em>true maintenance calories</em> from your own results, and once a week suggests a small nudge to keep you in your lane. It only changes your numbers if you tap <strong>yes</strong> — and it's never pushy.</p>
+  </div>
+
+  <h2>How the brain works</h2>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">1 · How fast are you really moving?</h3><p style="margin:0">Daily weight bounces. It reads the <em>smooth 7-day line</em> instead — invisible to you. You just see "up about half a pound this week."</p></div>
+    <div class="card"><h3 style="margin-top:0">2 · What can you really eat?</h3><p style="margin:0">It works backwards to your <em>real maintenance</em> — your break-even. Shown softly, <em>sharpening over time</em>, never as gospel.</p></div>
+  </div>
+  <div class="card"><h3 style="margin-top:0">3 · Are you in your lane?</h3>
+    <ul style="margin:6px 0 0">
+      <li>Climbing quick → <strong>ease back</strong>, "trim ~150."</li>
+      <li>Barely moving → <strong>add a bit</strong>, "+150."</li>
+      <li>In the zone → <strong>nailing it</strong>, change nothing.</li>
+    </ul>
+  </div>
+  <div class="card warm"><p style="margin:0"><strong>The honesty rule.</strong> For the first ~2 weeks it stays quiet — <em>"keep logging, first read in N days"</em> — instead of inventing a number. It never stops; it just gets sharper.</p></div>
+
+  <h2>Tone — the rule we don't cross <span class="tag" style="margin-left:8px">locked</span></h2>
+  <div class="card warm"><ul style="margin:0">
+    <li><strong>No red. No shame. No "you're failing." No scary down-arrows.</strong></li>
+    <li>Out of range is said <em>warm</em>: "you're climbing a little quick, let's ease back together."</li>
+    <li>Feel coached by someone who <em>likes you</em> — motivated to step back in, never to cancel.</li>
+    <li><strong>"Give me grace this week"</strong> is always one tap away.</li>
+  </ul></div>
+
+  <h2>What the coach does here</h2>
+  <p>The coach <strong>doesn't</strong> remember every chat (too expensive). It knows you from your saved file, fresh each time. Its job:</p>
+  <ul>
+    <li>The warm <strong>voice</strong> of the weekly nudge.</li>
+    <li><strong>Answers</strong> "how am I tracking?" / "why did my target change?" from your numbers.</li>
+    <li>You say <em>"rough week, I'm gonna eat more"</em> → it takes that as a <strong>grace</strong> signal and skips judging.</li>
+  </ul>
+
+  <h2>The bad-tracker problem <span class="tag" style="margin-left:8px">handled</span></h2>
+  <div class="card mint">
+    <p style="margin:0 0 10px"><strong>The scale is the honest judge. The food log is just the dial.</strong></p>
+    <ul style="margin:0">
+      <li>Fib the log → <strong>the scale still shows you gaining too fast</strong>, and the scale is what we steer by.</li>
+      <li>We nudge <em>relative to your own target</em>, so a steady fib cancels out.</li>
+      <li>Maintenance shown <em>soft</em>, never a scary "crash."</li>
+      <li>If log and scale disagree: <em>"your log's a little light next to your scale — normal, I'll trust the scale."</em> No accusation.</li>
+    </ul>
+  </div>
+
+  <h2>How the data moves</h2>
+  <div class="flow">weigh-in   <span class="hl">--></span>  weights     <span class="am">[ honest judge ]</span>
+food logs  <span class="hl">--></span>  calories    <span class="am">[ the dial ]</span>
+setup quiz <span class="hl">--></span>  goal lane + target
+                  |
+   weekly: direction from the scale,
+           size relative to your own target
+                  |
+   <span class="hl">nudge + reason</span>  -->  pending
+                  |
+   coach voices it warm, with your food story
+                  |
+ tap <span class="hl">Yes</span>   -->  new target (re-split gym/rest)
+ tap <span class="hl">No</span>    -->  nothing changes
+ tap <span class="am">Grace</span> -->  week skipped, no judgement</div>
+
+  <h2>Settled <span class="tag done" style="margin-left:8px">decided</span></h2>
+  <div class="card">
+    <div class="lane" style="margin-bottom:14px">
+      <span class="pill"><b>Cut</b> &nbsp;−0.5 to −1.0</span>
+      <span class="pill"><b>Maintain</b> &nbsp;±0.1</span>
+      <span class="pill you"><b>Lean Bulk</b> &nbsp;+0.25 to +0.5</span>
+      <span class="pill"><b>Bulk</b> &nbsp;+0.5 to +1.0</span>
+    </div>
+    <ul style="margin:0">
+      <li><strong>Lanes</strong> above (lb/wk).</li>
+      <li><strong>Nudge in both</strong> — card is the button, coach is the voice.</li>
+      <li><strong>Weekly</strong>; 7-day average invisible.</li>
+      <li><strong>Runs forever</strong>, sharper over time.</li>
+      <li><strong>Units:</strong> Settings lb/kg switch; no raw kg.</li>
+      <li><strong>Tone:</strong> warm hard rule; "give me grace" always there.</li>
+    </ul>
+  </div>
+
+  <div class="foot">Build home: <code>fuel-macros</code> worktree. Next: writing-plans against<br/>
+    <code>docs/superpowers/specs/2026-06-05-weight-calorie-adaptive-coach-design.md</code></div>
+</div>
+</body>
+</html>
