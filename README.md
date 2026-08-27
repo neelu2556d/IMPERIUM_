@@ -19,7 +19,14 @@
 
 ## Two ways to get running
 
-**1 · Hand it to your coding agent (recommended).** This repo ships [`SETUP-PROMPT.md`](SETUP-PROMPT.md) — a complete provisioning brief for Claude Code, Codex, or any coding agent with a terminal. Paste it in (or just say *"read SETUP-PROMPT.md and set this up for me"* from the repo root). The agent checks your machine, creates and links a Supabase project, applies all 77 migrations, writes `.env.local`, boots the dev server, signs up a test account, and — if you want — deploys to Vercel. It only stops to ask for things it genuinely can't create itself (your Supabase login, optional API keys).
+**1 · One prompt (recommended).** Paste this into Claude Code, Codex, Cursor — any coding agent with a terminal — from any empty folder:
+
+```
+Clone https://github.com/ohwisey/vitality-oss and follow its SETUP-PROMPT.md exactly —
+set everything up, run it, and help me sign up.
+```
+
+[`SETUP-PROMPT.md`](SETUP-PROMPT.md) is a complete provisioning brief: the agent checks your machine, clones the repo, creates and links a Supabase project, applies all 77 migrations, writes `.env.local`, boots the dev server, helps you sign up, and — if you want — deploys to Vercel. It only stops to ask for things it genuinely can't create itself (your Supabase login, optional API keys). Already cloned? Just say *"read SETUP-PROMPT.md and set this up for me."*
 
 **2 · Do it by hand.** ~10 minutes. See [Quickstart](#quickstart-manual) below.
 

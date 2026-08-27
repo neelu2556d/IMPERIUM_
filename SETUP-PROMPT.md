@@ -1,6 +1,13 @@
 # Vitality — agent setup prompt
 
-Paste everything below this line into Claude Code, Codex, or any coding agent with a terminal (or, from the repo root, just say *"read SETUP-PROMPT.md and set this up for me"*).
+The one-prompt version (works from any empty folder — no clone needed first):
+
+```
+Clone https://github.com/ohwisey/vitality-oss and follow its SETUP-PROMPT.md exactly —
+set everything up, run it, and help me sign up.
+```
+
+Or paste everything below this line into Claude Code, Codex, or any coding agent with a terminal (or, from the repo root, just say *"read SETUP-PROMPT.md and set this up for me"*).
 
 ---
 
