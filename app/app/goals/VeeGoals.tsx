@@ -58,7 +58,7 @@ const PUSH_OPTS: { key: Push; title: string; desc: string }[] = [
   { key: 'push', title: 'Push me to show up', desc: 'I check in often and keep you honest.' },
   { key: 'silent', title: 'Keep it silent', desc: 'I won’t say a word. This one is just for you.' },
 ]
-const PUSH_CHIP: Record<Push, string> = { silent: 'Vee · silent', gentle: 'Vee · gentle', balanced: 'Vee · nudges', push: 'Vee · pushes' }
+const PUSH_CHIP: Record<Push, string> = { silent: 'Imperium · silent', gentle: 'Imperium · gentle', balanced: 'Imperium · nudges', push: 'Imperium · pushes' }
 const PUSH_SHORT: Record<Push, string> = { silent: 'Silent', gentle: 'Gentle', balanced: 'Nudges', push: 'Pushes' }
 const PRIO_LBL = ['Low', 'Medium', 'High'] as const
 
@@ -362,7 +362,7 @@ export default function VeeGoals({ initial, suggestionEvidence }: {
           </div>
         </div>
         <div className={styles.field}>
-          <span className={styles.fieldLabel}>How much should Vee push you?</span>
+          <span className={styles.fieldLabel}>How much should Imperium push you?</span>
           <div className={styles.pushRow}>
             {PUSH_OPTS.map(o => (
               <button type="button" key={o.key} className={`${styles.pushOpt} ${draftPush === o.key ? styles.pushOptOn : ''}`} onClick={() => setDraftPush(o.key)}>
@@ -400,10 +400,10 @@ export default function VeeGoals({ initial, suggestionEvidence }: {
         {mode === 'main' ? (
           <div className={styles.view}>
             <header className={styles.header}>
-              <div className={styles.eyebrowTop}>Vitality · Vee</div>
+              <div className={styles.eyebrowTop}>Imperium · Imperium</div>
               <div className={styles.titleRow}>
                 <h1 className={styles.title}>Your <span className={styles.accent}>goals</span></h1>
-                <span className={styles.watchPill}><span className={styles.dot} />Vee&rsquo;s with you</span>
+                <span className={styles.watchPill}><span className={styles.dot} />Imperium&rsquo;s with you</span>
               </div>
             </header>
 
@@ -471,7 +471,7 @@ export default function VeeGoals({ initial, suggestionEvidence }: {
                     <button className={styles.miniDelete} onClick={() => removeBigGoal(g.id)} aria-label={`remove ${g.cleanTitle ?? g.title}`}>remove</button>
                   </div>
                   {editPushId === g.id && (
-                    <div className={styles.pushEdit} id={`push-edit-${g.id}`} role="group" aria-label="How much should Vee show up">
+                    <div className={styles.pushEdit} id={`push-edit-${g.id}`} role="group" aria-label="How much should Imperium show up">
                       {PUSH_OPTS.map(o => (
                         <button
                           type="button"
@@ -487,7 +487,7 @@ export default function VeeGoals({ initial, suggestionEvidence }: {
             })}
             {CreateBlock}
 
-            <div className={styles.eyebrow}><span className={styles.eyebrowNum}>·02</span><span className={styles.eyebrowLbl}>This week with Vitality</span><span className={styles.eyebrowRule} /></div>
+            <div className={styles.eyebrow}><span className={styles.eyebrowNum}>·02</span><span className={styles.eyebrowLbl}>This week with Imperium</span><span className={styles.eyebrowRule} /></div>
             <p className={styles.tierIntro}>The small wins that keep you moving. I track what I can see. You tap the rest.</p>
 
             <div className={styles.habits}>
@@ -521,12 +521,12 @@ export default function VeeGoals({ initial, suggestionEvidence }: {
               {openSuggestions.map(({ s, i }) => <SuggestionRow key={s.title} s={s} i={i} />)}
             </div>
 
-            <Link href="/app/mentor" className={styles.talkPill}><VMark size={16} />Talk to Vee about your goals</Link>
+            <Link href="/app/mentor" className={styles.talkPill}><VMark size={16} />Talk to Imperium about your goals</Link>
           </div>
         ) : (
           <div className={styles.view}>
             <header className={styles.header}>
-              <div className={styles.eyebrowTop}>Vitality · Vee</div>
+              <div className={styles.eyebrowTop}>Imperium · Imperium</div>
               <div className={styles.titleRow}>
                 <h1 className={styles.title}>Your <span className={styles.accent}>goals</span></h1>
               </div>

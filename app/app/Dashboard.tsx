@@ -196,7 +196,7 @@ export default function Dashboard({
               type="button"
               className={styles.gemBtn}
               onClick={() => setHomeOpen(true)}
-              aria-label="Vitality, I'm home"
+              aria-label="Imperium, I'm home"
               title="I'm home"
             >
               <DashboardHeaderGem className={styles.headerGem} />

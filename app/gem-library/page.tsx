@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import GemLibrary from './GemLibrary'
 
 export const metadata: Metadata = {
-  title: 'Gem Library v2 · Vitality',
+  title: 'Gem Library v2 · Imperium',
   description: 'Internal design lab for the canonical Vitality gem and its signature animations.',
 }
 

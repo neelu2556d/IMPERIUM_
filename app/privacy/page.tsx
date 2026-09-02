@@ -22,7 +22,7 @@ import styles from './privacy.module.css'
  */
 
 export const metadata = {
-  title: 'Privacy · Vitality',
+  title: 'Privacy · Imperium',
   description:
     'What Vitality collects, where it lives, and the promises we make about your health data. Plain English, no legalese.',
 }

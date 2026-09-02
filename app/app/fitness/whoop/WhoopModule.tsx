@@ -365,7 +365,7 @@ function NoDataPanel({
 
 function VitalityScoreBadge({ score, tier }: { score: number; tier: string }) {
   return (
-    <aside className={styles.scoreBadge} aria-label="Vitality Score">
+    <aside className={styles.scoreBadge} aria-label="Imperium Score">
       <div className={styles.scoreNumber}>{score}</div>
       <div className={styles.scoreCol}>
         <div className={styles.scoreLabel}>Vitality Score</div>

@@ -1,7 +1,7 @@
 import VeeFeed from '@/components/VeeFeed'
 
 export const dynamic = 'force-static'
-export const metadata = { title: 'Vee · preview' }
+export const metadata = { title: 'Imperium · preview' }
 
 /** No-auth preview: the feed-first Vee surface (Vitality Noticed) — the rarity
  *  collection, the rarity-graded insight feed with detailed/simple toggle, the

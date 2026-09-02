@@ -46,8 +46,8 @@ export default function DriftCard({
   }
 
   return (
-    <section className={`${styles.nudge} ${resolved ? styles.nudgeResolved : ''}`} aria-label="a note from Vee">
-      <span className={styles.who}>{resolved ? 'Vee' : 'Vee noticed'}</span>
+    <section className={`${styles.nudge} ${resolved ? styles.nudgeResolved : ''}`} aria-label="a note from Imperium">
+      <span className={styles.who}>{resolved ? 'Imperium' : 'Imperium noticed'}</span>
       {resolved ? (
         <>
           <p className={styles.line}>{RESOLVE_COPY[resolved][0]}</p>

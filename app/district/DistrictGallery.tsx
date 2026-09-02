@@ -263,8 +263,8 @@ export default function DistrictGallery({ featured, categories, community }: Dis
         aria-hidden={openTile ? true : undefined}
       >
         <div className={styles.bar}>
-          <Link href="/" className={styles.mark} aria-label="Vitality">
-            V
+          <Link href="/" className={styles.mark} aria-label="Imperium">
+            I
           </Link>
           <span className={styles.barSpacer} />
           <Link href={SIGNUP_NEXT} className={styles.barCta}>

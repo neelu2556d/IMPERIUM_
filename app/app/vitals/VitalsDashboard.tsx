@@ -373,7 +373,7 @@ export default function VitalsDashboard({
           <div className={styles.headTitle}>VITALS</div>
           <div className={styles.headRight}>
             <span className={styles.headDate}>{fmtDate(latest.date).toUpperCase()}</span>
-            <button type="button" className={styles.help} onClick={() => setExplainer({ kind: 'score' })} aria-haspopup="dialog" aria-label="What the Vitality score is">?</button>
+            <button type="button" className={styles.help} onClick={() => setExplainer({ kind: 'score' })} aria-haspopup="dialog" aria-label="What the Imperium score is">?</button>
             <button type="button" className={styles.gear} onClick={() => setSettingsOpen(true)} aria-label="Settings">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" /><path d="M12 2.8v2.4M12 18.8v2.4M4.3 7.1l2.1 1.2M17.6 15.7l2.1 1.2M4.3 16.9l2.1-1.2M17.6 8.3l2.1-1.2" /></svg>
             </button>

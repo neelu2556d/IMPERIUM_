@@ -41,7 +41,7 @@ export default function VitalsPreview() {
         {/* header */}
         <header className={styles.header}>
           <div className={styles.topRow}>
-            <a href="/app" className={styles.back}>← Vitality</a>
+            <a href="/app" className={styles.back}>← Imperium</a>
             <button className={styles.adjustBtn}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" /></svg>
               Reconnect
@@ -93,11 +93,11 @@ export default function VitalsPreview() {
           </div>
         </section>
 
-        {/* ·02 Vitality Score */}
+        {/* ·02 Imperium Score */}
         <section className={styles.section}>
           <div className={styles.eyebrow}>
             <span className={styles.eyebrowNum}>·02</span>
-            <span className={styles.eyebrowLbl}>Vitality Score</span>
+            <span className={styles.eyebrowLbl}>Imperium Score</span>
             <span className={styles.eyebrowRule} />
           </div>
           <div className={styles.scoreCard}>

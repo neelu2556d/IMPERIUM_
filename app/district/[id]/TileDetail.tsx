@@ -133,8 +133,8 @@ export default function TileDetail({ tile, svg }: TileDetailProps) {
 
       <div className={styles.shell}>
         <div className={styles.bar}>
-          <Link href="/" className={styles.mark} aria-label="Vitality">
-            V
+          <Link href="/" className={styles.mark} aria-label="Imperium">
+            I
           </Link>
           <Link href="/district" className={styles.crumb}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

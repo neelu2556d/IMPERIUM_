@@ -16,9 +16,9 @@ import styles from './connect.module.css'
  */
 
 export const metadata = {
-  title: 'Connect Claude · Vitality',
+  title: 'Connect Claude · Imperium',
   description:
-    'Add the Vitality connector to Claude in one click. Setup, example prompts, and troubleshooting.',
+    'Add the Imperium connector to Claude in one click. Setup, example prompts, and troubleshooting.',
 }
 
 const MCP_URL = 'http://localhost:3000/api/mcp/mcp'
@@ -167,10 +167,10 @@ export default function ConnectPage() {
       <div className={styles.inner}>
         <nav className={styles.chrome}>
           <a className={styles.wordmark} href="/">
-            Vitality
+            Imperium
           </a>
           <a className={styles.chromeLink} href="/">
-            Back to Vitality
+            Back to Imperium
           </a>
         </nav>
 
@@ -279,8 +279,8 @@ export default function ConnectPage() {
             <span className={styles.rule} />
           </div>
           <p className={styles.body}>
-            Something else in the way? Email us. Vitality is built by two
-            people, so your message is read by a human who can actually fix
+            Something else in the way? Email us. Imperium is built by one
+            person, so your message is read by a human who can actually fix
             it.
           </p>
           <a className={styles.contact} href={`mailto:${SUPPORT}`}>

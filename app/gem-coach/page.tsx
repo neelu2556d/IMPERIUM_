@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import GemCoach from './GemCoach'
 
 export const metadata: Metadata = {
-  title: 'Gem Coach concepts · Vitality',
+  title: 'Gem Coach concepts · Imperium',
   description: 'Concept demo for the Vitality coach gem family — real gems, shape + color + personality.',
 }
 

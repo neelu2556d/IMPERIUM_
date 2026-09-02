@@ -9,7 +9,7 @@ import type { Note } from '@/app/app/mentor/types'
 import type { MoodPoint } from '@/app/app/mentor/moodData'
 import { buildHandoffContext } from '@/lib/vee/claudeHandoff'
 
-export const metadata = { title: 'Vee · preview' }
+export const metadata = { title: 'Imperium · preview' }
 
 /**
  * /vee-live-preview - a public, no-auth look at the launch Vee (Echo gem, the

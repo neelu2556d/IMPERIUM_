@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import VeeGoalsDemo from './VeeGoalsDemo'
 
 export const metadata: Metadata = {
-  title: 'Vee · Goals (preview)',
-  description: 'Preview of the Vee-housed Goals experience: identity + habits, auto-tracked, with the real Vee gem reaching out when you slip.',
+  title: 'Imperium · Goals (preview)',
+  description: 'Preview of the Imperium-housed Goals experience: identity + habits, auto-tracked, with the real Imperium gem reaching out when you slip.',
 }
 
 // Public route (top-level, not under /app, /account, /welcome — see middleware),

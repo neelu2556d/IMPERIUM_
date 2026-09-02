@@ -11,8 +11,8 @@ import type { MetadataRoute } from 'next'
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Vitality',
-    short_name: 'Vitality',
+    name: 'Imperium',
+    short_name: 'Imperium',
     description: 'Your personal life dashboard — workouts, fuel, recovery, and more.',
     start_url: '/app',
     scope: '/',
