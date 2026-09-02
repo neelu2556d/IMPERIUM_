@@ -2400,6 +2400,13 @@ export default function SplitLog({
               // weight (own history, else estimate) pre-fills the Tune weight.
               setSettingsOpenExId(newId)
             }}
+            onCreateCustom={name => {
+              // Swap mode → "Add Your Own" — same wizard flow as the add picker.
+              // The new lift replaces the one being swapped, and is saved to
+              // the user's library forever (keepInLibrary defaults to true).
+              setCreateFlow({ step: 'name', name, insertIdx: exIdx, keepInLibrary: true, muscle: null })
+              setSwapOpenIdx(null)
+            }}
             onClose={() => setSwapOpenIdx(null)}
           />
         )

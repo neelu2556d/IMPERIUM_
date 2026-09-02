@@ -102,12 +102,18 @@ export default function SwapModal({
     )
   }, [q, hasQuery, library])
 
-  // Offer "add your own" only in add mode, only after they've typed, and not
-  // when the typed text already names a lift in the results (avoids an obvious
-  // duplicate of a built-in or existing custom lift).
+  // Offer "Add Your Own" in BOTH add and swap modes — whenever the user has
+  // typed a name that doesn't match any existing lift in the library. This lets
+  // them create a custom lift on the spot, whether they're adding a new exercise
+  // or swapping one out. The created lift is saved to their personal library
+  // (via onCreateCustom → NameLiftCard → commitNewLift) and persists forever.
   const showCreate =
-    isAdd && !!onCreateCustom && hasQuery &&
+    !!onCreateCustom && hasQuery &&
     !filtered.some(item => item.name.toLowerCase() === q)
+
+// Label for the "Add Your Own" CTA — shown when the typed exercise
+// isn't in the filtered library results.
+const createCtaLabel = 'Add “{query.trim()}” to my library'
 
   return (
     <div
@@ -228,7 +234,7 @@ export default function SwapModal({
                   <svg className={styles.createPlus} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
                     <path d="M7 2.5 V11.5 M2.5 7 H11.5" />
                   </svg>
-                  <span className={styles.rowName}>Add “{query.trim()}”</span>
+                  <span className={styles.rowName}>Add Your Own: “{query.trim()}”</span>
                 </button>
               ) : (
                 filtered.length === 0 && (
