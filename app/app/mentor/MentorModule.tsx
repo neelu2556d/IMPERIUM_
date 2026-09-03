@@ -144,7 +144,7 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
       const data = await res.json().catch(() => null) as { reply?: string; ask?: VeeAsk | null; error?: string } | null
       // A card-only reply (empty text) is valid — the question lives in the card.
       if (!res.ok || (!data?.reply && !data?.ask)) {
-        setChatError(data?.error ?? 'Vee failed to reply')
+        setChatError(data?.error ?? 'Imperium failed to reply')
         setChatSending(false)
         return
       }
@@ -307,7 +307,7 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
               {chatSending && (
                 <div className={styles.bubThink}>
                   <span className={styles.dots}><i /><i /><i /></span>
-                  <span className={styles.thinkLabel}>Vee is thinking</span>
+                  <span className={styles.thinkLabel}>Imperium is thinking</span>
                 </div>
               )}
               <div ref={chatEndRef} />

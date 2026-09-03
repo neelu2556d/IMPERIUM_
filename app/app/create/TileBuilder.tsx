@@ -175,7 +175,7 @@ const MODULE_ROUTES: Record<string, { name: string; route: string }> = {
   fuel: { name: 'Fuel', route: '/app/fuel' },
   water: { name: 'Water', route: '/app/fuel/water' },
   weight: { name: 'Weight', route: '/app/fitness/progress' },
-  mentor: { name: 'Vee', route: '/app/mentor' },
+  mentor: { name: 'Imperium', route: '/app/mentor' },
 }
 
 function round1(n: number): number {

@@ -13,7 +13,7 @@ import HomeActGym from './acts/HomeActGym'
 import styles from './homecoming.module.css'
 
 /**
- * "Vitality, I'm home" - the daily ritual stage machine.
+ * "Imperium, I'm home" - the daily ritual stage machine.
  *
  * Tap the dashboard gem: the world fades to the signature backdrop, the gem
  * (DashboardHeaderGem, the proven wrapper that sizes HeroCrystal correctly)
@@ -83,7 +83,7 @@ class ActBoundary extends Component<{ onSkip: () => void; children: ReactNode },
       return (
         <div className={styles.actFail}>
           <p className={styles.vee}>
-            <span className={`${styles.veeTag} ${styles.veeTagAmber}`}>VEE</span>
+            <span className={`${styles.veeTag} ${styles.veeTagAmber}`}>IMPERIUM</span>
             That part of the picture slipped out of my hands. Not your fault. Let me keep going.
           </p>
           <button type="button" className={styles.next} onClick={this.props.onSkip}>
@@ -322,7 +322,7 @@ export default function Homecoming({
   })()
 
   return (
-    <div className={styles.stage} role="dialog" aria-modal="true" aria-label="Vitality, I'm home">
+    <div className={styles.stage} role="dialog" aria-modal="true" aria-label="Imperium, I'm home">
       <WelcomeBackdrop />
       <div className={styles.scrim} />
       {settling && <div className={styles.settleFlash} aria-hidden />}
@@ -361,7 +361,7 @@ export default function Homecoming({
           {phase === 'arrive' && (
             <div className={styles.arrive}>
               <p className={styles.vee}>
-                <span className={styles.veeTag}>VEE</span>
+                <span className={styles.veeTag}>IMPERIUM</span>
                 Welcome home, {firstName}. Give me a second, I am pulling your whole day.
               </p>
               <div className={styles.beatRow} aria-live="polite">
@@ -374,7 +374,7 @@ export default function Homecoming({
           {phase === 'quiet' && (
             <div className={styles.quiet}>
               <p className={styles.vee}>
-                <span className={styles.veeTag}>VEE</span>
+                <span className={styles.veeTag}>IMPERIUM</span>
                 {pullFailed
                   ? 'I could not reach your day just now. No numbers, no problem. We go by feel.'
                   : 'Nothing logged anywhere yet. A quiet slate, and the whole day is still yours.'}
@@ -388,7 +388,7 @@ export default function Homecoming({
           {phase === 'questions' && (
             <div className={styles.questions}>
               <p className={styles.vee}>
-                <span className={styles.veeTag}>VEE</span>
+                <span className={styles.veeTag}>IMPERIUM</span>
                 {q1Known ? 'Before I set your day, one quick one.' : 'Before I set your day, two quick ones.'}
               </p>
               {!q1Known && (

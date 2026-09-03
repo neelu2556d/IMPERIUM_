@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import styles from './dashboard.module.css'
 import DashboardHeader from './DashboardHeader'
-import VitalityIntro from './VitalityIntro'
+import ImperiumIntro from './VitalityIntro'
 import WelcomeBackdrop from '@/components/WelcomeBackdrop'
 import DashboardHeaderGem from './DashboardHeaderGem'
 import DashboardGrid from './DashboardGrid'
@@ -173,7 +173,7 @@ export default function Dashboard({
       {/* "The Swipe" app-open splash. Sibling of <main> (not a child) so no
           page stacking context can trap it; it covers everything, plays once
           per browser session, then fades to reveal the dashboard. */}
-      <VitalityIntro onReveal={reveal} />
+      <ImperiumIntro onReveal={reveal} />
       <main
         className={`${styles.page} ${styles.oneScreen} grain-overlay`}
         style={{ ['--wall-accent' as string]: wallAccent }}
@@ -186,8 +186,8 @@ export default function Dashboard({
 
       <div className={styles.shell}>
         <div className={styles.headerRow}>
-          {/* The gem is the ritual's front door: tap it and Vee pulls your day
-              ("Vitality, I'm home"). DEV-GATED until the full ritual ships:
+          {/* The gem is the ritual's front door: tap it and Imperium pulls your day
+              ("Imperium, I'm home"). DEV-GATED until the full ritual ships:
               the spine went out half-built and buggy (gem sizing), and the
               locked method is build-it-ALL, then test once at the end. Flip
               IMHOME_ENABLED when the finished ritual merges. */}

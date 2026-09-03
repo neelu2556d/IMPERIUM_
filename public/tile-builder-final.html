@@ -938,7 +938,7 @@ main{
       VITALITY · TILE BUILDER
     </div>
     <h1>What do you want<br>to <em>track</em>?</h1>
-    <p class="o-lede">Say it like you would to a friend. Vee builds the tile.</p>
+    <p class="o-lede">Say it like you would to a friend. Imperium builds the tile.</p>
 
     <div class="open-bar" id="openBar">
       <svg class="o-spark" viewBox="0 0 24 24"><path d="M12 3c.6 3.9 2.4 6.9 9 9c-6.6 2.1-8.4 5.1-9 9c-.6-3.9-2.4-6.9-9-9c6.6-2.1 8.4-5.1 9-9Z"/></svg>
@@ -983,7 +983,7 @@ main{
       </button>
       <div class="brand">
         <span class="eyebrow">TILE BUILDER</span>
-        <span class="head-serif">Built by Vee. <em>Finished by you.</em></span>
+        <span class="head-serif">Built by Imperium. <em>Finished by you.</em></span>
       </div>
       <span class="draft" id="draftLabel">WATER · DRAFT</span>
     </header>
@@ -1129,14 +1129,14 @@ main{
       <div class="refine-head">
         <span class="refine-label">
           <svg viewBox="0 0 24 24"><path d="M12 3c.6 3.9 2.4 6.9 9 9c-6.6 2.1-8.4 5.1-9 9c-.6-3.9-2.4-6.9-9-9c6.6-2.1 8.4-5.1 9-9Z"/></svg>
-          IN YOUR WORDS · <b>VEE IS LISTENING</b>
+          IN YOUR WORDS · <b>IMPERIUM IS LISTENING</b>
         </span>
       </div>
       <div class="refine-bar" id="refineBar">
         <svg class="refine-spark" viewBox="0 0 24 24"><path d="M12 3c.6 3.9 2.4 6.9 9 9c-6.6 2.1-8.4 5.1-9 9c-.6-3.9-2.4-6.9-9-9c6.6-2.1 8.4-5.1 9-9Z"/></svg>
         <span class="ghost" id="ghost">&#8220;raise the goal to 10&#8221;</span>
         <input id="refineInput" aria-label="Refine your tile in plain words" autocomplete="off" spellcheck="false" enterkeyhint="send"/>
-        <button class="send" id="send" aria-label="Send to Vee">
+        <button class="send" id="send" aria-label="Send to Imperium">
           <svg class="i-arrow" viewBox="0 0 24 24"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>
           <svg class="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
         </button>
@@ -1795,7 +1795,7 @@ main{
       return;
     }
 
-    veeSay("Noted. Vee will weave that in.");
+    veeSay("Noted. Imperium will weave that in.");
   }
 
   /* ============================================================ refine send */
@@ -1858,7 +1858,7 @@ main{
       var row = document.createElement("button");
       row.className = "idea";
       row.setAttribute("data-intent", idea.intent);
-      row.innerHTML = SPARK + "<span><b>Vee</b> " + idea.say + "</span>" + GO;
+      row.innerHTML = SPARK + "<span><b>Imperium</b> " + idea.say + "</span>" + GO;
       row.addEventListener("click", function(){
         var rows = ideasWrap.querySelectorAll(".idea");
         Array.prototype.forEach.call(rows, function(r){ r.disabled = true; });

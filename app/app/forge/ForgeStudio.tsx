@@ -328,7 +328,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
                 </strong>
                 <span>
                   {drop.veeRead
-                    ? 'Vee can read this tile: it carries the Vee mark.'
+                    ? 'Imperium can read this tile: it carries the Vee mark.'
                     : 'A quiet tile: it keeps its notes to itself.'}
                 </span>
               </div>

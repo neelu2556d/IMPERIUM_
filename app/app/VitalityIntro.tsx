@@ -5,8 +5,8 @@ import styles from './vitalityIntro.module.css'
 
 /**
  * "The Swipe" app-open splash, ported from the approved
- * public/vitality-intro-a.html. A fixed full-screen black overlay: the V mark
- * streaks in from the right trailing mint motion lines, the VITALITY letters
+ * public/vitality-intro-a.html. A fixed full-screen black overlay: the I mark
+ * streaks in from the right trailing mint motion lines, the IMPERIUM letters
  * settle right to left in its wake, then the whole splash fades out to reveal
  * the dashboard.
  *
@@ -30,7 +30,7 @@ import styles from './vitalityIntro.module.css'
  * (skip, release, unmount, or crash), so the dashboard is never blocked.
  */
 
-const SESSION_KEY = 'vitality:intro-played'
+const SESSION_KEY = 'imperium:intro-played'
 const MIN_BOOT_MS = 1800
 const REDUCED_BOOT_MS = 900
 const HARD_CAP_MS = 4000
@@ -70,7 +70,7 @@ interface IntroProps {
   onReveal: () => void
 }
 
-export default function VitalityIntro({ onReveal }: IntroProps) {
+export default function ImperiumIntro({ onReveal }: IntroProps) {
   return (
     <IntroBoundary onReveal={onReveal}>
       <IntroInner onReveal={onReveal} />
@@ -181,7 +181,7 @@ function IntroInner({ onReveal }: IntroProps) {
 
   if (phase === 'idle' || phase === 'done') return null
 
-  const letters = 'VITALITY'.split('')
+  const letters = 'IMPERIUM'.split('')
   return (
     <>
     {/* suppressHydrationWarning: the parse-time script below may have stamped
@@ -197,15 +197,14 @@ function IntroInner({ onReveal }: IntroProps) {
           <div className={styles.vGlow} />
           <div className={`${styles.streak} ${styles.s1}`} />
           <div className={`${styles.streak} ${styles.s2}`} />
-          <svg className={styles.vSvg} viewBox="0 0 100 100" aria-label="Vitality mark">
+          <svg className={styles.vSvg} viewBox="0 0 100 100" aria-label="Imperium mark">
             <defs>
               <linearGradient id="vitality-intro-vg" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stopColor="#9be7b8" />
                 <stop offset="1" stopColor="#6EE7B7" />
               </linearGradient>
             </defs>
-            <path d="M20 10 L50 90" stroke="url(#vitality-intro-vg)" strokeWidth="11" strokeLinecap="round" fill="none" />
-            <path d="M50 90 L76 34" stroke="url(#vitality-intro-vg)" strokeWidth="9" strokeLinecap="round" fill="none" />
+            <path d="M20 10 L50 90 L80 10" stroke="url(#vitality-intro-vg)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
         </div>
         <div className={styles.word}>
@@ -226,7 +225,7 @@ function IntroInner({ onReveal }: IntroProps) {
     <script
       dangerouslySetInnerHTML={{
         __html:
-          "try{if(sessionStorage.getItem('vitality:intro-played'))document.getElementById('vitality-intro').style.display='none'}catch(e){document.getElementById('vitality-intro').style.display='none'}",
+          "try{if(sessionStorage.getItem('imperium:intro-played'))document.getElementById('vitality-intro').style.display='none'}catch(e){document.getElementById('vitality-intro').style.display='none'}",
       }}
     />
     </>

@@ -199,7 +199,7 @@ export default function WeightImportSheet({
             <input ref={imgRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) readImage(f) }} />
             <button className={styles.drop} onClick={() => imgRef.current?.click()} disabled={busy}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><path d="M3 7h4l2-3h6l2 3h4v13H3z" /><circle cx="12" cy="13" r="3.5" /></svg>
-              <span className={styles.dropT}>{busy ? 'Vee is reading…' : 'Tap to choose a screenshot'}</span>
+              <span className={styles.dropT}>{busy ? 'Imperium is reading…' : 'Tap to choose a screenshot'}</span>
               <span className={styles.dropS}>WHOOP · Apple Health · Withings · Renpho · any scale app</span>
             </button>
             <div className={styles.aiTag}>

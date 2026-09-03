@@ -507,7 +507,7 @@ export default function VitalsDashboard({
         <section className={styles.actions}>
           <button type="button" className={styles.vee} onClick={openMentor}>
             <Spark />
-            Talk to Vee
+            Talk to Imperium
           </button>
           <div className={styles.foot}>DATA BY {wearable.label.toUpperCase()}<i />{fmtDate(latest.date).toUpperCase()}</div>
         </section>

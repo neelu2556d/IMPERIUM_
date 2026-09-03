@@ -9,7 +9,7 @@ import type { FeedNotice } from '@/lib/insights/feed'
 import type { Note } from '@/app/app/mentor/types'
 
 export const dynamic = 'force-dynamic'
-export const metadata = { title: 'Vee' }
+export const metadata = { title: 'Imperium' }
 
 /**
  * /app/mentor-next - the new, launch-grade Vee: one vertical scroll. The Echo

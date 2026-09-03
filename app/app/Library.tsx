@@ -677,7 +677,7 @@ function RowItem({
       <div className={styles.chipCell}>
         <span className={`${styles.chip} ${toneClass(row.tone)}`}>{row.chip}</span>
         {row.veeRead && (
-          <span className={`${styles.chip} ${styles.vee}`} title="Vee can read this tile's numbers">
+          <span className={`${styles.chip} ${styles.vee}`} title="Imperium can read this tile's numbers">
             Vee
           </span>
         )}
