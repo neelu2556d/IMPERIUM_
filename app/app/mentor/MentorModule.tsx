@@ -242,12 +242,12 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
           </Link>
           <div className={styles.greetWrap}>
             <div className={styles.greetText}>
-              <span className={styles.greetLabel}>VITALITY · VEE</span>
+              <span className={styles.greetLabel}>VITALITY · IMPERIUM</span>
               <span className={styles.greetLine} suppressHydrationWarning>
                 {greeting}{firstName ? `, ${firstName}` : ''}.
               </span>
             </div>
-            <div className={styles.mark} aria-hidden>V</div>
+            <div className={styles.mark} aria-hidden>I</div>
           </div>
         </header>
 
