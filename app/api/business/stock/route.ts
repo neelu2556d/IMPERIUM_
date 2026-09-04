@@ -16,14 +16,11 @@ export async function GET(req: NextRequest) {
     return forbiddenResponse()
   }
 
-
-  }
-
   const { data, error } = await supabase
-    .from('business_stock')
+    .from('business_stock_register')
     .select('*')
     .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+    .order('updated_at', { ascending: false })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -32,7 +29,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ stock: data })
 }
 
-// POST /api/business/stock — Create a new stock entry
+// POST /api/business/stock — Create or update a stock entry
 export async function POST(req: NextRequest) {
   const supabase = createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -53,16 +50,16 @@ export async function POST(req: NextRequest) {
   }
 
   const { data, error } = await supabase
-    .from('business_stock')
-    .insert({
-      user_id: user.id,
+    .from('business_stock_register')
+    .upsert({
       lot_id,
       colour,
       top_metres: top_metres ?? 0,
       bottom_metres: bottom_metres ?? 0,
       dupatta_metres: dupatta_metres ?? 0,
     })
-    .select()
+    .eq('user_id', user.id)
+    .eq('colour', colour)
     .single()
 
   if (error) {

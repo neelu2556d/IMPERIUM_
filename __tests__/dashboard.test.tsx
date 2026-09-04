@@ -53,7 +53,7 @@ const mockProps = {
   userId: 'test-user-id',
   score: 87,
   scoreState: 'scored' as const,
-  tileStats: { trainDay: 'Push A', fuelKcalToday: 1840 },
+  tileStats: { trainDay: 'Push A', fuelKcalToday: 1840, totalMonthlySales: 0, activeLots: 0 },
 }
 
 describe('Dashboard (fused customizable grid)', () => {

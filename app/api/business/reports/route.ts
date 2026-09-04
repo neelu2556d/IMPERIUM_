@@ -1,8 +1,4 @@
-/**
- * Business Reports API — /api/business/reports
- * Access: writer.nishant2809@gmail.com only.
- */
-
+/** Business Reports API — /api/business/reports */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { isBusinessOwner, forbiddenResponse, unauthorizedResponse } from '@/lib/business/auth'
@@ -35,7 +31,8 @@ export async function GET(req: NextRequest) {
 
   // Determine date range based on period
   const now = new Date()
-  let startDate: Date
+  // Initialize startDate before the switch
+  let startDate: Date | null = null
   let groupBy: string
 
   switch (period) {
@@ -71,7 +68,7 @@ export async function GET(req: NextRequest) {
         party: business_parties (name),
         lot: business_lots (item_name)
       `)
-      .gte('order_date', startDate.toISOString())
+      .gte('order_date', startDate!.toISOString())
       .eq('status', 'completed')
 
     if (ordersError) {
@@ -92,7 +89,8 @@ export async function GET(req: NextRequest) {
     // Aggregate party-wise sales
     const partyWise: Record<string, { party_name: string; orders: number; total_metres: number; total_amount: number }> = {}
     for (const order of (orders ?? [])) {
-      const partyName = order.party?.name || 'Unknown'
+      const partyList = order.party as { name: string }[] | null
+      const partyName = partyList?.[0]?.name || 'Unknown'
       if (!partyWise[partyName]) {
         partyWise[partyName] = { party_name: partyName, orders: 0, total_metres: 0, total_amount: 0 }
       }
@@ -101,25 +99,30 @@ export async function GET(req: NextRequest) {
       partyWise[partyName].total_amount += Number(order.net_amount || 0)
     }
     const totalSales = Object.values(partyWise).reduce((sum, p) => sum + p.total_amount, 0)
-    const partyWiseArray = Object.values(partyWise).map((p) => ({
-      ...p,
-      percent_of_sale: totalSales > 0 ? Math.round((p.total_amount / totalSales) * 100) : 0,
-    }))
 
-    // Summary
-    const summary = {
-      total_orders: orders?.length ?? 0,
-      total_metres: orders?.reduce((sum, o) => sum + Number(o.total_metres || 0), 0) ?? 0,
-      total_net: orders?.reduce((sum, o) => sum + Number(o.net_amount || 0), 0) ?? 0,
+    // Aggregate per-month sales
+    const monthlyWise: Record<string, { month: string; orders: number; total_amount: number }> = {}
+    for (const order of (orders ?? [])) {
+      const monthKey = new Date(order.order_date).toISOString().split('T')[0].split('-')[1]
+      if (!monthlyWise[monthKey]) {
+        monthlyWise[monthKey] = { month: monthKey, orders: 0, total_amount: 0 }
+      }
+      monthlyWise[monthKey].orders += 1
+      monthlyWise[monthKey].total_amount += Number(order.net_amount || 0)
     }
+    const monthlyArray = Object.values(monthlyWise).sort((a, b) => Number(a.month) - Number(b.month))
+
+    // Get unique parties
+    const partyNames = [...new Set((orders ?? []).map(o => (o.party as { name: string }[] | null)?.[0]?.name).filter(Boolean))]
 
     return NextResponse.json({
-      period,
-      summary,
-      per_day_sale: perDaySaleArray,
-      party_wise: partyWiseArray,
+      perDaySale: perDaySaleArray,
+      partyWise,
+      totalSales,
+      monthlyWise: monthlyArray,
+      partyNames: partyNames.length > 0 ? partyNames : ['No data'],
     })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to generate report' }, { status: 500 })
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
   }
 }

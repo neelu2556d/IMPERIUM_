@@ -76,7 +76,7 @@ export default async function DashboardPage() {
       state: 'no-routine',
     })),
     getDashboardTileStats(supabase, user.id, localDayKey).catch(
-      (): DashboardTileStats => ({ trainDay: null, fuelKcalToday: null }),
+      (): DashboardTileStats => ({ trainDay: null, fuelKcalToday: null, totalMonthlySales: null, activeLots: null }),
     ),
   ])
 

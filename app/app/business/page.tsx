@@ -6,6 +6,7 @@ import styles from './business.module.css'
 import { createClient } from '@/lib/supabase/client'
 import { isBusinessOwner } from '@/lib/business/auth'
 import { useBusinessState } from '@/lib/business/state'
+import { getBusinessTileStats, type DashboardTileStats } from '@/lib/vitality/dashboardStats'
 import BusinessModule from '@/components/business/BusinessModule'
 import type { BusinessTab } from '@/lib/business/types'
 import WelcomeBackdrop from '@/components/WelcomeBackdrop'
@@ -21,7 +22,7 @@ import Homecoming from '@/app/app/home/Homecoming'
 
 export default function BusinessPage() {
   const supabase = createClient()
-  const [user, setUser] = useState<{ email: string } | null>(null)
+  const [user, setUser] = useState<import('@supabase/supabase-js').User | null>(null)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [stats, setStats] = useState<{ totalMonthlySales: number | null; activeLots: number | null }>({
     totalMonthlySales: null,
@@ -65,7 +66,7 @@ export default function BusinessPage() {
         <section className={styles.accessDenied}>
           <h2>Access Restricted</h2>
           <p>This module is restricted to a single user: writer.nishant2809@gmail.com</p>
-          <p>Current user: {user.email ?? '(no email)'}</p>
+          <p>Current user: {user?.email ?? '(no email)'}</p>
         </section>
       </main>
     )
@@ -100,7 +101,7 @@ export default function BusinessPage() {
             <div className={styles.greetText}>
               <span className={styles.greetLabel}>VITALITY · IMPERIUM</span>
               <span className={styles.greetLine} suppressHydrationWarning>
-                {user.first_name ? `, ${user.first_name}` : ''}.
+                {user?.user_metadata?.first_name ? `, ${user.user_metadata.first_name}` : ''}.
               </span>
             </div>
             <div className={styles.mark} aria-hidden>I</div>
@@ -179,14 +180,15 @@ export default function BusinessPage() {
         <section className={styles.content}>
           <BusinessModule
             tab={activeTab}
-            businessState={businessState}
-            isReady={businessReady}
-            setActiveTab={setActiveTab}
+            onTabChange={setActiveTab}
           />
         </section>
 
         {/* Homecoming nudge */}
-        <Homecoming />
+        <Homecoming
+          firstName={user?.user_metadata?.first_name ?? 'there'}
+          onClose={() => {}}
+        />
       </div>
     </main>
   )
