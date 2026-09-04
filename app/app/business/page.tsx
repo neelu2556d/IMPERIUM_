@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useEffect, useState, useCallback, useTransition } from 'react'
 import styles from './business.module.css'
 import { createClient } from '@/lib/supabase/client'
-import { isBusinessOwner } from '@/lib/business/auth'
 import { useBusinessState } from '@/lib/business/state'
 import { getBusinessTileStats, type DashboardTileStats } from '@/lib/vitality/dashboardStats'
 import BusinessModule from '@/components/business/BusinessModule'
@@ -17,7 +16,7 @@ import Homecoming from '@/app/app/home/Homecoming'
  *
  * Entry point for the Business module. All data lives in the single-state
  * hook (useBusinessState) which persists to localStorage and syncs with
- * Supabase tables. Access is strictly limited to writer.nishant2809@gmail.com.
+ * Supabase tables. Any authenticated user can access this tile.
  */
 
 export default function BusinessPage() {
@@ -37,7 +36,8 @@ export default function BusinessPage() {
       const { data } = await supabase.auth.getUser()
       if (!cancelled) {
         setUser(data.user ?? null)
-        setIsAuthorized(!!data.user && isBusinessOwner(data.user?.email))
+        // Make the business tile public — any logged-in user can access it
+        setIsAuthorized(!!data.user)
       }
     }
     fetchUser()
@@ -60,14 +60,10 @@ export default function BusinessPage() {
   } = useBusinessState()
 
   if (!isAuthorized) {
+    // Not authenticated — show the welcome backdrop for the public tile landing
     return (
       <main className={styles.page} >
         <WelcomeBackdrop />
-        <section className={styles.accessDenied}>
-          <h2>Access Restricted</h2>
-          <p>This module is restricted to a single user: writer.nishant2809@gmail.com</p>
-          <p>Current user: {user?.email ?? '(no email)'}</p>
-        </section>
       </main>
     )
   }
