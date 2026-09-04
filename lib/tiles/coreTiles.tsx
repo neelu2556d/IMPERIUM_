@@ -36,6 +36,7 @@ export type CoreTileId =
   | 'peak'
   | 'brand'
   | 'finance'
+  | 'business'
 
 /** A single live metric to surface on a tile (Train day, Fuel kcal). */
 export interface CoreStat {
@@ -199,6 +200,33 @@ export const CORE_TILES: Record<CoreTileId, CoreTile> = {
         <g className="orb" transform="translate(252 44)"><circle className="glow" r="9" /><circle className="node" r="3.4" /></g>
       </svg>
     ),
+  },
+  business: {
+    id: 'business',
+    href: '/app/business',
+    index: '08',
+    label: 'Business',
+    variant: 'fin',
+    orb: { mode: 'hop' },
+    defaultSize: 'm',
+    glyph: (
+      <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round">
+        <rect x="-9" y="-7" width="18" height="14" rx="1.5" strokeWidth="1.4" />
+        <path d="M-6 -2 L0 2 L6 -2" strokeWidth="1.4" />
+      </svg>
+    ),
+    art: (
+      <svg className="art" viewBox="0 0 434 118">
+        <g style={{ opacity: 0.8 }}>
+          <line className="mot" x1="190" y1="50" x2="190" y2="88" /><rect className="candle" x="184" y="58" width="12" height="20" rx="2" />
+          <line className="mot" x1="252" y1="44" x2="252" y2="84" /><rect className="candle" x="246" y="51" width="12" height="23" rx="2" />
+          <line className="mot" x1="314" y1="36" x2="314" y2="78" /><rect className="candle" x="308" y="43" width="12" height="25" rx="2" />
+          <line className="mot" x1="376" y1="26" x2="376" y2="70" /><rect className="candle" x="370" y="33" width="12" height="27" rx="2" />
+        </g>
+        <g className="orb" transform="translate(252 44)"><circle className="glow" r="9" /><circle className="node" r="3.4" /></g>
+      </svg>
+    ),
+    stat: (s) => (s.totalMonthlySales !== null ? { value: String(s.totalMonthlySales), unit: '₹' } : null),
   },
 }
 
@@ -382,6 +410,7 @@ export const DEFAULT_HOME_ORDER: HomeTileId[] = [
   'forge',
   'vitals',
   'finance',
+  'business',
   'vee',
 ]
 
