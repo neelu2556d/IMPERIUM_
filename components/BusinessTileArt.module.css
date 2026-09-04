@@ -1,0 +1,46 @@
+/* ======================================================================
+   Business Tile Art — "Garment Rolls"
+   Pure CSS + static SVG. No runtime JS.
+   ====================================================================== */
+
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0f1a 0%, #0d1420 50%, #0a0f1a 100%);
+}
+
+/* Fabric roll styling */
+.roll1 { fill: rgba(110, 231, 183, 0.15); stroke: rgba(110, 231, 183, 0.4); stroke-width: 1.5; }
+.roll2 { fill: rgba(245, 158, 11, 0.12); stroke: rgba(245, 158, 11, 0.35); stroke-width: 1.5; }
+.roll3 { fill: rgba(110, 231, 183, 0.18); stroke: rgba(110, 231, 183, 0.45); stroke-width: 1.5; }
+
+.roll1Core { fill: rgba(110, 231, 183, 0.3); }
+.roll2Core { fill: rgba(245, 158, 11, 0.25); }
+.roll3Core { fill: rgba(110, 231, 183, 0.35); }
+
+.grid { stroke: rgba(167, 243, 208, 0.08); stroke-width: 1; }
+.gridV { stroke: rgba(167, 243, 208, 0.08); stroke-width: 1; }
+
+.arrow1 { fill: none; stroke: rgba(110, 231, 183, 0.5); stroke-width: 2; stroke-linecap: round; }
+.arrow2 { fill: none; stroke: rgba(245, 158, 11, 0.5); stroke-width: 2; stroke-linecap: round; }
+
+.data1 { fill: rgba(110, 231, 183, 0.8); }
+.data2 { fill: rgba(245, 158, 11, 0.8); }
+.data3 { fill: rgba(110, 231, 183, 0.8); }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(4, 6, 10, 0.6) 100%);
+}
+
+/* Subtle animation for the data points */
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.data1 { animation: pulse 3s ease-in-out infinite; }
+.data2 { animation: pulse 3s ease-in-out 0.5s infinite; }
+.data3 { animation: pulse 3s ease-in-out 1s infinite; }

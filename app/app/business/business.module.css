@@ -1,0 +1,182 @@
+/* ======================================================================
+   Business Page Styles
+   ====================================================================== */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg, #04060a);
+  color: var(--fg, #e8eef5);
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
+}
+
+.shell {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted, #6a7a8a);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: var(--mint, #6ee7b7);
+}
+
+.greetWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.greetText {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.greetLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--mint, #6ee7b7);
+  text-transform: uppercase;
+}
+
+.greetLine {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fg, #e8eef5);
+}
+
+.mark {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--mint, #6ee7b7);
+  line-height: 1;
+}
+
+/* Tab bar */
+.tabBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border, #1a2330);
+}
+
+.tabButton {
+  padding: 8px 14px;
+  border: 1px solid var(--border, #1a2330);
+  background: transparent;
+  color: var(--muted, #6a7a8a);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tabButton:hover {
+  background: var(--bg-elevated, #0b0f17);
+  color: var(--fg, #e8eef5);
+  border-color: var(--mint, #6ee7b7);
+}
+
+.tabButton.active {
+  background: var(--mint, #6ee7b7);
+  color: #04060a;
+  border-color: var(--mint, #6ee7b7);
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.statItem {
+  flex: 1;
+  min-width: 120px;
+  padding: 14px 16px;
+  background: var(--bg-elevated, #0b0f17);
+  border: 1px solid var(--border, #1a2330);
+  border-radius: 10px;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted, #6a7a8a);
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--fg, #e8eef5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Content area */
+.content {
+  min-height: 500px;
+}
+
+/* Access denied */
+.accessDenied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 40px;
+}
+
+.accessDenied h2 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--mint, #6ee7b7);
+}
+
+.accessDenied p {
+  color: var(--muted, #6a7a8a);
+  margin: 8px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .shell {
+    padding: 16px;
+  }
+
+  .tabButton {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .stats {
+    flex-direction: column;
+  }
+}

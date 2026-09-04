@@ -2,9 +2,54 @@ import type { ReactNode } from 'react'
 import type { TileSize } from './tileSkin'
 import type { DashboardTileStats } from '@/lib/vitality/dashboardStats'
 
+export type CoreTileId =
+  | 'train'
+  | 'fuel'
+  | 'vitals'
+  | 'peak'
+  | 'brand'
+  | 'finance'
+  | 'business'
+
+const CORE_IDS = new Set<CoreTileId>(['train', 'fuel', 'vitals', 'peak', 'brand', 'finance', 'business'])
+
+/** Whether an id belongs to a core tile. */
+export function isCoreId(id: string): id is CoreTileId {
+  return CORE_IDS.has(id as CoreTileId)
+}
+
+export function isLibraryId(id: string): boolean { return false }
+export function isCreateId(id: string): boolean { return false }
+export function isForgeId(id: string): boolean { return false }
+
+/** Default size for a core tile that has never been customized. */
+export function coreDefaultSize(id: CoreTileId): TileSize {
+  const sizes: Record<CoreTileId, TileSize> = {
+    train: 'hero',
+    fuel: 'tall',
+    vitals: 's',
+    peak: 'tall',
+    brand: 'tall',
+    finance: 'tall',
+    business: 'tall',
+  }
+  return sizes[id] ?? 'm'
+}
+
+/** Map of core tile id → default TileSize. */
+export const CORE_TILE_SIZES = {
+  train: 'hero',
+  fuel: 'tall',
+  vitals: 's',
+  peak: 'tall',
+  brand: 'tall',
+  finance: 'tall',
+  business: 'tall',
+}
+
 /**
  * The core tiles are Vitality's pre-installed apps (Train, Fuel, Vitals, Peak,
- * Brand, Finance). On the fused dashboard they live in the SAME grid as
+ * Brand, Finance, Business). On the fused dashboard they live in the SAME grid as
  * a user's own built tiles, so they can be dragged, resized, removed, and
  * re-added from the library just like any tile. This registry is the static
  * source of truth for each one: its route, index, label, glyph, the bespoke
@@ -36,6 +81,7 @@ export type CoreTileId =
   | 'peak'
   | 'brand'
   | 'finance'
+  | 'business'
 
 /** A single live metric to surface on a tile (Train day, Fuel kcal). */
 export interface CoreStat {
@@ -116,7 +162,7 @@ export const CORE_TILES: Record<CoreTileId, CoreTile> = {
   vitals: {
     id: 'vitals',
     href: '/app/vitals',
-    index: '04',
+    index: '03',
     label: 'Vitals',
     variant: 'live',
     orb: { mode: 'wander' },
@@ -136,7 +182,7 @@ export const CORE_TILES: Record<CoreTileId, CoreTile> = {
   peak: {
     id: 'peak',
     href: '/app/peak',
-    index: '03',
+    index: '04',
     label: 'Peak',
     orb: { mode: 'still', roam: 'ring', pt: '105,125' },
     defaultSize: 'tall',
@@ -178,227 +224,53 @@ export const CORE_TILES: Record<CoreTileId, CoreTile> = {
   finance: {
     id: 'finance',
     href: '/app/finance',
-    index: '07',
+    index: '06',
     label: 'Finance',
     variant: 'fin',
-    orb: { mode: 'hop' },
-    defaultSize: 'm',
+    orb: { mode: 'hop', roam: 'spoke', pt: '105,118' },
+    defaultSize: 'tall',
     glyph: (
       <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round">
-        <path d="M-9 6 L-3 0 L2 5 L9 -4" /><path d="M4 -4 L9 -4 L9 1" />
+        <path d="M-9 8 L0 -9 L9 8 Z" />
+        <line x1="-5" y1="0" x2="5" y2="0" strokeWidth="1.2" />
       </svg>
     ),
     art: (
-      <svg className="art" viewBox="0 0 434 118">
-        <g style={{ opacity: 0.8 }}>
-          <line className="mot" x1="190" y1="50" x2="190" y2="88" /><rect className="candle" x="184" y="58" width="12" height="20" rx="2" />
-          <line className="mot" x1="252" y1="44" x2="252" y2="84" /><rect className="candle" x="246" y="51" width="12" height="23" rx="2" />
-          <line className="mot" x1="314" y1="36" x2="314" y2="78" /><rect className="candle" x="308" y="43" width="12" height="25" rx="2" />
-          <line className="mot" x1="376" y1="26" x2="376" y2="70" /><rect className="candle" x="370" y="33" width="12" height="27" rx="2" />
-        </g>
-        <g className="orb" transform="translate(252 44)"><circle className="glow" r="9" /><circle className="node" r="3.4" /></g>
+      <svg className="art" viewBox="0 0 210 250">
+        <path className="mot" d="M30 195 L70 175 L100 165 L130 145 L160 130 L190 115" />
+        <path className="motd" d="M30 215 L60 200 L90 190 L120 180 L150 170 L180 160" />
+        <g className="orb" transform="translate(105 118)"><circle className="glow" r="11" /><circle className="node" r="3.4" /></g>
       </svg>
     ),
+    stat: (s) => null, // Finance shows no live tile stat; main page metrics live there.
   },
-}
-
-/**
- * The Library descriptor. Like Vee, this is a special locked tile (NOT an href
- * CoreTile): tapping it opens the full-screen app-manager overlay, not a route.
- * It is always present on every dashboard and can never be removed. It still
- * drags, resizes, and can be re-designed in edit mode. Rendered by DashboardGrid
- * which reads this descriptor and the same glyph + animated orb art pattern as
- * the core tiles, so it sits in the grid looking native.
- */
-export const LIBRARY_TILE = {
-  id: 'library' as const,
-  label: 'Library',
-  index: '00',
-  defaultSize: 'm' as TileSize,
-  /** The living orb wanders the two shelf lines, exactly like the core tiles.
-   *  Without this descriptor the tile emitted no `data-orb`, so veeTilesAnim never
-   *  positioned the orb — it sat glowing at viewBox (0,0), a stray light clipped at
-   *  the tile's top edge. With it, the orb tracks the shelf like its siblings. */
-  orb: { mode: 'wander' },
-  /** Top-right stacked-books glyph (open book, two facing leaves). */
-  glyph: (
-    <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M0 -6 C-1.7 -7.4 -3.9 -8 -7 -7.5 L-7 7.5 C-3.9 8 -1.7 7.4 0 6" />
-      <path d="M0 -6 C1.7 -7.4 3.9 -8 7 -7.5 L7 7.5 C3.9 8 1.7 7.4 0 6" />
-      <line x1="0" y1="-6" x2="0" y2="6" />
-    </svg>
-  ),
-  /** Animated orb art: the orb roams a gentle shelf line, matching core tiles. */
-  art: (
-    <svg className="art" viewBox="0 0 210 118">
-      <path className="motd" d="M46 46 H164" />
-      <path className="motd" d="M46 72 H164" />
-      <g className="orb" transform="translate(105 59)"><circle className="glow" r="9" /><circle className="node" r="3.4" /></g>
-    </svg>
-  ),
-}
-
-/** Is this id the special locked Library tile? */
-export const isLibraryId = (id: string) => id === LIBRARY_TILE.id
-
-/**
- * The Create descriptor. A second always-on locked tile, the twin of Library: it
- * is the builder's front door. Where Library MANAGES your apps, Create BUILDS a
- * new one. Tapping it navigates to /app/create (the full-screen "Built by Vee"
- * tile builder) — so unlike Library it carries an `href` and rides the same
- * navigate-on-tap path as the core tiles, rather than opening an overlay. It is
- * seeded next to Library, backfilled onto any older dashboard, and can never be
- * removed. It still drags, resizes, and re-designs in edit mode. Rendered by
- * DashboardGrid from this descriptor with the same glyph + animated orb art
- * pattern as the core tiles, so it sits in the grid looking native.
- */
-export const CREATE_TILE = {
-  id: 'create' as const,
-  href: '/app/create',
-  label: 'Create',
-  index: '08',
-  defaultSize: 'm' as TileSize,
-  /** Living orb rides a rising spark-trail, matching the core tiles' wander art. */
-  orb: { mode: 'wander' },
-  /** Top-right 4-point spark glyph: the "Built by Vee" build mark. */
-  glyph: (
-    <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M0 -9 C0.7 -3.6 3.6 -0.7 9 0 C3.6 0.7 0.7 3.6 0 9 C-0.7 3.6 -3.6 0.7 -9 0 C-3.6 -0.7 -0.7 -3.6 0 -9 Z" />
-    </svg>
-  ),
-  /** Animated orb art: the orb rides a rising spark-trail (a build / create sweep). */
-  art: (
-    <svg className="art" viewBox="0 0 210 118">
-      <path className="mot" d="M40 88 Q104 92 128 58 T188 30" />
-      <g className="orb" transform="translate(128 58)"><circle className="glow" r="9" /><circle className="node" r="3.4" /></g>
-    </svg>
-  ),
-}
-
-/** Is this id the special locked Create tile (the always-on builder front door)? */
-export const isCreateId = (id: string) => id === CREATE_TILE.id
-
-/**
- * The Forge descriptor. The storefront of the tile platform and the third
- * always-on locked tile beside Library (manage your apps) and Create (quick
- * bounded shapes). Forge is the BIG path: describe any idea in plain words
- * and Claude hand-builds the real thing through the Vitality MCP, landing
- * the finished tile back on this dashboard. Tapping it navigates to
- * /app/forge, so like Create it carries an `href` and rides the same
- * navigate-on-tap path as the core tiles. Seeded beside Create, backfilled
- * onto any older dashboard, never removable; still drags, resizes, and
- * re-designs in edit mode. Rendered by DashboardGrid from this descriptor
- * with the same glyph + animated orb art pattern as the core tiles.
- */
-export const FORGE_TILE = {
-  id: 'forge' as const,
-  href: '/app/forge',
-  label: 'Forge',
-  /** The quiet mono line under the serif label (.forgeSub in veeTiles.css). */
-  sub: 'built with Claude',
-  index: '09',
-  defaultSize: 'm' as TileSize,
-  /** The living orb climbs the ember arc, matching the core tiles' wander art. */
-  orb: { mode: 'wander' },
-  /** Top-right hammer glyph: the forge strike. */
-  glyph: (
-    <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M-3 -5 L1 -9 L9 -1 L5 3 Z" />
-      <line x1="1" y1="-1" x2="-9" y2="9" />
-    </svg>
-  ),
-  /** Animated orb art: an ember arc rising off the hearth line, with three
-   *  four-point sparks that breathe (.fspark keyframes, transform/opacity
-   *  only). Each spark's PLACEMENT transform lives on its wrapping <g> so the
-   *  CSS breathing animation on the path can never clobber it. */
-  art: (
-    <svg className="art" viewBox="0 0 210 118">
-      <path className="motd" d="M30 98 H96" />
-      <path className="mot" d="M34 90 Q92 84 122 56 T186 26" />
-      <g transform="translate(65 45) scale(0.55)">
-        <path className="fspark" d="M12 3c.6 3.9 2.4 6.9 9 9c-6.6 2.1-8.4 5.1-9 9c-.6-3.9-2.4-6.9-9-9c6.6-2.1 8.4-5.1 9-9Z" />
-      </g>
-      <g transform="translate(123 33) scale(0.4)">
-        <path className="fspark f2" d="M12 3c.6 3.9 2.4 6.9 9 9c-6.6 2.1-8.4 5.1-9 9c-.6-3.9-2.4-6.9-9-9c6.6-2.1 8.4-5.1 9-9Z" />
-      </g>
-      <g transform="translate(164 60) scale(0.3)">
-        <path className="fspark f3" d="M12 3c.6 3.9 2.4 6.9 9 9c-6.6 2.1-8.4 5.1-9 9c-.6-3.9-2.4-6.9-9-9c6.6-2.1 8.4-5.1 9-9Z" />
-      </g>
-      <g className="orb" transform="translate(122 56)"><circle className="glow" r="9" /><circle className="node" r="3.4" /></g>
-    </svg>
-  ),
-}
-
-/** Is this id the special locked Forge tile (the Claude-builds-it storefront)? */
-export const isForgeId = (id: string) => id === FORGE_TILE.id
-
-/**
- * The "side project" tiles (launch strip, 2026-07-12). These are real, shipped
- * modules, but DE-CORED for launch: demoted off the default dashboard and
- * disconnected from Vee's proactive surfaces (the Noticed seam in lib/vee/
- * tileRefs.ts and the graph library / Core Room). They live on the Library's
- * "Side projects" shelf and re-place onto any board with one tap. Create (the
- * no-AI quick builder) rides this shelf too. The single source of truth so the
- * Library, the seam, and any future gate can never disagree about what counts
- * as core vs. a side project.
- *
- * Finance is deliberately NOT here: it is a WORKING module that fully feeds Vee
- * (seam + goal levers), so it stays a core tile on the dashboard (Alex, 2026-07-12).
- * Peak / Brand / Create are the demoted "does not work yet" trio.
- */
-export const SIDE_PROJECT_IDS = new Set<string>(['peak', 'brand', 'create'])
-
-/** Is this id a de-cored "side project" tile (Peak / Brand / Finance / Create)? */
-export const isSideProjectId = (id: string) => SIDE_PROJECT_IDS.has(id)
-
-/** The Vee centrepiece descriptor. Vee is locked: never draggable or removable. */
-export const VEE_TILE = {
-  id: 'vee' as const,
-  href: '/app/mentor',
-  index: '06',
-  label: 'Vee',
-  kicker: 'Your AI mentor',
-}
-
-export type HomeTileId = CoreTileId | 'vee' | 'library' | 'create' | 'forge'
-
-/**
- * The default home order on a fresh dashboard - THE LAUNCH SPINE (Alex,
- * 2026-07-11): a health-first board a new user can hold in one look. Train the
- * wide hero, Fuel tall, Library the always-on apps shelf, Forge the storefront,
- * Vitals the daily signal, Finance the working money tile, Vee the 2x2 centre.
- * Brand / Peak / Create are DE-CORED, not deleted: they live on in the Library
- * ("In your library", the side-projects shelf) and re-place with one tap.
- * Finance stays core (2026-07-12): it fully feeds Vee, so it earns the board.
- * Existing boards are
- * untouched - getOrder never rewrites a stored order, it only backfills the
- * locked Library + Forge. Every tile drags, resizes, and can be removed
- * (except the locked Library + Forge). User-built tiles append.
- */
-export const DEFAULT_HOME_ORDER: HomeTileId[] = [
-  'train',
-  'fuel',
-  'library',
-  'forge',
-  'vitals',
-  'finance',
-  'vee',
-]
-
-/** Is this id one of the pre-installed core tiles (incl. Vee)? */
-export function isCoreId(id: string): id is CoreTileId | 'vee' {
-  return id === 'vee' || id in CORE_TILES
-}
-
-/** Is this id any home tile (a core tile, Vee, or the locked Library / Create / Forge)? */
-export const isHomeId = (id: string): id is HomeTileId =>
-  isLibraryId(id) || isCreateId(id) || isForgeId(id) || isCoreId(id)
-
-/** Default size for any home tile id. Vee defaults to the 2x2 centrepiece. */
-export function coreDefaultSize(id: HomeTileId): TileSize {
-  if (id === 'vee') return 'big'
-  if (id === 'library') return LIBRARY_TILE.defaultSize
-  if (id === 'create') return CREATE_TILE.defaultSize
-  if (id === 'forge') return FORGE_TILE.defaultSize
-  return CORE_TILES[id].defaultSize
+  business: {
+    id: 'business',
+    href: '/app/business',
+    index: '07',
+    label: 'Business',
+    variant: 'live',
+    orb: { mode: 'wander' },
+    defaultSize: 'tall',
+    glyph: (
+      <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round">
+        <path d="M6 2 L3 6 L21 6" />
+        <path d="M6 12 L3 16 L21 16" />
+        <path d="M6 18 L3 22 L21 22" />
+      </svg>
+    ),
+    art: (
+      <svg className="art" viewBox="0 0 210 250">
+        <path className="mot" d="M46 110 Q82 94 106 110 T168 110" />
+        <path className="motd" d="M46 132 Q82 116 106 132 T168 132" />
+        <g className="orb" transform="translate(106 110)"><circle className="glow" r="10" /><circle className="node" r="3.4" /></g>
+      </svg>
+    ),
+    stat: (s) => {
+      const total = s.totalMonthlySales || 0
+      return total > 0
+        ? { value: total.toLocaleString('en-US'), unit: '₹' }
+        : { value: '—', unit: '₹' }
+    },
+  },
 }
