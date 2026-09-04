@@ -9,7 +9,6 @@ import { getBusinessTileStats, type DashboardTileStats } from '@/lib/vitality/da
 import BusinessModule from '@/components/business/BusinessModule'
 import type { BusinessTab } from '@/lib/business/types'
 import WelcomeBackdrop from '@/components/WelcomeBackdrop'
-import Homecoming from '@/app/app/home/Homecoming'
 
 /**
  * /app/business - the Business tile.
@@ -180,12 +179,7 @@ export default function BusinessPage() {
           />
         </section>
 
-        {/* Homecoming nudge */}
-        <Homecoming
-          firstName={user?.user_metadata?.first_name ?? 'there'}
-          onClose={() => {}}
-        />
-      </div>
+              </div>
     </main>
   )
 }
