@@ -115,7 +115,7 @@ export function useBusinessState() {
 
   const createLot = useCallback(async (payload: CreateLotPayload) => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isBusinessOwner(user.email)) {
+    if (!user) {
       throw new Error('Unauthorized')
     }
 
@@ -165,7 +165,7 @@ export function useBusinessState() {
 
   const createParty = useCallback(async (payload: CreatePartyPayload) => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isBusinessOwner(user.email)) {
+    if (!user) {
       throw new Error('Unauthorized')
     }
 
@@ -187,7 +187,7 @@ export function useBusinessState() {
 
   const createOrder = useCallback(async (payload: CreateOrderPayload) => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !isBusinessOwner(user.email)) {
+    if (!user) {
       throw new Error('Unauthorized')
     }
 
