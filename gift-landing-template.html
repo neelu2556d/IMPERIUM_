@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Imperium — A Gift for You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  /* ════ Tokens — match the app ════ */
+  :root {
+    --bg: #000000;
+    --bg-elevated: #0a0a0a;
+    --fg: #ffffff;
+    --mint: #6EE7B7;
+    --mint-hover: #5dd6a6;
+    --mint-deep: #1f4d3d;
+    --mint-glow: rgba(110, 231, 183, 0.4);
+    --muted: rgba(255, 255, 255, 0.5);
+    --muted-strong: rgba(255, 255, 255, 0.7);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --card: rgba(255, 255, 255, 0.02);
+    --card-elevated: rgba(255, 255, 255, 0.04);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 999px;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.375rem;
+    --text-2xl: 1.75rem;
+    --text-3xl: 2.5rem;
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-lift: 480ms;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .serif { font-family: 'Instrument Serif', Georgia, serif; }
+
+  /* ════ Layout ════ */
+  .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
+
+  /* ════ Hero ════ */
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3rem;
+  }
+
+  .hero-gem {
+    width: 64px; height: 64px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, var(--mint) 0%, #1f4d3d 100%);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 40px var(--mint-glow);
+    animation: float 6s var(--ease-premium) infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .hero-gem svg { width: 32px; height: 32px; }
+
+  .hero h1 {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero .subtitle {
+    font-size: var(--text-lg);
+    color: var(--muted-strong);
+    max-width: 440px;
+    margin: 0 auto 2rem;
+  }
+
+  /* ════ Friend block ════ */
+  .friend-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .friend-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--mint);
+    box-shadow: 0 0 20px var(--mint-glow);
+  }
+
+  .friend-name {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: var(--text-2xl);
+    font-weight: 400;
+  }
+
+  /* ════ CTA ════ */
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--mint);
+    color: var(--bg);
+    font-weight: 600;
+    font-size: var(--text-base);
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+    box-shadow: 0 0 30px var(--mint-glow);
+  }
+
+  .cta-btn:hover {
+    background: var(--mint-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 0 50px var(--mint-glow);
+  }
+
+  .cta-btn:active {
+    transform: translateY(0);
+  }
+
+  .cta-btn svg { width: 18px; height: 18px; }
+
+  .cta-section {
+    text-align: center;
+    padding: 2rem 0 3rem;
+  }
+
+  .cta-hint {
+    font-size: var(--text-sm);
+    color: var(--muted);
+    margin-top: 0.75rem;
+  }
+
+  /* ════ Features ════ */
+  .section-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mint);
+    margin-bottom: 1rem;
+  }
+
+  .features {
+    padding: 2rem 0 4rem;
+  }
+
+  .feature {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .feature:last-child { border-bottom: none; }
+
+  .feature-icon {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--card-elevated);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--mint);
+  }
+
+  .feature-icon svg { width: 20px; height: 20px; }
+
+  .feature h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .feature p {
+    font-size: var(--text-sm);
+    color: var(--muted-strong);
+    line-height: 1.5;
+  }
+
+  /* ════ Modules grid ════ */
+  .modules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0 0 2rem;
+  }
+
+  .module {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+  }
+
+  .module-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .module h4 {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .module p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* ════ Section dividers ════ */
+  .section {
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .section h2 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-family: 'Instrument Serif', Georgia, serif;
+  }
+
+  .section p {
+    color: var(--muted-strong);
+    font-size: var(--text-base);
+  }
+
+  /* ════ Install instructions ════ */
+  .install-steps {
+    padding: 0 0 4rem;
+  }
+
+  .platform {
+    margin-bottom: 1.5rem;
+  }
+
+  .platform h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .platform ol {
+    padding-left: 1.25rem;
+    color: var(--muted-strong);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+
+  .platform ol li { margin-bottom: 0.25rem; }
+
+  .os-icon {
+    display: inline-block;
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    background: var(--card-elevated);
+    border: 1px solid var(--border);
+    font-size: 0.7rem;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    color: var(--fg);
+  }
+
+  /* ════ Footer ════ */
+  footer {
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+
+  footer a {
+    color: var(--mint);
+    text-decoration: none;
+  }
+
+  /* ════ Responsive ════ */
+  @media (max-width: 520px) {
+    .hero { padding: 3rem 0 2rem; }
+    .hero h1 { font-size: var(--text-2xl); }
+    .friend-block { flex-direction: column; text-align: center; }
+    .modules { grid-template-columns: 1fr; }
+  }
+
+  /* ════ Reduced motion ════ */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-gem { animation: none; }
+    * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- ════ Hero ════ -->
+  <section class="hero">
+    <div class="hero-gem" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M16 2L22 10L20 20L16 26L12 20L10 10Z" fill="rgba(255,255,255,0.9)"/>
+        <path d="M16 6L19.5 12L19 18L16 22L13 18L12.5 12Z" fill="#000"/>
+      </svg>
+    </div>
+    <h1 class="serif">Imperium</h1>
+    <p class="subtitle">Your all-in-one fitness, nutrition, and recovery dashboard — now in their pocket.</p>
+
+    <div class="friend-block">
+      <img class="friend-avatar" src="https://picsum.photos/seed/FRIEND_PHOTO/144/144.jpg" alt="Friend's photo" loading="lazy">
+      <div>
+        <div class="section-label" style="text-align:center">A gift for</div>
+        <div class="friend-name serif">[FRIEND'S NAME]</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ CTA ════ -->
+  <section class="cta-section">
+    <a href="https://acee-imperium-lww6mkj7f-nishant17.vercel.app" class="cta-btn" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M6 10h8M10 6v8"/>
+      </svg>
+      Open Imperium — it's free
+    </a>
+    <p class="cta-hint">Tap the button above — it opens the dashboard instantly. No credit card.</p>
+  </section>
+
+  <!-- ════ What's included ════ -->
+  <section class="section">
+    <h2 class="serif">What you're getting</h2>
+    <p style="color:var(--muted-strong);margin-bottom:1.5rem">Everything in the app — one membership, no hidden tiers.</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <circle cx="10" cy="10" r="8"/><path d="M10 6v4l2.5 2.5"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Vitals Score</h3>
+          <p>Your daily readiness score across sleep, recovery, and readiness — one number that tells you everything.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M3 14l4-8 4 6 4-10 4 14"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Fitness Tracking</h3>
+          <p>Built-in workouts, split routines, exercise libraries, and custom lifts you create yourself.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M5 5h10M5 10h10M5 15h6"/>
+            <circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Nutrition &amp; Fuel</h3>
+          <p>Calories, macros, meal logging, and intake quizzes that actually adapt to your goals.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M10 2v4l-3 3 3 3V18M10 6h6"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Wearables</h3>
+          <p>Connect Fitbit, Oura, WHOOP, Apple Health — or log manually. Everything flows into one dashboard.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M4 16l2-8 3 4 3-6 3 10"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Goals (Vee)</h3>
+          <p>Visual goal tracking with drift detection and AI-powered coaching to keep you on track.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <circle cx="10" cy="10" r="7"/><path d="M10 7v3l2 1"/>
+          </svg>
+        </div>
+        <div>
+          <h3>AI Coach</h3>
+          <p>Ask Claude anything — workout form, nutrition tweaks, schedule optimization — right in the app.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Modules ════ -->
+  <section class="section">
+    <h2 class="serif">At a glance</h2>
+    <div class="modules">
+      <div class="module">
+        <div class="module-icon">💪</div>
+        <h4>Vitals</h4>
+        <p>Daily readiness score + wearable sync</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">🏋️</div>
+        <h4>Fitness</h4>
+        <p>Splits, workouts, custom lifts</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">🥗</div>
+        <h4>Fuel</h4>
+        <p>Nutrition, meals, macros</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">🎯</div>
+        <h4>Goals</h4>
+        <p>Track + drift alerts + coaching</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">⏰</div>
+        <h4>Peak</h4>
+        <p>Schedule &amp; time blocking</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">📊</div>
+        <h4>Finance</h4>
+        <p>Expenses, subscriptions, insights</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">🔗</div>
+        <h4>Claude</h4>
+        <p>AI answers in your dashboard</p>
+      </div>
+      <div class="module">
+        <div class="module-icon">🎨</div>
+        <h4>Tiles</h4>
+        <p>Build your own widgets</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Install instructions ════ -->
+  <section class="section install-steps">
+    <h2 class="serif">Add to your home screen</h2>
+    <p style="color:var(--muted-strong);margin-bottom:1.5rem">It works like a native app — no app store download needed.</p>
+
+    <div class="platform">
+      <h3><span class="os-icon">iOS</span> iPhone &amp; iPad</h3>
+      <ol>
+        <li>Open Safari and go to the link above (or tap the CTA button).</li>
+        <li>Tap the <strong>Share</strong> button at the bottom of the screen (the square with the arrow).</li>
+        <li>Scroll the action sheet and tap <strong>Add to Home Screen</strong>.</li>
+        <li>Tap <strong>Add</strong> in the top-right corner.</li>
+        <li>It appears on your home screen — just like a normal app.</li>
+      </ol>
+    </div>
+
+    <div class="platform">
+      <h3><span class="os-icon">AND</span> Android</h3>
+      <ol>
+        <li>Open Chrome and go to the link above (or tap the CTA button).</li>
+        <li>Tap the <strong>three-dot menu</strong> (⋮) in the top-right corner.</li>
+        <li>Tap <strong>Install Imperium</strong> (or "Add to Home screen").</li>
+        <li>Confirm with <strong>Install</strong>.</li>
+        <li>It appears in your app drawer — works offline too.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ════ Footer ════ -->
+  <footer>
+    <p>Made with care for <a href="#">Imperium</a> · Free forever · No credit card required</p>
+  </footer>
+
+</main>
+
+</body>
+</html>

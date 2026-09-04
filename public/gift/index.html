@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Imperium — A Gift for You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000; --bg-elevated: #0a0a0a; --fg: #ffffff;
+    --mint: #6EE7B7; --mint-hover: #5dd6a6; --mint-deep: #1f4d3d;
+    --mint-glow: rgba(110, 231, 183, 0.4); --gold: #FFD66B; --gold-soft: rgba(255, 214, 107, 0.15);
+    --muted: rgba(255, 255, 255, 0.5); --muted-strong: rgba(255, 255, 255, 0.7);
+    --border: rgba(255, 255, 255, 0.08); --card: rgba(255, 255, 255, 0.02);
+    --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px; --radius-pill: 999px;
+    --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+    --text-xl: 1.375rem; --text-2xl: 1.75rem; --text-3xl: 2.5rem;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg);
+    min-height: 100vh; overflow-x: hidden;
+  }
+  .serif { font-family: 'Instrument Serif', Georgia, serif; }
+  .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
+  .hero { text-align: center; padding: 5rem 0 3rem; }
+  .hero h1 { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .hero h1 .accent { color: var(--mint); }
+  .subtitle { color: var(--muted-strong); margin-top: 1.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--mint); color: var(--bg);
+    font-weight: 600; font-size: 1rem; padding: 0.875rem 2rem;
+    border-radius: var(--radius-pill); border: none; cursor: pointer; text-decoration: none;
+    box-shadow: 0 0 30px var(--mint-glow);
+  }
+  .cta-btn:hover { background: var(--mint-hover); transform: translateY(-1px); box-shadow: 0 0 50px var(--mint-glow); }
+  .cta-section { text-align: center; padding: 2rem 0 3rem; }
+  .cta-hint { font-size: var(--text-sm); color: var(--muted); margin-top: 0.75rem; }
+  .recipient-banner {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    margin-top: 1.5rem;
+  }
+  .recipient-banner-text { font-size: var(--text-sm); color: var(--muted-strong); }
+  .recipient-banner-name { font-family: 'Instrument Serif', Georgia, serif; font-size: var(--text-lg); color: var(--mint); font-weight: 400; }
+  .owner-card {
+    display: grid; grid-template-columns: 140px 1fr; gap: 2rem; align-items: center;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 2rem; margin: 2.5rem 0;
+  }
+  .owner-photo {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--mint); box-shadow: 0 0 30px var(--mint-glow);
+  }
+  .owner-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--gold);
+    padding: 0.3rem 0.7rem; border: 1px solid rgba(255,214,107,0.3); border-radius: var(--radius-pill);
+    background: var(--gold-soft); margin-bottom: 0.75rem; display: inline-block; }
+  .owner-name { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.875rem; font-weight: 400; line-height: 1.1; margin-bottom: 0.5rem; }
+  .owner-role { font-size: 0.95rem; color: var(--mint); margin-bottom: 1rem; font-weight: 500; }
+  .owner-bio { font-size: 0.95rem; color: var(--muted-strong); line-height: 1.6; }
+  .friend-card {
+    display: grid; grid-template-columns: 1fr 180px; gap: 2rem; align-items: center;
+    background: linear-gradient(135deg, rgba(110,231,183,0.04), rgba(110,231,183,0.01));
+    border: 1px solid rgba(110,231,183,0.15); border-radius: var(--radius-lg);
+    padding: 2rem; margin: 2.5rem 0; position: relative;
+  }
+  .friend-name { font-family: 'Instrument Serif', Georgia, serif; font-size: 2.25rem; font-weight: 400; line-height: 1.1; }
+  .friend-photo { width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
+    border: 2px solid rgba(110,231,183,0.5); box-shadow: 0 0 30px rgba(110,231,183,0.2); }
+    .footer { text-align: center; padding: 2.5rem 0 2rem; border-top: 1px solid var(--border);
+    font-size: var(--text-sm); color: var(--muted); }
+  .footer a { color: var(--mint); text-decoration: none; }
+  @media (max-width: 640px) {
+    .owner-card, .friend-card { grid-template-columns: 1fr; text-align: center; }
+    .owner-photo, .friend-photo { margin: 0 auto 1rem; width: 120px; height: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <section class="hero">
+    <h1 class="serif">Imperium</h1>
+    <p class="subtitle">Your all-in-one fitness, nutrition, and recovery dashboard — now in their pocket.</p>
+    <div class="recipient-banner">
+      <span class="recipient-banner-text">A gift for</span>
+      <span class="recipient-banner-name" id="recipientName" spellcheck="false">You</span>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <a href="https://acee-imperium.vercel.app" class="cta-btn" target="_blank" rel="noopener noreferrer">Open Imperium — it's free</a>
+    <p class="cta-hint">Tap the button above — it opens the dashboard instantly. No credit card.</p>
+  </section>
+
+  <section class="friend-card">
+    <div class="friend-content">
+      <span class="friend-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.16em;color:var(--mint);padding:0.3rem 0.7rem;border:1px solid rgba(110,231,183,0.3);border-radius:999px;background:rgba(110,231,183,0.08);display:inline-block;margin-bottom:0.85rem;">✦ Your Gift</span>
+      <h3 class="friend-name" id="friendNameDisplay"></h3>
+      <p class="friend-role" style="font-size:0.95rem;color:var(--muted-strong);">Recipient</p>
+    </div>
+    <div class="friend-photo-wrap" style="position:relative;width:180px;height:180px;border-radius:50%;">
+      <img class="friend-photo" id="friendPhotoImg" src="https://picsum.photos/seed/friend/360/360.jpg" alt="Friend's photo" style="width:180px;height:180px;border-radius:50%;border:2px solid rgba(110,231,183,0.5);box-shadow:0 0 30px rgba(110,231,183,0.2);">
+    </div>
+  </section>
+
+  <section class="owner-card">
+    <div id="ownerPhotoWrap" style="width:140px;height:140px;border-radius:50%;overflow:hidden;border:2px solid var(--mint);box-shadow:0 0 30px var(--mint-glow);margin:0 auto;position:relative;">
+      <img class="owner-photo" id="ownerPhoto" src="https://picsum.photos/seed/nishant-baksani/400/400.jpg" alt="Nishant Baksani" style="width:100%;height:100%;object-fit:cover;cursor:pointer;position:relative;z-index:1;">
+      <input type="file" id="ownerFile" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:140px;height:140px;z-index:3;">
+    </div>
+    <div>
+      <span class="owner-label">✦ Owner & Builder</span>
+      <h3 class="owner-name">Nishant Baksani</h3>
+      <p class="owner-role">Creator, Imperium</p>
+      <p class="owner-bio">The person behind this dashboard. Nishant designed and engineered Imperium from a single idea: a personal operating system that treats your goals, your data, and your time like the serious things they are.</p>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <p>Made with care by <a href="#">Nishant Baksani</a> · Imperium</p>
+  <p class="footer-signature">"You're done here. Build something great."</p>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const STORAGE_KEY_OWNER_PHOTO = 'gift-owner-photo';
+
+    const friendNameDisplay = document.getElementById('friendNameDisplay');
+    const friendPhotoImg = document.getElementById('friendPhotoImg');
+    const ownerPhotoImg = document.getElementById('ownerPhoto');
+    const ownerPhotoWrap = document.getElementById('ownerPhotoWrap');
+    const ownerFile = document.getElementById('ownerFile');
+
+    // Load owner photo from localStorage
+    const savedOwnerPhoto = localStorage.getItem(STORAGE_KEY_OWNER_PHOTO);
+    if (savedOwnerPhoto) {
+      try {
+        ownerPhotoImg.src = savedOwnerPhoto;
+      } catch (e) {
+        console.error('Failed to load saved owner photo:', e);
+      }
+    }
+
+    // Load friend name from URL param
+    const paramName = new URLSearchParams(window.location.search).get('name');
+    if (paramName) {
+      const decoded = decodeURIComponent(paramName);
+      friendNameDisplay.textContent = decoded;
+    }
+
+    // Owner photo upload via invisible input on top
+    ownerFile.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const dataUrl = event.target.result;
+        localStorage.setItem(STORAGE_KEY_OWNER_PHOTO, dataUrl);
+        ownerPhotoImg.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Drag & drop for owner photo
+    const ownerContainer = document.querySelector('.owner-card');
+    if (ownerContainer) {
+      ownerContainer.addEventListener('dragover', e => {
+        e.preventDefault();
+        ownerPhotoWrap.style.borderColor = 'var(--mint)';
+        ownerPhotoWrap.style.boxShadow = '0 0 25px var(--mint-glow)';
+      });
+      ownerContainer.addEventListener('dragleave', e => {
+        e.preventDefault();
+        ownerPhotoWrap.style.borderColor = 'var(--mint)';
+        ownerPhotoWrap.style.boxShadow = '0 0 30px var(--mint-glow)';
+      });
+      ownerContainer.addEventListener('drop', e => {
+        e.preventDefault();
+        ownerPhotoWrap.style.borderColor = 'var(--mint)';
+        ownerPhotoWrap.style.boxShadow = '0 0 30px var(--mint-glow)';
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const dataUrl = event.target.result;
+            localStorage.setItem(STORAGE_KEY_OWNER_PHOTO, dataUrl);
+            ownerPhotoImg.src = dataUrl;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Paste for owner photo
+    document.addEventListener('paste', function(e) {
+      const items = e.clipboardData?.items || [];
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const dataUrl = event.target.result;
+            localStorage.setItem(STORAGE_KEY_OWNER_PHOTO, dataUrl);
+            ownerPhotoImg.src = dataUrl;
+          };
+          reader.readAsDataURL(blob);
+          break;
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

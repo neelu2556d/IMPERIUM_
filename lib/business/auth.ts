@@ -1,17 +1,28 @@
 /**
  * Business module auth helpers.
- * Single-user restriction to writer.nishant2809@gmail.com.
+ * Single-user restriction, configured via env var BUSINESS_OWNER_EMAIL.
+ * Defaults to a placeholder; set the real value in .env for local dev.
  */
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 /**
+ * The authorized business owner's email address.
+ * Reads from process.env.BUSINESS_OWNER_EMAIL at call time so a
+ * redeploy can rotate it without a code change.
+ */
+export function businessOwnerEmail(): string {
+  return process.env.BUSINESS_OWNER_EMAIL || ''
+}
+
+/**
  * Check if the given email is the authorized business owner.
  * In production, this could be extended to a list or fetched from a table.
  */
 export function isBusinessOwner(email: string | null): boolean {
-  return email === 'writer.nishant2809@gmail.com'
+  const owner = businessOwnerEmail()
+  return !!owner && email === owner
 }
 
 /**

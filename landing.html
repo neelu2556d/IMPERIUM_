@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Gift for You — Imperium by Nishant Baksani</title>
+<meta name="description" content="A personal gift dashboard for the user.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000; --bg-elevated: #0a0a0a; --fg: #ffffff;
+    --mint: #6EE7B7; --mint-hover: #5dd6a6; --mint-deep: #1f4d3d;
+    --mint-glow: rgba(110, 231, 183, 0.4); --gold: #FFD66B; --gold-soft: rgba(255, 214, 107, 0.15);
+    --muted: rgba(255, 255, 255, 0.5); --muted-strong: rgba(255, 255, 255, 0.7);
+    --border: rgba(255, 255, 255, 0.08); --card: rgba(255, 255, 255, 0.02);
+    --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px; --radius-pill: 999px;
+    --text-sm: .875rem; --text-base: 1rem; --text-lg: 1.125rem;
+    --text-xl: 1.375rem; --text-2xl: 1.75rem; --text-3xl: 2.5rem;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg); color: var(--fg);
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;
+  }
+  .container { max-width: 540px; width: 100%; text-align: center; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; }
+  .form-group { margin: 1.5rem 0; }
+  label { display: block; margin-bottom: .5rem; color: var(--muted); font-size: .875rem; }
+  input[type="text"] {
+    width: 100%; padding: 1rem; background: var(--bg-elevated);
+    border: 1px solid var(--border); border-radius: 8px; color: var(--fg);
+    font-size: 1rem; outline: none; transition: border-color .2s;
+  }
+  input[type="text"]:focus { border-color: var(--mint); }
+  .photo-upload {
+    width: 180px; height: 180px; margin: 0 auto 1.5rem;
+    border: 2px dashed var(--border); border-radius: 50%;
+    background: var(--card); cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; transition: border-color .2s, background .2s;
+  }
+  .photo-upload:hover { border-color: var(--mint); }
+  .photo-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; }
+  .photo-upload img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .photo-upload img.active { display: block; }
+  .photo-upload p { color: var(--muted); font-size: .8rem; margin-top: .5rem; }
+  .btn { display: inline-block; padding: 1rem 2rem; background: var(--mint); color: var(--bg);
+    font-weight: 600; border-radius: 999px; border: none; cursor: pointer; margin-top: .5rem; }
+  .btn:hover { background: var(--mint-hover); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  code { display: block; padding: 1rem; background: var(--bg-elevated);
+    border-radius: 8px; font-size: .75rem; word-break: break-all; margin: 1rem 0; }
+  .footer { margin-top: 2.5rem; text-align: center; font-size: .75rem; color: var(--muted); }
+  .footer a { color: var(--mint); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎁 Create Gift Link</h1>
+  <p style="color:var(--muted);margin-bottom:2rem;text-align:center;">Generate a personalized gift link for your friend</p>
+
+  <div class="form-group">
+    <label for="friendName">Friend's Name</label>
+    <input type="text" id="friendName" placeholder="Enter their name" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <label>Friend's Photo (optional)</label>
+    <div class="photo-upload" id="photoDrop">
+      <input type="file" id="photoFile" accept="image/*">
+      <div class="photo-upload-fallback" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">👤</div>
+      <img class="preview-img" id="previewImg" alt="Your photo preview">
+      <p>Click to upload or drag & drop</p>
+      <p style="font-size:0.65rem;margin-top:0.25rem;">Or paste image (Ctrl+V / Cmd+V)</p>
+    </div>
+  </div>
+
+  <button class="btn" id="generateBtn" disabled>Generate Shareable Link →</button>
+
+  <div id="previewBox" style="display:none;">
+    <p>Generated link:</p>
+    <code id="generatedLink"></code>
+  </div>
+
+  <p style="margin-top:1.5rem;color:var(--muted);font-size:var(--text-sm);">
+    Share this link with your friend. The name and photo will be embedded in the URL.
+  </p>
+
+  <div class="footer">
+    <p>Made by <a href="https://acee-imperium.vercel.app" target="_blank">Nishant Baksani</a></p>
+  </div>
+</div>
+
+<script>
+  const GIFT_VIEW_URL = 'https://acee-imperium.vercel.app/gift/';
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById('friendName');
+    const photoDrop = document.getElementById('photoDrop');
+    const photoFile = document.getElementById('photoFile');
+    const previewImg = document.getElementById('previewImg');
+    const generateBtn = document.getElementById('generateBtn');
+    const previewBox = document.getElementById('previewBox');
+    const generatedLink = document.getElementById('generatedLink');
+
+    let base64Photo = null;
+
+    nameInput.addEventListener('input', checkForm);
+    photoDrop.addEventListener('click', () => photoFile.click());
+
+    photoFile.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        base64Photo = event.target.result;
+        previewImg.src = event.target.result;
+        previewImg.classList.add('active');
+        checkForm();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    photoDrop.addEventListener('dragover', e => {
+      e.preventDefault();
+      photoDrop.style.borderColor = 'var(--mint)';
+    });
+    photoDrop.addEventListener('dragleave', e => {
+      e.preventDefault();
+      photoDrop.style.borderColor = 'var(--border)';
+    });
+    photoDrop.addEventListener('drop', e => {
+      e.preventDefault();
+      photoDrop.style.borderColor = 'var(--border)';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          base64Photo = event.target.result;
+          previewImg.src = event.target.result;
+          previewImg.classList.add('active');
+          checkForm();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.addEventListener('paste', function(e) {
+      const items = e.clipboardData?.items || [];
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            base64Photo = event.target.result;
+            previewImg.src = event.target.result;
+            previewImg.classList.add('active');
+            checkForm();
+          };
+          reader.readAsDataURL(blob);
+          break;
+        }
+      }
+    });
+
+    function checkForm() {
+      const name = nameInput.value.trim();
+      generateBtn.disabled = !name;
+    }
+
+    function generateLink() {
+      const name = nameInput.value.trim();
+      if (!name) return;
+      let url = GIFT_VIEW_URL + '?name=' + encodeURIComponent(name);
+      if (base64Photo) {
+        url += '&photo=' + encodeURIComponent(base64Photo);
+      }
+      generatedLink.textContent = url;
+      previewBox.style.display = 'block';
+    }
+
+    generateBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      if (!name) return;
+      generateLink();
+      navigator.clipboard.writeText(generatedLink.textContent).then(() => {
+        generateBtn.textContent = '✓ Link copied to clipboard';
+        setTimeout(() => generateBtn.textContent = 'Generate Shareable Link →', 2000);
+      });
+    });
+  });
+</script>
+</body>
+</html>
