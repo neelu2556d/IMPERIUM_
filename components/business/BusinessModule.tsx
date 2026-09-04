@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { isBusinessOwner } from '@/lib/business/auth'
 import {
   type BusinessState,
   type BusinessLot,
@@ -42,7 +41,8 @@ export default function BusinessModule({ tab, onTabChange }: BusinessModuleProps
         const { data: { user } } = await supabase.auth.getUser()
         if (cancelled) return
 
-        if (!user || !isBusinessOwner(user.email)) {
+        // Public access — any authenticated user can view the business data they own
+        if (!user) {
           setIsAuthorized(false)
           setIsReady(true)
           return
