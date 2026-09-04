@@ -6,7 +6,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { isBusinessOwner } from './auth'
 import {
   type BusinessState,
   type BusinessLot,
@@ -43,12 +42,12 @@ export function useBusinessState() {
         const { data: { user } } = await supabase.auth.getUser()
         if (cancelled) return
 
-        if (!user || !isBusinessOwner(user.email)) {
+        // Public access — any logged-in user can view their business data
+        if (!user) {
           setIsAuthorized(false)
           setReady(true)
           return
         }
-
         setIsAuthorized(true)
 
         // Load all in parallel
