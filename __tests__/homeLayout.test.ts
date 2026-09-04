@@ -45,16 +45,16 @@ describe('homeLayout: the one unified home order (core + Vee + user tiles)', () 
   })
 
   test('setOrder replaces the whole order verbatim (drag reorder)', () => {
-    // Real drag orders always include the locked library + create + forge tiles.
-    homeLayout.setOrder(A, ['vee', 'train', 'fuel', 'library', 'create', 'forge'])
-    expect(homeLayout.getOrder(A)).toEqual(['vee', 'train', 'fuel', 'library', 'create', 'forge'])
+    // Real drag orders always include the locked library + forge tiles.
+    homeLayout.setOrder(A, ['vee', 'train', 'fuel', 'library', 'forge'])
+    expect(homeLayout.getOrder(A)).toEqual(['vee', 'train', 'fuel', 'library', 'forge'])
   })
 
-  test('library + create + forge are always guaranteed on read, but Vee is not auto-added', () => {
+  test('library + forge are always guaranteed on read, but Vee and create are not auto-added', () => {
     homeLayout.setOrder(A, ['train', 'fuel'])
     const order = homeLayout.getOrder(A)
-    // the locked tiles are backfilled at their prominent slots; none is ever lost
-    expect(order).toEqual(['train', 'fuel', 'library', 'create', 'forge'])
+    // the locked tiles (library + forge) are backfilled at their prominent slots
+    expect(order).toEqual(['train', 'fuel', 'library', 'forge'])
     expect(order).not.toContain(VEE_TILE.id) // Vee stays removed; only the locked shelf is guaranteed
   })
 

@@ -51,11 +51,12 @@ describe('boardSync (board_layout mirror — the arranged-dashboard cross-device
     }
     const res = applyServerLayout(USER, row)
     expect(res.applied).toBe(true)
-    // The stored real tiles keep their pulled order; Library + Create + Forge backfill in.
+    // The stored real tiles keep their pulled order; Library + Forge backfill in
+    // (they are always-on, seeded by homeLayout); Create is NOT backfilled here.
     const got = homeLayout.getOrder(USER)
-    expect(got.filter((id) => id !== LIB && id !== CREATE && id !== 'forge')).toEqual(['peak', 'train', 'fuel'])
+    expect(got.filter((id) => id !== LIB && id !== 'forge')).toEqual(['peak', 'train', 'fuel'])
     expect(got).toContain(LIB)
-    expect(got).toContain(CREATE)
+    expect(got).toContain('forge')
   })
 
   test('applyServerLayout applies each server skin onto the local tile', () => {
