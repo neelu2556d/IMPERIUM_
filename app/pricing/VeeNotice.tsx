@@ -1,13 +1,13 @@
 import styles from './pricing.module.css'
 
 /**
- * VeeNotice — the in-app "Vee notice" exactly as it appears in Vitality,
+ * VeeNotice — the in-app "I notice" exactly as it appears in Imperium,
  * shown inside a laptop/browser frame on the pricing page. This is the
  * INPUT side of the story: the app holds your goals + history + live stats
  * and surfaces the one move, then hands the deep version to Claude
  * ("talk deeper in Claude"). Presentational only; copy/numbers are samples.
  *
- * Mirrors design from public/vee-card-library.html — iris = the AI layer,
+ * Mirrors design from public/I-card-library.html — iris = the AI layer,
  * mint = your data / wins, amber = heads-up.
  */
 
@@ -40,7 +40,7 @@ export default function VeeNotice() {
           <span />
           <span />
         </span>
-        <span className={styles.laptopUrl}>vitality.app/today</span>
+        <span className={styles.laptopUrl}>Imperium.app/today</span>
       </div>
 
       <div className={styles.laptopScreen}>
@@ -104,7 +104,7 @@ export default function VeeNotice() {
         {/* What Imperium noticed — the iris insight card */}
         <div className={styles.vnNotice}>
           <div className={styles.vnNoticeTop}>
-            <span className={styles.vnVmark}>V</span>
+            <span className={styles.vnVmark}>I</span>
             <span className={styles.vnNoticeTag}>Imperium noticed</span>
             <span className={styles.vnNoticeSrc}>goals + sleep + fuel · 21d</span>
           </div>
@@ -125,3 +125,4 @@ export default function VeeNotice() {
     </div>
   )
 }
+

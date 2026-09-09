@@ -382,7 +382,7 @@ export default function SetDetail({ slug, title, blurb, tiles }: SetDetailProps)
           </span>
           <div className={styles.circleBody}>
             <p>
-              Make a Vitality and this whole set lands on <b>your dashboard</b>, ready on day one.
+              Make an Imperium and this whole set lands on <b>your dashboard</b>, ready on day one.
             </p>
             <span className={styles.circleSmall}>No credit card. Your tiles, your dashboard, always yours.</span>
           </div>

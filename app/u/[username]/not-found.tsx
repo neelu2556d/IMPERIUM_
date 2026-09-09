@@ -34,7 +34,7 @@ export default function MakerNotFound() {
       </div>
 
       <div className={styles.footer}>
-        Made with <Link href="/">Vitality</Link>. Build your own dashboard.
+        Made with <Link href="/">Imperium</Link>. Build your own dashboard.
       </div>
     </div>
   )

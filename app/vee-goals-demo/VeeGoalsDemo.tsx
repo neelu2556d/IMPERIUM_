@@ -5,16 +5,16 @@ import dynamic from 'next/dynamic'
 import styles from './veeGoalsDemo.module.css'
 
 /**
- * Vee Goals — public no-auth preview of the Vee-housed Goals experience.
+ * I Goals — public no-auth preview of the I-housed Goals experience.
  *
  * Two tiers, a mix of both:
  *   1. YOUR GOALS — big personal aspirations you author ("hit 1,000 subs"),
- *      each with a deadline, a priority, and a per-goal choice of how hard Vee
+ *      each with a deadline, a priority, and a per-goal choice of how hard I
  *      pushes you. Setting one is the flagship loop: it must feel effortless
  *      and rewarding so a user happily returns whenever they have a new goal.
- *   2. THIS WEEK — the cozy auto-tracked Vitality goals under your identity.
+ *   2. THIS WEEK — the cozy auto-tracked Imperium goals under your identity.
  *
- * The Vee gem is the REAL CoachGem 'echo' (iris dodecahedron + V), driven via
+ * The I gem is the REAL CoachGem 'echo' (iris dodecahedron + V), driven via
  * controlRef: 'concern' when noticing you slip, 'proud' when you set a goal.
  */
 const CoachGem = dynamic(() => import('@/components/CoachGem'), {
@@ -186,7 +186,7 @@ export default function VeeGoalsDemo() {
               <div className={styles.horizonLabels}>
                 <span className={styles.horizonToday}>Today</span>
                 <span className={styles.horizonTarget}>
-                  <svg width="11" height="11" viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M-7 9 V-9 L8 -5 L-7 -1" /></svg>
+                  <svg width="11" height="11" viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M-7 9 I-9 L8 -5 L-7 -1" /></svg>
                   <b>{targetLabel}</b> · {friendlyDistance(days)}
                 </span>
               </div>
@@ -258,7 +258,7 @@ export default function VeeGoalsDemo() {
               </div>
             </div>
 
-            {/* FLAGSHIP: Vee notices you slipping */}
+            {/* FLAGSHIP: I notices you slipping */}
             <div className={`${styles.nudge} ${resolved ? styles.nudgeResolved : ''}`}>
               <span className={styles.nudgeWho}>{resolved ? 'Imperium' : 'Imperium noticed'}</span>
               {resolved ? (
@@ -433,3 +433,4 @@ export default function VeeGoalsDemo() {
     </div>
   )
 }
+

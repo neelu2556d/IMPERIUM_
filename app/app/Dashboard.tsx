@@ -84,7 +84,7 @@ export default function Dashboard({
   tileStats,
   isFounder,
 }: DashboardProps) {
-  const avatarInitial = (firstName?.trim()?.[0] || creatorHandle?.[0] || 'V').toUpperCase()
+  const avatarInitial = (firstName?.trim()?.[0] || creatorHandle?.[0] || 'I').toUpperCase()
   const profileHref = creatorHandle ? `/u/${creatorHandle}` : '/account'
   const [units, setUnits] = useState<Units>(initialUnits)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -106,9 +106,9 @@ export default function Dashboard({
   // hard navigation because OAuth ?next targets are route handlers, not pages.
   useEffect(() => {
     try {
-      const raw = window.localStorage.getItem('vitality:next-after-onboarding')
+      const raw = window.localStorage.getItem('Imperium:next-after-onboarding')
       if (!raw) return
-      window.localStorage.removeItem('vitality:next-after-onboarding')
+      window.localStorage.removeItem('Imperium:next-after-onboarding')
       const next = safeNextPath(raw)
       if (next && next !== '/app') window.location.replace(next)
     } catch {
@@ -264,7 +264,7 @@ export default function Dashboard({
       )}
       </main>
 
-      {/* "Vitality, I'm home" - the full-screen daily ritual. Sibling of <main>
+      {/* "Imperium, I'm home" - the full-screen daily ritual. Sibling of <main>
           (like the intro splash) so no page stacking context can trap it. */}
       {homeOpen && (
         <Homecoming
@@ -275,3 +275,4 @@ export default function Dashboard({
     </>
   )
 }
+
