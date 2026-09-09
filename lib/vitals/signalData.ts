@@ -16,7 +16,7 @@ import { getVitalsQuiz } from '@/lib/preferences'
 import { getLocalDateKey, getRecentDateKeys } from '@/lib/dates'
 import { getLocalDayKey, getRecentDayKeys } from '@/lib/nutrition/dayKey'
 import { computeHealthContext } from '@/lib/vitals/healthContext'
-import { trainTargetPerWeek } from '@/lib/Imperium/contributors/train'
+import { trainTargetPerWeek } from '@/lib/vitality/contributors/train'
 import { evaluateGoalProgress } from '@/lib/vitals/goals'
 import {
   coerceReading, profileRowToInput, latestWeightKg, rowToGoal,

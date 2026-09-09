@@ -46,8 +46,8 @@ import {
   type DateConfig,
   type GemConfig,
 } from '@/lib/tiles/dashboardChrome'
-import type { ScoreState } from '@/lib/Imperium/score'
-import type { DashboardTileStats } from '@/lib/Imperium/dashboardStats'
+import type { ScoreState } from '@/lib/vitality/score'
+import type { DashboardTileStats } from '@/lib/vitality/dashboardStats'
 import sheets from './customizableDashboard.module.css'
 
 /** Dark solids for the Solid wallpaper mode (kept dark so labels stay legible). */

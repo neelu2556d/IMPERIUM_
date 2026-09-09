@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { TileSize } from './tileSkin'
-import type { DashboardTileStats } from '@/lib/Imperium/dashboardStats'
+import type { DashboardTileStats } from '@/lib/vitality/dashboardStats'
 
 /**
  * The core tiles are Imperium's pre-installed apps (Train, Fuel, Vitals, Peak,

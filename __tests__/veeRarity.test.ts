@@ -5,7 +5,7 @@ import {
   watchedDepth,
   normalizeRarity,
   type Rarity,
-} from '@/lib/I/rarity'
+} from '@/lib/vee/rarity'
 
 describe('rarityForNotice — maps a real insight to an OG-loot tier', () => {
   it('honors the engine grade verbatim when one was set', () => {

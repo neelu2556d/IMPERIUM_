@@ -4,10 +4,10 @@ import type { BigGoal, HabitGoal } from '@/app/app/goals/veeTypes'
 import type { TickerRow } from '@/lib/insights/ticker'
 import type { GuideItem } from '@/lib/insights/goalGuide'
 import type { LifeChip } from '@/lib/insights/lifeChips'
-import type { VeeRunStats } from '@/lib/I/loadNoticed'
+import type { VeeRunStats } from '@/lib/vee/loadNoticed'
 import type { Note } from '@/app/app/mentor/types'
 import type { MoodPoint } from '@/app/app/mentor/moodData'
-import { buildHandoffContext } from '@/lib/I/claudeHandoff'
+import { buildHandoffContext } from '@/lib/vee/claudeHandoff'
 
 export const metadata = { title: 'Imperium · preview' }
 

@@ -4,9 +4,9 @@
  * per-contributor done/rate calculations. Run with:
  *   npx jest vitalityScore --testPathIgnorePatterns "/node_modules/"
  */
-import { WEIGHTS, weightedBlend, combineResults, runContributors, type ContributorResult, type Contributor, type ScoreContext } from '@/lib/Imperium/score'
-import { fuelDoneByDay } from '@/lib/Imperium/contributors/fuel'
-import { trainTargetPerWeek, trainRate } from '@/lib/Imperium/contributors/train'
+import { WEIGHTS, weightedBlend, combineResults, runContributors, type ContributorResult, type Contributor, type ScoreContext } from '@/lib/vitality/score'
+import { fuelDoneByDay } from '@/lib/vitality/contributors/fuel'
+import { trainTargetPerWeek, trainRate } from '@/lib/vitality/contributors/train'
 
 describe('weightedBlend', () => {
   it('returns 0 for an all-zero week', () => {

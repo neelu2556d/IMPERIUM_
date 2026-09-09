@@ -7,10 +7,10 @@
  */
 import { createClient } from '@/lib/supabase/server'
 import { getLocalDateKey } from '@/lib/dates'
-import { trainContributor } from '@/lib/Imperium/contributors/train'
-import { fuelContributor } from '@/lib/Imperium/contributors/fuel'
-import { tileStreamsContributor } from '@/lib/Imperium/contributors/tileStreams'
-import { runContributors, type Contributor, type ScoreContext, type VitalityScore } from '@/lib/Imperium/score'
+import { trainContributor } from '@/lib/vitality/contributors/train'
+import { fuelContributor } from '@/lib/vitality/contributors/fuel'
+import { tileStreamsContributor } from '@/lib/vitality/contributors/tileStreams'
+import { runContributors, type Contributor, type ScoreContext, type VitalityScore } from '@/lib/vitality/score'
 
 /** The registry. Add a module by appending its contributor — nothing else
  *  changes. 'tiles' is ONE slot for ALL user-built tile streams (report

@@ -1,6 +1,6 @@
 import { buildFirstFind, type FirstFindInput } from '@/lib/insights/firstFind'
 import { buildFeed } from '@/lib/insights/feed'
-import { rarityForNotice } from '@/lib/I/rarity'
+import { rarityForNotice } from '@/lib/vee/rarity'
 
 const EMPTY: FirstFindInput = {
   sessions7: 0,

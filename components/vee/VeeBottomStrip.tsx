@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'rea
 import { addNote, deleteNote, saveMood } from '@/app/app/mentor/actions'
 import { MOOD_LEVELS, buildMoodStrip, localDateKey, type MoodPoint, type RawMoodFact } from '@/app/app/mentor/moodData'
 import type { Note } from '@/app/app/mentor/types'
-import { claudeHandoffHref, quickQuestions, type ClaudeHandoffContext } from '@/lib/I/claudeHandoff'
+import { claudeHandoffHref, quickQuestions, type ClaudeHandoffContext } from '@/lib/vee/claudeHandoff'
 import styles from './veeBottomStrip.module.css'
 
 /**

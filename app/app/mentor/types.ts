@@ -1,4 +1,4 @@
-import type { CardStyle } from '@/lib/I/askLayout'
+import type { CardStyle } from '@/lib/vee/askLayout'
 import type { ContextArea } from './contextStubs'
 import type { GoalCategory } from '@/lib/goals/categories'
 

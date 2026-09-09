@@ -35,7 +35,7 @@ import {
   type Contributor,
   type ContributorResult,
   type ScoreContext,
-} from '@/lib/Imperium/score'
+} from '@/lib/vitality/score'
 import {
   groupReportRows,
   type ReportKind,

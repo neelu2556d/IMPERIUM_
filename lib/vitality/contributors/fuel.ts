@@ -11,7 +11,7 @@ import {
   type Contributor,
   type ContributorResult,
   type ScoreContext,
-} from '@/lib/Imperium/score'
+} from '@/lib/vitality/score'
 
 /** Pure: per-day calorie-goal completion 0..1 for the given ordered day keys. */
 export function fuelDoneByDay(

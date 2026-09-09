@@ -12,7 +12,7 @@ import {
   contextBlock,
   quickQuestions,
   type ClaudeHandoffContext,
-} from '@/lib/I/claudeHandoff'
+} from '@/lib/vee/claudeHandoff'
 
 const FULL_CTX: ClaudeHandoffContext = {
   firstName: 'Alex',

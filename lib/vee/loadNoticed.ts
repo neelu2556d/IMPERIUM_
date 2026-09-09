@@ -31,7 +31,7 @@ import { groupReportRows, type ReportKind, type GoalDirection, type TileStreamRo
 import { selectFusion } from '@/lib/insights/fusionSelect'
 import { selectFresh, patternKeyOf, type NoticedCooldown, type NoticedResolution } from '@/lib/insights/noticedLedger'
 import { rarityOf } from '@/lib/insights/rarity'
-import { rarityForNotice, buildCollection, type CollectionTier, type Rarity } from '@/lib/I/rarity'
+import { rarityForNotice, buildCollection, type CollectionTier, type Rarity } from '@/lib/vee/rarity'
 import { toDailySeries } from '@/lib/insights/series'
 import { getLiftProgression, getWater, getStimulantsDaily, type StimulantDay } from '@/mcp/src/queries'
 import type { VitalityDb } from '@/mcp/src/supabase'

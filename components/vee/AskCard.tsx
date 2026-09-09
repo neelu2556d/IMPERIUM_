@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import VeeTile from './VeeTile'
 import styles from './veeTile.module.css'
-import { ASK_GLYPHS, resolveAskGlyph } from '@/lib/I/askGlyphs'
-import type { CardStyle, LayoutKind } from '@/lib/I/askLayout'
+import { ASK_GLYPHS, resolveAskGlyph } from '@/lib/vee/askGlyphs'
+import type { CardStyle, LayoutKind } from '@/lib/vee/askLayout'
 import type { VeeAsk, VeeAskOption } from '@/app/app/mentor/types'
 
 /*

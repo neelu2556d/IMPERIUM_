@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBigGoals, getHabitGoals, getStreak } from '@/lib/goals/repo'
-import type { SuggestionEvidence } from '@/lib/I/loadNoticed'
+import type { SuggestionEvidence } from '@/lib/vee/loadNoticed'
 import { EMPTY_STREAK, type VeeGoalsState } from './veeTypes'
 import VeeGoals from './VeeGoals'
 

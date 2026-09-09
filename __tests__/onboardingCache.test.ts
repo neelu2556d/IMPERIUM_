@@ -1,4 +1,4 @@
-import { loadOnboardingCache, saveOnboardingCache, clearOnboardingCache } from '@/lib/Imperium/onboardingCache'
+import { loadOnboardingCache, saveOnboardingCache, clearOnboardingCache } from '@/lib/vitality/onboardingCache'
 
 // localStorage doesn't exist in Node — provide a minimal in-memory mock
 const store: Record<string, string> = {}
