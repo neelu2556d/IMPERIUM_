@@ -2,7 +2,7 @@
 //
 //   1. EVAL_PROMPTS (evalPrompts) is the FLOOR test. Throw a spread of diverse,
 //      real-world goals at the deterministic builder and confirm EVERY one comes out
-//      Vitality-grade (zero errors, zero warnings), Fuel-grade rich, and packages
+//      Imperium-grade (zero errors, zero warnings), Fuel-grade rich, and packages
 //      without the export door refusing it. Renders a scannable batch receipt so the
 //      proof is visible, not merely asserted.
 //
@@ -48,7 +48,7 @@ export interface EvalReport {
 // Two dozen goals spanning every template and the messy ways people actually phrase
 // things: downward habits, ratings out of 5 and 10, money in and out, plain nouns,
 // hyphenated streaks. The builder is deterministic, so the inferred template need not
-// be "perfect" for every phrase; what must hold is that the OUTPUT is Vitality-grade.
+// be "perfect" for every phrase; what must hold is that the OUTPUT is Imperium-grade.
 export const EVAL_PROMPTS: string[] = [
   'track my water',
   'beer tracker',
@@ -142,7 +142,7 @@ export function evalPrompts(goals: string[] = EVAL_PROMPTS): EvalReport {
 
 function renderReceipt(rows: EvalRow[], clean: number, richCount: number): string {
   const pad = (s: string, n: number) => (s.length >= n ? s.slice(0, n) : s + ' '.repeat(n - s.length));
-  const head = `VITALITY-GRADE EVAL: ${clean}/${rows.length} clean (0 err, 0 warn), ${richCount}/${rows.length} Fuel-grade rich`;
+  const head = `Imperium-GRADE EVAL: ${clean}/${rows.length} clean (0 err, 0 warn), ${richCount}/${rows.length} Fuel-grade rich`;
   const lines = rows.map((x) => {
     const door = x.exportable ? 'export ok' : 'REFUSED';
     const rich = x.rich ? 'rich' : 'THIN';
@@ -339,3 +339,4 @@ export function evalCases(cases: EvalCase[] = EVAL_CASES): {
   const locked = rows.filter((r) => r.ok).length;
   return { rows, total: rows.length, locked, allLocked: locked === rows.length };
 }
+

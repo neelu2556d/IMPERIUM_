@@ -1,6 +1,6 @@
 /**
- * Insight rarity — the "OG loot" grade Alex loved (public/vee-noticed-rarity-demo.html).
- * Every "Vitality noticed" finding gets a rarity that tells the user how DEEP it goes
+ * Insight rarity — the "OG loot" grade Alex loved (public/I-noticed-rarity-demo.html).
+ * Every "Imperium noticed" finding gets a rarity that tells the user how DEEP it goes
  * and how much of their life it took to find. Rarity is not decoration: it is the same
  * depth-first truth the correlation engine ranks on (more domains in one story = rarer),
  * with correlation strength breaking ties inside a tier. The rare ones only surface as
@@ -35,3 +35,4 @@ export function rarityOf(i: ScoredInsight): Rarity {
   if (depth === 3) return strong ? 'epic' : 'rare'
   return strong ? 'mythic' : 'legendary'
 }
+

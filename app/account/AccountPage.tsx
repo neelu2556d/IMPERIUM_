@@ -146,7 +146,7 @@ interface AccountPageProps {
 }
 
 // Paste-in instructions that turn a Claude Project into an auto-rendering
-// Vitality dashboard (see docs/ideas/claude-project-dashboard.md). Copied to the
+// Imperium dashboard (see docs/ideas/claude-project-dashboard.md). Copied to the
 // clipboard from the connect card so users don't have to retype it.
 const PROJECT_INSTRUCTIONS = `You are my Imperium dashboard. At the START of every conversation, WITHOUT being asked, call vitality_daily_briefing and vitality_weekly_recap. Then render ONE HTML artifact titled "Imperium — <today's date>" as a glanceable dashboard: a top banner with today's call (train hard / moderate / rest) and the single most important alert, then a responsive grid of cards — Recovery & Sleep, Training readiness, Nutrition (today + weekly consistency), Weight (rate + goal verdict), Hydration, Goals streak, and Finance/Subscriptions. Aesthetic: pure-black (#04060a) background, mint (#6ee7b7) accents, Inter font, rounded cards with a faint mint border, big numbers / small labels, plain HTML/CSS only. Pull EVERY number from the tools — never invent data; show "—" for any gap. Under the artifact, write ONE line: the highest-leverage action right now. If I ask you to log something (weight, meal, water, workout, supplement, note), use the matching write tool, confirm what changed, and re-render just the affected card. Keep replies short — the artifact is the main output.`
 
@@ -439,7 +439,7 @@ export default function AccountPage({ initial }: AccountPageProps) {
     if (!connectorUrl) return
     try {
       await navigator.clipboard.writeText(
-        `claude mcp add --scope user --transport http vitality ${connectorUrl}`,
+        `claude mcp add --scope user --transport http Imperium ${connectorUrl}`,
       )
       setCodeCmdCopied(true)
       setTimeout(() => setCodeCmdCopied(false), 2000)
@@ -557,7 +557,7 @@ export default function AccountPage({ initial }: AccountPageProps) {
   }
 
   const avatarInitial = (
-    displayName.trim()[0] || username.trim()[0] || firstName.trim()[0] || 'V'
+    displayName.trim()[0] || username.trim()[0] || firstName.trim()[0] || 'I'
   ).toUpperCase()
 
   return (
@@ -971,7 +971,7 @@ export default function AccountPage({ initial }: AccountPageProps) {
               <p className={styles.mcpNote}>Paste once in any terminal, then just talk.</p>
               <div className={styles.mcpCommandCard}>
                 <code className={styles.mcpCommand}>
-                  {`claude mcp add --scope user --transport http vitality ${connectorUrl}`}
+                  {`claude mcp add --scope user --transport http Imperium ${connectorUrl}`}
                 </code>
                 <button type="button" className={styles.mcpCopyBtn} onClick={handleCopyCodeCmd}>
                   {codeCmdCopied ? 'copied ✓' : 'copy'}
@@ -1087,3 +1087,4 @@ export default function AccountPage({ initial }: AccountPageProps) {
     </main>
   )
 }
+

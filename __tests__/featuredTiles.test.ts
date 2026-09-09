@@ -47,10 +47,10 @@ describe('Arts District: the featured tile catalog', () => {
       const env = tile.envelope
       expect(env.name.trim().length).toBeGreaterThan(0)
       expect(env.html.length).toBeGreaterThan(400)
-      // the Vitality bridge shim must be present and actually used both ways
-      expect(env.html).toContain("source:'vitality-tile'")
-      expect(env.html).toMatch(/Vitality\.load\s*\(/)
-      expect(env.html).toMatch(/Vitality\.save\s*\(/)
+      // the Imperium bridge shim must be present and actually used both ways
+      expect(env.html).toContain("source:'Imperium-tile'")
+      expect(env.html).toMatch(/Imperium\.load\s*\(/)
+      expect(env.html).toMatch(/Imperium\.save\s*\(/)
       // sealed opaque origin: a tile must never touch its own web storage
       expect(env.html).not.toMatch(/localStorage|sessionStorage/)
       // brand law: no emoji (SVG only), no em or en dashes
@@ -61,19 +61,19 @@ describe('Arts District: the featured tile catalog', () => {
     },
   )
 
-  // Vee-reporting contract: every featured tile must stream to Vee via the
-  // inlined report shim + a Vitality.report({...,kind:...}) call at its real
+  // I-reporting contract: every featured tile must stream to I via the
+  // inlined report shim + a Imperium.report({...,kind:...}) call at its real
   // logging event. The 5 formerly-silent tiles (water/habit/journal/mood/focus)
   // regressed to no report; this guards all 11 stay wired.
   const VALID_KINDS = ['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done']
   test.each(FEATURED_TILES.map((t) => [t.id, t] as const))(
-    '%s reports to Vee with a valid report kind',
+    '%s reports to I with a valid report kind',
     (_id, tile) => {
       const html = tile.envelope.html
       // the report shim must be inlined (posts type:'report' to the parent)
       expect(html).toMatch(/type:\s*'report'/)
-      // and there must be at least one live Vitality.report({...}) call
-      const call = html.match(/Vitality\.report\(\{[^}]*\}\)/)
+      // and there must be at least one live Imperium.report({...}) call
+      const call = html.match(/Imperium\.report\(\{[^}]*\}\)/)
       expect(call).toBeTruthy()
       // whose kind is in the valid taxonomy (tiles use single OR double quotes)
       const kind = call![0].match(/kind:\s*['"]([^'"]+)['"]/)
@@ -124,7 +124,7 @@ describe('Arts District: the featured tile catalog', () => {
   test.each(BUILT.map((d) => [d.id, d] as const))(
     '%s report key stays byte-identical to its build recipe (no stream re-key)',
     (id, def) => {
-      const call = HTML_JSON[id].match(/Vitality\.report\(\{[^}]*\}\)/)
+      const call = HTML_JSON[id].match(/Imperium\.report\(\{[^}]*\}\)/)
       expect(call).toBeTruthy()
       const key = call![0].match(/key:\s*['"]([^'"]+)['"]/)
       expect(key).toBeTruthy()
@@ -143,3 +143,4 @@ describe('Arts District: the featured tile catalog', () => {
     expect(list.some((t) => t.id === tile!.id)).toBe(true)
   })
 })
+

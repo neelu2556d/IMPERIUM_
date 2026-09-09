@@ -15,7 +15,7 @@ Object.defineProperty(global, 'window', { value: { localStorage: localStorageMoc
 const A = 'user-a'
 beforeEach(() => localStorageMock.clear())
 
-describe('homeLayout: the one unified home order (core + Vee + user tiles)', () => {
+describe('homeLayout: the one unified home order (core + I + user tiles)', () => {
   test('a fresh dashboard seeds from the approved default arrangement', () => {
     expect(homeLayout.getOrder(A)).toEqual(DEFAULT_HOME_ORDER)
   })
@@ -39,33 +39,34 @@ describe('homeLayout: the one unified home order (core + Vee + user tiles)', () 
     expect(homeLayout.getOrder(A)).not.toContain('finance')
   })
 
-  test('Vee is now an ordinary optional tile: it CAN be removed', () => {
+  test('I is now an ordinary optional tile: it CAN be removed', () => {
     homeLayout.remove(A, VEE_TILE.id)
     expect(homeLayout.getOrder(A)).not.toContain(VEE_TILE.id)
   })
 
   test('setOrder replaces the whole order verbatim (drag reorder)', () => {
     // Real drag orders always include the locked library + forge tiles.
-    homeLayout.setOrder(A, ['vee', 'train', 'fuel', 'library', 'forge'])
-    expect(homeLayout.getOrder(A)).toEqual(['vee', 'train', 'fuel', 'library', 'forge'])
+    homeLayout.setOrder(A, ['I', 'train', 'fuel', 'library', 'forge'])
+    expect(homeLayout.getOrder(A)).toEqual(['I', 'train', 'fuel', 'library', 'forge'])
   })
 
-  test('library + forge are always guaranteed on read, but Vee and create are not auto-added', () => {
+  test('library + forge are always guaranteed on read, but I and create are not auto-added', () => {
     homeLayout.setOrder(A, ['train', 'fuel'])
     const order = homeLayout.getOrder(A)
     // the locked tiles (library + forge) are backfilled at their prominent slots
     expect(order).toEqual(['train', 'fuel', 'library', 'forge'])
-    expect(order).not.toContain(VEE_TILE.id) // Vee stays removed; only the locked shelf is guaranteed
+    expect(order).not.toContain(VEE_TILE.id) // I stays removed; only the locked shelf is guaranteed
   })
 
   test('orders are isolated per user', () => {
-    homeLayout.setOrder(A, ['vee', 'train'])
+    homeLayout.setOrder(A, ['I', 'train'])
     expect(homeLayout.getOrder('user-b')).toEqual(DEFAULT_HOME_ORDER)
   })
 
   test('reset wipes customization back to the default', () => {
-    homeLayout.setOrder(A, ['vee', 'train'])
+    homeLayout.setOrder(A, ['I', 'train'])
     expect(homeLayout.reset(A)).toEqual(DEFAULT_HOME_ORDER)
     expect(homeLayout.getOrder(A)).toEqual(DEFAULT_HOME_ORDER)
   })
 })
+

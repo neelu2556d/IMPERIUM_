@@ -17,7 +17,7 @@ function extractTile(): string {
   return full[0];
 }
 
-test('worked example: the recipe tile is Vitality-grade (0 errors, 0 warnings)', () => {
+test('worked example: the recipe tile is Imperium-grade (0 errors, 0 warnings)', () => {
   const html = extractTile();
   const result = lintTile(html);
   // Surface every finding so a regression is readable, not just a count mismatch.
@@ -38,7 +38,8 @@ test('worked example: it actually demonstrates the things it claims', () => {
   assert.match(html, /class="settings"/, 'has a settings drawer');
   assert.match(html, /class="add"/, 'has an add form');
   // reports exactly one stream, shaped right
-  const reports = html.match(/Vitality\.report\s*\(/g) || [];
+  const reports = html.match(/Imperium\.report\s*\(/g) || [];
   assert.equal(reports.length, 1, 'reports exactly one stream');
   assert.match(html, /kind:\s*'money'/, 'reports a money stream');
 });
+

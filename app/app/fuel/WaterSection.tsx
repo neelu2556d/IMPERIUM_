@@ -53,8 +53,8 @@ export default function WaterSection({ profile: initialProfile, seed, initialWat
       const ml = (e as CustomEvent<{ ml: number }>).detail?.ml
       if (typeof ml === 'number' && ml > 0) water.actions.logMl(ml)
     }
-    window.addEventListener('vitality:log-water', onLog)
-    return () => window.removeEventListener('vitality:log-water', onLog)
+    window.addEventListener('Imperium:log-water', onLog)
+    return () => window.removeEventListener('Imperium:log-water', onLog)
   }, [water.actions])
 
   // The Drinks library's "Log water" shortcut bounces here — scroll this
@@ -65,8 +65,8 @@ export default function WaterSection({ profile: initialProfile, seed, initialWat
       setFlash(true)
       window.setTimeout(() => setFlash(false), 1500)
     }
-    window.addEventListener('vitality:goto-water', onGoto)
-    return () => window.removeEventListener('vitality:goto-water', onGoto)
+    window.addEventListener('Imperium:goto-water', onGoto)
+    return () => window.removeEventListener('Imperium:goto-water', onGoto)
   }, [])
 
   const handleProfilePatch = useCallback(
@@ -189,3 +189,4 @@ export default function WaterSection({ profile: initialProfile, seed, initialWat
     </section>
   )
 }
+

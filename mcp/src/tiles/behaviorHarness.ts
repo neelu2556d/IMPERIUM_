@@ -1,11 +1,11 @@
-// FILE A — the reusable behavior-execution rig for sealed Vitality tiles.
+// FILE A — the reusable behavior-execution rig for sealed Imperium tiles.
 //
 // WHY THIS EXISTS. lintTile proves a tile is SEALED and on-brand (a string check);
 // render.dom.test.ts proves it does not THROW on one happy interaction. Neither proves
 // the number is RIGHT, that a save round-trips, that midnight rolls the day over, or
 // that the 7-day chart draws without NaN. Those are the failures that actually reach a
 // paid dashboard. This harness mounts a tile in a real DOM (jsdom), acts as the REAL
-// Vitality host (a faithful in-memory store, not a hardcoded `data:[]`), controls the
+// Imperium host (a faithful in-memory store, not a hardcoded `data:[]`), controls the
 // clock, and exposes rich introspection so a test can assert the truth of the tile.
 //
 // HOST-STORE FIDELITY. The store mirrors lib/tiles/useTileHost.ts (the source of truth,
@@ -64,9 +64,9 @@ export interface TileHandle {
   win: any;
   /** The shared host store — pass to a later mount to rehydrate. */
   store: TileStore;
-  /** Everything the tile has reported via Vitality.report(), in order. */
+  /** Everything the tile has reported via Imperium.report(), in order. */
   reports: any[];
-  /** Every payload the tile has saved via Vitality.save(), in order. */
+  /** Every payload the tile has saved via Imperium.save(), in order. */
   saves: unknown[];
   /** save:error replies the host sent back (the tile asked to save over the cap). */
   saveErrors: unknown[];
@@ -109,7 +109,7 @@ export interface TileHandle {
 }
 
 /**
- * Mount a sealed tile HTML string in jsdom with the Vitality host mirrored in-memory.
+ * Mount a sealed tile HTML string in jsdom with the Imperium host mirrored in-memory.
  * Returns a rich handle. The clock is shimmed BEFORE the document parses, so the tile's
  * top-level `new Date()` (today(), last7(), streak()) sees opts.now.
  */
@@ -153,13 +153,13 @@ export function mountTile(html: string, opts: MountOptions = {}): TileHandle {
   win.addEventListener('error', (e: any) => errors.push(e.error || e.message));
   win.addEventListener('unhandledrejection', (e: any) => errors.push(e.reason || 'unhandledrejection'));
 
-  // Act as the REAL Vitality host (mirror of lib/tiles/useTileHost.ts):
+  // Act as the REAL Imperium host (mirror of lib/tiles/useTileHost.ts):
   //  - save   -> persist msg.data, unless over the cap (then reply save:error)
   //  - load   -> reply with the CURRENTLY STORED data (undefined coerces to [] in-tile)
   //  - report -> log the raw stream
   win.addEventListener('message', (e: any) => {
     const m = e.data;
-    if (!m || m.source !== 'vitality-tile') return;
+    if (!m || m.source !== 'Imperium-tile') return;
     if (m.type === 'save') {
       if (saveCap !== undefined) {
         let bytes = 0;
@@ -171,7 +171,7 @@ export function mountTile(html: string, opts: MountOptions = {}): TileHandle {
         if (bytes > saveCap) {
           saveErrors.push({ id: m.id, reason: 'too_large_or_full' });
           win.postMessage(
-            { source: 'vitality-host', type: 'save:error', id: m.id, reason: 'too_large_or_full' },
+            { source: 'Imperium-host', type: 'save:error', id: m.id, reason: 'too_large_or_full' },
             '*',
           );
           return;
@@ -196,7 +196,7 @@ export function mountTile(html: string, opts: MountOptions = {}): TileHandle {
       // `Array.isArray(d)?d:[]`, so undefined boots an empty tile — same as the real host
       // returning [] for a fresh tile.
       win.postMessage(
-        { source: 'vitality-host', type: 'load:result', id: m.id, data: store.hasData ? clone(store.data) : [] },
+        { source: 'Imperium-host', type: 'load:result', id: m.id, data: store.hasData ? clone(store.data) : [] },
         '*',
       );
       return;
@@ -312,3 +312,4 @@ export function addDays(base: Date, days: number): Date {
   d.setDate(d.getDate() + days);
   return d;
 }
+

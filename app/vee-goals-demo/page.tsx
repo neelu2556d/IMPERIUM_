@@ -7,8 +7,9 @@ export const metadata: Metadata = {
 }
 
 // Public route (top-level, not under /app, /account, /welcome — see middleware),
-// so the preview is reachable without auth at /vee-goals-demo on any deploy.
-// Mounts the REAL Vee gem (CoachGem 'echo') with its real moods.
+// so the preview is reachable without auth at /I-goals-demo on any deploy.
+// Mounts the REAL I gem (CoachGem 'echo') with its real moods.
 export default function VeeGoalsDemoPage() {
   return <VeeGoalsDemo />
 }
+

@@ -67,7 +67,7 @@ export default function SocialsView() {
         <header className={styles.header}>
           <div className={styles.headerLeft}>
             <Link href="/app" className={styles.back}>
-              <span className={styles.backArrow}>←</span> Vitality
+              <span className={styles.backArrow}>←</span> Imperium
             </Link>
             <span className={styles.countPill}>
               {flat.length === 0
@@ -320,3 +320,4 @@ function fmtCount(n: number): string {
   if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}K`
   return String(n)
 }
+

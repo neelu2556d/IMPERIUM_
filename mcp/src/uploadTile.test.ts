@@ -131,5 +131,6 @@ test('vitality_add_tile is registered as a WRITE tool (the automatic build->dash
   const res = await tools['vitality_add_tile'].handler({ goal: 'track my water' });
   assert.equal(vdbAsked, true, 'add_tile must resolve the authed client (it is a write)');
   assert.equal(res.isError, true);
-  assert.match(res.content[0].text, /Vitality error/);
+  assert.match(res.content[0].text, /Imperium error/);
 });
+

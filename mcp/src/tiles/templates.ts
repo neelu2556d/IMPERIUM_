@@ -1,7 +1,7 @@
 // The 6 themed, sealed-HTML tile templates (one per archetype, 7 kinds map onto them).
 // Every template is assembled by ONE shared skeleton (frame): a standalone
-// <!doctype html> document carrying the Vitality bridge (save/load + the
-// load:result listener) and one Vitality.report(...) line, styled in the Vitality
+// <!doctype html> document carrying the Imperium bridge (save/load + the
+// load:result listener) and one Imperium.report(...) line, styled in the Imperium
 // theme. No external libs, no emojis. The output's script closes with a literal
 // </script> because this IS a standalone document (like public/beer-tracker-tile.html).
 //
@@ -39,8 +39,8 @@ function jsString(s: string): string {
   return JSON.stringify(String(s)).replace(/</g, '\\u003C');
 }
 
-// The Vitality host bridge: save/load the tile's OWN data, report ONE life-stream to
-// Vee, and receive the load:result reply. This is the only channel out of the sealed
+// The Imperium host bridge: save/load the tile's OWN data, report ONE life-stream to
+// I, and receive the load:result reply. This is the only channel out of the sealed
 // iframe. Honesty is built in:
 //  - load() re-asks the host once at 3s and resolves null only at ~6s, so a dropped
 //    reply can never leave the tile permanently blank (every template coerces null
@@ -48,17 +48,17 @@ function jsString(s: string): string {
 //    if the real reply lands late (a stalled main thread during dashboard boot)
 //    carrying stored data, and the tile has not saved yet, the tile reloads to boot
 //    from the real history instead of letting the next save overwrite it with the
-//    empty state. A save marks Vitality._sv so a late reply never stomps new input.
+//    empty state. A save marks Imperium._sv so a late reply never stomps new input.
 //  - the host's save:error / report:error replies (a quota-full save, a report that
-//    never landed in Vee) surface as a calm amber note via msg(..., true), instead of
+//    never landed in I) surface as a calm amber note via msg(..., true), instead of
 //    the tile silently believing its own "logged" copy.
-const BRIDGE = `var Vitality={_w:{},_sv:false,
-  save:function(d){Vitality._sv=true;parent.postMessage({source:'vitality-tile',type:'save',data:d},'*')},
-  load:function(){return new Promise(function(res){var id=Math.random().toString(36).slice(2);var ask=function(){parent.postMessage({source:'vitality-tile',type:'load',id:id},'*')};var n=0;var t=setInterval(function(){n++;if(n===1){ask();return}clearInterval(t);if(Vitality._w[id]){Vitality._w[id]=function(d){if(d!=null&&!Vitality._sv)location.reload()};res(null)}},3000);Vitality._w[id]=function(d){clearInterval(t);res(d)};ask()})},
-  report:function(s){parent.postMessage({source:'vitality-tile',type:'report',stream:s},'*')}
+const BRIDGE = `var Imperium={_w:{},_sv:false,
+  save:function(d){Imperium._sv=true;parent.postMessage({source:'Imperium-tile',type:'save',data:d},'*')},
+  load:function(){return new Promise(function(res){var id=Math.random().toString(36).slice(2);var ask=function(){parent.postMessage({source:'Imperium-tile',type:'load',id:id},'*')};var n=0;var t=setInterval(function(){n++;if(n===1){ask();return}clearInterval(t);if(Imperium._w[id]){Imperium._w[id]=function(d){if(d!=null&&!Imperium._sv)location.reload()};res(null)}},3000);Imperium._w[id]=function(d){clearInterval(t);res(d)};ask()})},
+  report:function(s){parent.postMessage({source:'Imperium-tile',type:'report',stream:s},'*')}
 };
-window.addEventListener('message',function(e){var m=e.data;if(!m||m.source!=='vitality-host')return;
-if(m.type==='load:result'&&Vitality._w[m.id]){Vitality._w[m.id](m.data);delete Vitality._w[m.id];return}
+window.addEventListener('message',function(e){var m=e.data;if(!m||m.source!=='Imperium-host')return;
+if(m.type==='load:result'&&Imperium._w[m.id]){Imperium._w[m.id](m.data);delete Imperium._w[m.id];return}
 if(m.type==='save:error'){msg('that save did not stick, tap it again in a moment',true);return}
 if(m.type==='report:error'){msg('that log did not land, so it does not count yet. try it again in a moment',true)}});`;
 
@@ -111,7 +111,7 @@ const RING = `function drawRing(frac,center,sub){var host=document.getElementByI
 host.innerHTML='<svg class="ring" viewBox="0 0 128 128" aria-hidden="true"><circle class="ring-track" cx="64" cy="64" r="'+R+'"></circle><circle class="ring-arc" cx="64" cy="64" r="'+R+'" style="stroke-dasharray:'+C.toFixed(1)+';stroke-dashoffset:'+C.toFixed(1)+'"></circle></svg><div class="ring-center"><span class="ring-num" id="value">'+center+'</span><span class="ring-sub">'+sub+'</span></div>';
 var arc=host.querySelector('.ring-arc');if(arc){requestAnimationFrame(function(){arc.style.strokeDashoffset=off.toFixed(1)})}}`;
 
-// A deterministic, warm one-line INSIGHT in Vitality's voice. NOT an LLM: it selects a
+// A deterministic, warm one-line INSIGHT in Imperium's voice. NOT an LLM: it selects a
 // fixed sentence from a bank keyed by (kind, direction, today-vs-target, week trend,
 // streak). Warm, never shaming, never red, no em dash, no emoji. Opts:
 //   {kind,dir,today,target,trend(-1/0/1 over the week),streakN,unit,any(bool logged)}
@@ -231,14 +231,14 @@ function dir(meta: TileMeta): string {
 }
 
 // Every one of the six templates injects exactly this one contract-valid report()
-// call inside its commit path, so a template-built tile ALWAYS feeds Vee its number
+// call inside its commit path, so a template-built tile ALWAYS feeds I its number
 // by default (measurable kinds AND `done`, which reports value 0/1 on the marked day).
 // This is the default that the envelope's kind-aware `report-missing` floor enforces:
 // a measurable tile can never ship dark. Keep the four required fields (key,value,date,
 // kind) present and the kind a taxonomy member, or lintTile's report-shape /
 // report-kind-invalid errors reject the output.
 function reportLine(meta: TileMeta, valueExpr: string): string {
-  return `Vitality.report({key:${jsString(meta.key)},label:${jsString(meta.label)},value:${valueExpr},date:today(),kind:'${meta.kind}'${dir(meta)}});`;
+  return `Imperium.report({key:${jsString(meta.key)},label:${jsString(meta.label)},value:${valueExpr},date:today(),kind:'${meta.kind}'${dir(meta)}});`;
 }
 
 interface Parts {
@@ -321,9 +321,9 @@ ${hasTarget
 ${hasTarget ? 'drawBarsTarget(T);' : `drawBars(${o.statFmt});`}
 sayInsight({kind:${jsString(meta.kind)},dir:GD,today:v,target:T,trend:weekTrend(),streakN:streakGE(${o.streakThreshExpr}),unit:U,any:_days.length>0});}
 function render(){paint()}
-function commit(){var t=get(today());Vitality.save(_days);${reportLine(meta, 't.value')};render()}
+function commit(){var t=get(today());Imperium.save(_days);${reportLine(meta, 't.value')};render()}
 ${o.wire}
-Vitality.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
+Imperium.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
   return frame(meta, { eyebrow: o.eyebrow, heroInner, action: o.action, sectionLabel: hasTarget ? 'toward your goal' : 'this week', section: '', script, insight: true });
 }
 
@@ -378,8 +378,8 @@ function scale(meta: TileMeta): string {
   const script = `${TREND}${INSIGHT}${SAYINSIGHT}var MAX=${max};
 function drawWeek(){var wk=last7();var cells=wk.map(function(r,idx){var ratio=r.value!=null?r.value/MAX:0;var now=idx===6&&r.value!=null;return '<div class="col"><div class="bwrap"><div class="bfill'+(now?' now':'')+'" style="transform:scaleY('+ratio.toFixed(3)+')"></div></div><span class="dlab">'+DOW[r.dow]+'</span></div>'}).join('');var rated=wk.filter(function(r){return r.value!=null});document.getElementById('section').innerHTML='<div class="bars">'+cells+'</div><div class="stat">'+(rated.length?('rated '+rated.length+' of 7 days'):'no check-ins yet')+'</div>'}
 function render(){var t=find(today());var s=document.getElementById('scale');s.innerHTML='';for(var i=1;i<=MAX;i++){(function(n){var b=document.createElement('button');b.type='button';b.className='rdot'+(t&&t.value===n?' on':'');b.textContent=n;b.onclick=function(){get(today()).value=n;commit()};s.appendChild(b)})(i)}if(t&&t.value){document.getElementById('value').textContent=t.value;pill('good','rated today')}else{document.getElementById('value').textContent='-';pill('idle','nothing yet')}drawWeek();sayInsight({kind:'rating',dir:'neutral',trend:weekTrend(),any:_days.length>0})}
-function commit(){var t=get(today());Vitality.save(_days);${reportLine(meta, 't.value')};render();msg('saved',false)}
-Vitality.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
+function commit(){var t=get(today());Imperium.save(_days);${reportLine(meta, 't.value')};render();msg('saved',false)}
+Imperium.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
   return frame(meta, { eyebrow: 'daily check-in', heroInner, action, sectionLabel: 'last 7 days', section: '', script, insight: true });
 }
 
@@ -389,9 +389,9 @@ function measure(meta: TileMeta): string {
   const script = `${INSIGHT}${SAYINSIGHT}var U=${jsString(meta.unit)};var GD=${jsString(meta.goalDirection || '')};
 function drawSpark(){var pts=_days.slice().sort(function(a,b){return a.date<b.date?-1:1});var vals=pts.map(function(p){return p.value});if(vals.length<2){document.getElementById('section').innerHTML='<div class="empty"><div class="lead">your line starts here</div><div>log a couple more and the trend draws itself.</div></div>';return}var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);var pad=(mx-mn)*0.25||1;mn-=pad;mx+=pad;var W=300,H=88,st=W/(vals.length-1);var pth=vals.map(function(v,i){var x=i*st;var y=H-((v-mn)/(mx-mn))*H;return (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)}).join(' ');var html='<svg class="spark" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6EE7B7" stop-opacity=".85"/><stop offset="1" stop-color="#6EE7B7" stop-opacity="0"/></linearGradient></defs><path class="sarea" fill="url(#sg)" d="'+pth+' L'+W+' '+H+' L0 '+H+' Z"/><path class="sline" vector-effect="non-scaling-stroke" d="'+pth+'"/></svg><div class="stat">latest '+vals[vals.length-1]+' '+U+', '+vals.length+' readings</div>';document.getElementById('section').innerHTML=html;var ln=document.querySelector('.sline');if(ln){try{var L=ln.getTotalLength();ln.style.strokeDasharray=L;ln.style.strokeDashoffset=L;requestAnimationFrame(function(){ln.style.strokeDashoffset=0})}catch(e){}}}
 function render(){var pts=_days.slice().sort(function(a,b){return a.date<b.date?-1:1});var last=pts.length?pts[pts.length-1]:null;document.getElementById('value').textContent=last?last.value:'-';var tr=0;if(pts.length>=2){var prev=pts[pts.length-2];var dv=last.value-prev.value;tr=dv>0?1:(dv<0?-1:0);var amt=Math.abs(round1(dv));var toward=(GD==='down'&&dv<0)||(GD==='up'&&dv>0);if(dv===0){pill('idle','holding steady')}else{pill(toward?'good':'idle',(dv<0?'down ':'up ')+amt+' '+U)}}else if(last){pill('idle','first reading in')}else{pill('idle','nothing yet')}drawSpark();sayInsight({kind:'measure',dir:GD,trend:tr,any:pts.length>0})}
-function commit(v){get(today()).value=v;Vitality.save(_days);var t=get(today());${reportLine(meta, 't.value')};render()}
+function commit(v){get(today()).value=v;Imperium.save(_days);var t=get(today());${reportLine(meta, 't.value')};render()}
 document.getElementById('save').onclick=function(){var n=parseFloat(document.getElementById('in').value);if(isNaN(n)){msg('enter a number first',true);return}document.getElementById('in').value='';commit(n);msg('saved',false)};
-Vitality.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
+Imperium.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
   return frame(meta, { eyebrow: 'latest reading', heroInner, action, sectionLabel: 'trend', section: '', script, insight: true });
 }
 
@@ -404,9 +404,9 @@ function money(meta: TileMeta): string {
   const script = `${BARS}${TREND}${INSIGHT}${SAYINSIGHT}
 var CUR=${jsString(sym)};var GD=${jsString(meta.goalDirection || '')};
 function render(){var t=get(today());document.getElementById('value').textContent=CUR+fmt(t.value||0);pill(t.value>0?'good':'idle',t.value>0?'logged today':'nothing yet');drawBars(function(total,avg){return 'this week '+CUR+fmt(total)+', avg '+CUR+fmt(avg)});sayInsight({kind:'money',dir:GD,trend:weekTrend(),any:_days.length>0})}
-function commit(){var t=get(today());Vitality.save(_days);${reportLine(meta, 't.value')};render()}
+function commit(){var t=get(today());Imperium.save(_days);${reportLine(meta, 't.value')};render()}
 document.getElementById('save').onclick=function(){var n=parseFloat(document.getElementById('in').value);if(isNaN(n)){msg('enter an amount first',true);return}get(today()).value=(get(today()).value||0)+n;document.getElementById('in').value='';commit();msg('added',false)};
-Vitality.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
+Imperium.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
   return frame(meta, { eyebrow: 'daily ledger', heroInner, action, sectionLabel: 'this week', section: '', script, insight: true });
 }
 
@@ -416,9 +416,9 @@ function toggle(meta: TileMeta): string {
   const script = `${INSIGHT}${SAYINSIGHT}var CHECK='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
 function drawGrid(){var wk=last7();var cells=wk.map(function(r){var on=r.value===1;return '<div class="gday'+(on?' on':'')+'"><span class="dlab">'+DOW[r.dow]+'</span></div>'}).join('');var mk=today().slice(0,7);var month=0;for(var j=0;j<_days.length;j++){if(_days[j].date.slice(0,7)===mk&&_days[j].value===1)month++}var st=streak();var stat=st>0?(st+' day streak, '+month+' this month'):(month>0?(month+' this month'):'no days marked yet');document.getElementById('section').innerHTML='<div class="grid">'+cells+'</div><div class="stat">'+stat+'</div>'}
 function render(){var t=get(today());var on=t.value===1;var b=document.getElementById('toggle');b.className='bigtoggle'+(on?' on':'');b.innerHTML=(on?CHECK:'')+'<span>'+(on?'done today':'mark done')+'</span>';document.getElementById('value').textContent=streak();pill(on?'good':'idle',on?'done today':'not yet');drawGrid();sayInsight({kind:'done',streakN:streak(),any:_days.length>0})}
-function commit(){var t=get(today());Vitality.save(_days);${reportLine(meta, 't.value')};render()}
+function commit(){var t=get(today());Imperium.save(_days);${reportLine(meta, 't.value')};render()}
 document.getElementById('toggle').onclick=function(){var t=get(today());t.value=t.value?0:1;commit();msg(t.value?'nice, marked done':'unmarked',false)};
-Vitality.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
+Imperium.load().then(function(d){_days=Array.isArray(d)?d:[];render()});`;
   return frame(meta, { eyebrow: 'daily habit', heroInner, action, sectionLabel: 'last 7 days', section: '', script, insight: true });
 }
 
@@ -434,3 +434,4 @@ const RENDERERS: Record<TileMeta['template'], (m: TileMeta) => string> = {
 export function renderTile(meta: TileMeta): string {
   return RENDERERS[meta.template](meta);
 }
+

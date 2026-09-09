@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBigGoals, getHabitGoals, getStreak } from '@/lib/goals/repo'
-import type { SuggestionEvidence } from '@/lib/vee/loadNoticed'
+import type { SuggestionEvidence } from '@/lib/I/loadNoticed'
 import { EMPTY_STREAK, type VeeGoalsState } from './veeTypes'
 import VeeGoals from './VeeGoals'
 
@@ -15,16 +15,16 @@ function daysAgoKey(n: number): string {
 }
 
 /**
- * /app/goals — the real, auth'd Vee Goals surface (BUILD42 Phase 1).
+ * /app/goals — the real, auth'd I Goals surface (BUILD42 Phase 1).
  *
  * Auth gate (mirrors app/app/mind/page.tsx) then reads the user's goals from
  * Supabase and hands a typed snapshot to the client. The repo reads THROW on a
- * DB error (so Vee's degraded flag can see them); the try/catch below is what
+ * DB error (so I's degraded flag can see them); the try/catch below is what
  * keeps a not-yet-migrated environment on the calm blank-slate instead of a
  * 500 - saving simply switches on once the migration is applied.
  *
  * Auto-track suggestions are evidence-gated with the SAME recency bars as the
- * Vee page (loadNoticed): "from your workouts" needs a session in 21 days,
+ * I page (loadNoticed): "from your workouts" needs a session in 21 days,
  * "from Fuel" a meal in 21 days, "from your band" a sleep reading in 56 days.
  * Any failed read defaults to false — no evidence, no pitch.
  */
@@ -56,3 +56,4 @@ export default async function GoalsPage() {
 
   return <VeeGoals initial={initial} suggestionEvidence={suggestionEvidence} />
 }
+

@@ -1,5 +1,5 @@
 /**
- * Seam detection — Stage 3 of the cross-domain "Vitality noticed" engine. The
+ * Seam detection — Stage 3 of the cross-domain "Imperium noticed" engine. The
  * generalized version of the shipping sleep<->training gate (lib/insights/fusion):
  * given aligned numeric pairs (from alignByBucket) and a config, it returns a
  * grounded finding ONLY when all three gates clear together, else null (silent).
@@ -80,3 +80,4 @@ export function detectSeam(pairs: [number, number][], cfg: SeamConfig): SeamFind
 
   return { r: corr.r, n: corr.n, direction, aHi, aLo, bHi, bLo }
 }
+

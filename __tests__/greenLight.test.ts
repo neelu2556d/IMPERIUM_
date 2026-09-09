@@ -1,10 +1,10 @@
 import { greenLight, type DomainConcern, type ActiveGoal } from '@/lib/oracle/greenlight'
 
-// The convergence brain behind "Vitality noticed". It only turns the light green
+// The convergence brain behind "Imperium noticed". It only turns the light green
 // when at least two independent, already-gated domains are concerned AND the
 // convergence is anchored to one of the user's active goals. A lone signal, or a
 // pile of signals with no goal at stake, stays dark. This is the guard against
-// generic scolding ("who does Vitality think it is").
+// generic scolding ("who does Imperium think it is").
 
 const trainStall = (goalRefs: string[] = ['g_bench'], margin = 2): DomainConcern => ({
   domain: 'train',
@@ -81,3 +81,4 @@ describe('greenLight', () => {
     expect(c!.receipts.map((r) => r.kind)).toEqual(['lift-stall', 'fuel-quiet', 'recovery-dip'])
   })
 })
+

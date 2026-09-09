@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type FormEvent, type KeyboardEvent } from 'react'
-import AskCard from '@/components/vee/AskCard'
+import AskCard from '@/components/I/AskCard'
 import styles from './mentorRemodel.module.css'
 import { addNote, deleteNote, saveMood } from './actions'
 import { logNoticedShown } from './noticedActions'
 import { MOOD_LEVELS, localDateKey, type MoodPoint } from './moodData'
 import { readMentorSeed } from '@/lib/vitals/mentorSeed'
-import { makeCardStyle, type LayoutKind } from '@/lib/vee/askLayout'
+import { makeCardStyle, type LayoutKind } from '@/lib/I/askLayout'
 import type { FeedNotice } from '@/lib/insights/feed'
 import type { TickerRow } from '@/lib/insights/ticker'
 import type { GuideItem } from '@/lib/insights/goalGuide'
@@ -80,7 +80,7 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
   const chatInputRef = useRef<HTMLTextAreaElement | null>(null)
 
   // Both "talk deeper" affordances land the user in the chat composer, the real
-  // in-app Vee. (The "OPEN IN CLAUDE" pill routes to /account, the MCP setup.)
+  // in-app I. (The "OPEN IN CLAUDE" pill routes to /account, the MCP setup.)
   const toChat = () => {
     chatInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     chatInputRef.current?.focus({ preventScroll: true })
@@ -128,7 +128,7 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
     if (!result.ok) setNotes(prev)
   }
 
-  // One chat turn: optimistically show `next`, post it, append Vee's reply
+  // One chat turn: optimistically show `next`, post it, append I's reply
   // (which may carry an `ask` card). Shared by free-text sends and card answers.
   async function runTurn(next: ChatMessage[]) {
     setMessages(next)
@@ -242,7 +242,7 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
           </Link>
           <div className={styles.greetWrap}>
             <div className={styles.greetText}>
-              <span className={styles.greetLabel}>VITALITY · IMPERIUM</span>
+              <span className={styles.greetLabel}>Imperium · IMPERIUM</span>
               <span className={styles.greetLine} suppressHydrationWarning>
                 {greeting}{firstName ? `, ${firstName}` : ''}.
               </span>
@@ -251,14 +251,14 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
           </div>
         </header>
 
-        {/* 2 · the one "Vitality noticed" card */}
+        {/* 2 · the one "Imperium noticed" card */}
         <NoticedCard feed={veeNoticed.feed} onDeeper={toChat} />
 
         {/* 3 · chat, the visual center */}
-        <section className={styles.chat} aria-label="Ask Vee">
+        <section className={styles.chat} aria-label="Ask I">
           <div className={styles.chatHead}>
             <h2 className={styles.chatIntro}>What do you want to work through?</h2>
-            <Link className={styles.claudeCorner} href="/account" aria-label="Open Vee in Claude">
+            <Link className={styles.claudeCorner} href="/account" aria-label="Open I in Claude">
               <svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" /></svg>
               OPEN IN CLAUDE
             </Link>
@@ -320,8 +320,8 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
             <svg className={styles.composerSpark} viewBox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z" /></svg>
             <textarea
               ref={chatInputRef}
-              placeholder="Ask Vee anything about your week..."
-              aria-label="Ask Vee"
+              placeholder="Ask I anything about your week..."
+              aria-label="Ask I"
               value={chatDraft}
               onChange={e => setChatDraft(e.target.value)}
               onKeyDown={handleChatKeyDown}
@@ -398,7 +398,7 @@ export default function MentorModule({ firstName, initialNotes, moodHistory, vee
 interface Particle { left: number; top: number; size: number; dur: number; delay: number; dx: number; dy: number }
 
 /* ================================================================
-   The "Vitality noticed" card — feed[0] with a "show me another" cycle,
+   The "Imperium noticed" card — feed[0] with a "show me another" cycle,
    the one-shot mint bloom, and the whisper-rarity marker.
    ================================================================ */
 function NoticedCard({ feed, onDeeper }: { feed: FeedNotice[]; onDeeper: () => void }) {
@@ -417,13 +417,13 @@ function NoticedCard({ feed, onDeeper }: { feed: FeedNotice[]; onDeeper: () => v
   const dotTone = notice.impact === 'dn' ? styles.warn : styles.good
 
   return (
-    <section className={styles.noticed} aria-label="Vitality noticed">
+    <section className={styles.noticed} aria-label="Imperium noticed">
       {/* absolutely-positioned + clipped by overflow:hidden so it never inflates the card */}
       <div className={styles.bloom} key={`bloom-${idx}`} aria-hidden />
 
       <div className={styles.noticedLabel}>
         <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z" /></svg>
-        VITALITY NOTICED
+        Imperium NOTICED
         {whisper && <span className={styles.rarityWhisper}>{whisper}</span>}
       </div>
 
@@ -580,7 +580,7 @@ function FollowLink() {
 }
 
 /**
- * Tiny markdown renderer scoped to what Vee produces: paragraphs, blank-line
+ * Tiny markdown renderer scoped to what I produces: paragraphs, blank-line
  * separators, "- "/"* " bullets, "1. " numbers, **bold** inline. No HTML — every
  * node is a real React element, so no dangerouslySetInnerHTML risk.
  */
@@ -665,3 +665,4 @@ function formatNoteDate(iso: string): string {
     return ''
   }
 }
+

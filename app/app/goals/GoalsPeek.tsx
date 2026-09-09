@@ -5,8 +5,8 @@ import { CATEGORY_WORD } from '@/lib/goals/categories'
 import type { MentorGoal } from '@/app/app/mentor/types'
 
 /**
- * GoalsPeek — the "Your goals" presence INSIDE the Vee tab (BUILD42/47). Goals
- * are housed in Vee, so this is the in-tab home: a cozy invitation when empty,
+ * GoalsPeek — the "Your goals" presence INSIDE the I tab (BUILD42/47). Goals
+ * are housed in I, so this is the in-tab home: a cozy invitation when empty,
  * and tagged + cleaned goal cards that pop once you have them. Full surface at
  * /app/goals. Presentational only; the mentor page reads the goals server-side.
  */
@@ -76,3 +76,4 @@ export default function GoalsPeek({ goals }: { goals: MentorGoal[] }) {
     </section>
   )
 }
+

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import styles from './dashboard.module.css'
 import DashboardHeader from './DashboardHeader'
-import ImperiumIntro from './VitalityIntro'
+import ImperiumIntro from './ImperiumIntro'
 import WelcomeBackdrop from '@/components/WelcomeBackdrop'
 import DashboardHeaderGem from './DashboardHeaderGem'
 import DashboardGrid from './DashboardGrid'
@@ -25,7 +25,7 @@ import type { DashboardTileStats } from '@/lib/vitality/dashboardStats'
  *  in a row never feel identical. */
 const ENTRANCES = ['rise', 'spring', 'blur', 'slide', 'settle', 'drift'] as const
 
-/** "Vitality, I'm home" entry gate. The full ritual (3 acts + questions +
+/** "Imperium, I'm home" entry gate. The full ritual (3 acts + questions +
  *  close) shipped with the 4-lane mega-build; the gem tap is live. */
 const IMHOME_ENABLED = true
 
@@ -45,7 +45,7 @@ interface DashboardProps {
   firstName: string | null
   units: Units
   /** Onboarding tasks + user id passed through to SettingsSheet so the
-   *  "Your Vitality setup" entry can render once the user is fully set up. */
+   *  "Your Imperium setup" entry can render once the user is fully set up. */
   tasks: OnboardingTask[]
   userId: string
   /** The user's maker handle (Arts District). Drives the top-bar profile
@@ -62,10 +62,10 @@ interface DashboardProps {
 }
 
 /**
- * Consolidated dashboard. The Vitality character lives in ONE place in the
+ * Consolidated dashboard. The Imperium character lives in ONE place in the
  * header: the <DashboardHeaderGem> next to the greeting. Below it sits
- * <VeeTiles> - the animated-orb tile grid ported 1:1 from the approved mockup
- * (public/vee-dashboard.html), each tile a Link to its real module route.
+ * <ImperiumTiles> - the animated-orb tile grid ported 1:1 from the approved mockup
+ * (public/imperium-dashboard.html), each tile a Link to its real module route.
  *
  * Everything around the tiles is unchanged: the <WelcomeBackdrop> aurora +
  * mountains + drifting mint particles, the header gem, the greeting + date, and
@@ -88,7 +88,7 @@ export default function Dashboard({
   const profileHref = creatorHandle ? `/u/${creatorHandle}` : '/account'
   const [units, setUnits] = useState<Units>(initialUnits)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  // "Vitality, I'm home" - tapping the header gem opens the daily ritual.
+  // "Imperium, I'm home" - tapping the header gem opens the daily ritual.
   const [homeOpen, setHomeOpen] = useState(false)
   const [, startTransition] = useTransition()
   // The chrome the user themed (wallpaper + greeting + date + gem). Undefined
@@ -117,7 +117,7 @@ export default function Dashboard({
   }, [])
 
   // ── App-open reveal ──
-  // The VitalityIntro splash calls reveal() as it starts to fade (or right
+  // The ImperiumIntro splash calls reveal() as it starts to fade (or right
   // away when it skips: already played this session, storage blocked, or it
   // crashed). reveal() arms the staggered greeting word-in and stamps one
   // random tile-entrance style on the page. FAIL OPEN: with no reveal at all
@@ -239,7 +239,7 @@ export default function Dashboard({
 
         {/* The fused dashboard: ONE customizable grid. The animated-orb core
             tiles (Train, Fuel, Vitals, Peak, Brand, Finance), the locked Library
-            app-folder, the optional Vee tile, and the user's own built tiles all
+            app-folder, the optional I tile, and the user's own built tiles all
             live together. Tap Customize to drag, resize, recolor, restyle,
             rename, add, and remove any of them (only Library is locked on). */}
         <DashboardGrid

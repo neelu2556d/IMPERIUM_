@@ -7,7 +7,7 @@
  * Supabase swap seam applies later.
  *
  * Key:
- *   vitality:<userId>:tileSkins  -> Record<tileId, Skin>
+ *   Imperium:<userId>:tileSkins  -> Record<tileId, Skin>
  */
 
 /**
@@ -20,7 +20,7 @@
  *   m    2x1  standard band
  *   tall 1x2  vertical accent (old Fuel / Peak / Brand)
  *   hero 3x1  the hero (old Train)
- *   big  2x2  centrepiece (old Vee)
+ *   big  2x2  centrepiece (old I)
  *   band 4x1  full-width (old Finance / Create)
  *   l    4x2  showcase — a user tile can outdo the hero
  */
@@ -96,7 +96,7 @@ function normalizeSize(v: unknown): TileSize {
   return DEFAULT.size
 }
 
-const key = (userId: string) => `vitality:${userId}:tileSkins`
+const key = (userId: string) => `Imperium:${userId}:tileSkins`
 const hasStorage = () => typeof window !== 'undefined' && !!window.localStorage
 
 function readAll(userId: string): Record<string, Skin> {
@@ -149,3 +149,4 @@ function remove(userId: string, tileId: string): void {
 }
 
 export const tileSkin = { get, set, all, remove }
+

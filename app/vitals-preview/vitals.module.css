@@ -1,5 +1,5 @@
 /* Vitals preview — built from the real macros/setup patterns (see
-   docs/research/vitality-design-system.md). Tokens + fonts are global. */
+   docs/research/Imperium-design-system.md). Tokens + fonts are global. */
 
 .page {
   /* Azure re-theme: Vitals' accent is azure (the sister to Mentor's iris and
@@ -159,7 +159,7 @@
 .actionRow { display: flex; gap: 10px; font-size: var(--text-sm); color: var(--muted-strong); }
 .actionArrow { color: var(--accent); font-weight: 700; }
 
-/* ── vitality score + trend card ─────────────────────────── */
+/* ── Imperium score + trend card ─────────────────────────── */
 .scoreCard {
   border: 1px solid var(--border); border-radius: 18px; padding: var(--space-8);
   background: var(--card); position: relative; overflow: hidden;
@@ -271,3 +271,4 @@
 }
 .talkBtn:hover { background: rgba(94, 155, 255, 0.10); }
 .talkBtn:active { transform: scale(0.97); }
+

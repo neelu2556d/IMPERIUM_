@@ -1,6 +1,6 @@
 // The RICHNESS gate. The lint floor (lintTile) proves a tile is sealed, safe, and
 // on-brand, but a bare single-number counter clears it exactly like a Fuel-grade
-// module does, so "Vitality-grade PASS 0/0" can silently hide a thin tile. This gate
+// module does, so "Imperium-grade PASS 0/0" can silently hide a thin tile. This gate
 // closes that gap: it proves a tile actually earns a dashboard slot. It checks for the
 // structural marks of the shared shell (docs/tile-lux-spec.md): the loaded signature
 // fonts, a serif hero number that is REALLY serif, a header eyebrow, a status pill with
@@ -66,7 +66,7 @@ const CHECKS: Array<[string, (h: string) => boolean]> = [
   ['section-rendered', (h) => /getElementById\(['"]section['"]\)\.innerHTML/.test(h) || /\bdraw(?:Bars|Spark|Grid|Week)\s*\(/.test(h)],
   // The tile actually persists through the host bridge (saves AND loads its own data),
   // so a log survives a reload. A tile whose buttons change nothing durable is a toy.
-  ['persists', (h) => /Vitality\.save\s*\(/.test(h) && /Vitality\.load\s*\(/.test(h)],
+  ['persists', (h) => /Imperium\.save\s*\(/.test(h) && /Imperium\.load\s*\(/.test(h)],
   // A primary action is wired to a handler, so the tile responds to a tap. A hero with
   // dead buttons looks rich but does nothing.
   ['wired-action', (h) => /\.onclick\s*=/.test(h) || /addEventListener\s*\(\s*['"]click/.test(h)],
@@ -100,3 +100,4 @@ export function richnessOf(html: string): RichnessResult {
   const missing = CHECKS.filter(([, fn]) => !fn(html)).map(([name]) => name);
   return { score: CHECKS.length - missing.length, max: CHECKS.length, ok: missing.length === 0, missing };
 }
+

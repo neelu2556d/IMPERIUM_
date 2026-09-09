@@ -4,12 +4,12 @@ import { createClient } from '@/lib/supabase/server'
 import { upsertFactByRef } from '@/lib/memory/userFacts'
 
 /**
- * Feed today's Fuel coach read into the shared memory (user_facts) so Vee and
+ * Feed today's Fuel coach read into the shared memory (user_facts) so I and
  * the rest of the connection web can speak to the user's fuel ("your fuel today
  * was a 5, calories ran over your cut"). One fact per day (upsert by ref so it
  * never piles up), short-lived (auto-cleans after a few days), RLS-scoped to the
  * caller, and never throws. The coach only READS goals and WRITES this fact; it
- * never edits Vee-owned code.
+ * never edits I-owned code.
  */
 export async function syncCoachFact(dayKey: string, body: string, salience = 0.5): Promise<{ ok: boolean }> {
   try {
@@ -35,3 +35,4 @@ export async function syncCoachFact(dayKey: string, body: string, salience = 0.5
     return { ok: false }
   }
 }
+

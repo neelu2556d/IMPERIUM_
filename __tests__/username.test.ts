@@ -63,10 +63,10 @@ describe('username (Arts District v2 — identity)', () => {
 
     test('rejects reserved handles (route + brand collisions)', () => {
       expect(validateUsername('admin').ok).toBe(false)
-      expect(validateUsername('Vitality').ok).toBe(false)
+      expect(validateUsername('Imperium').ok).toBe(false)
       expect(validateUsername('app').ok).toBe(false)
       expect(validateUsername('u').ok).toBe(false)
-      expect(validateUsername('vee').ok).toBe(false)
+      expect(validateUsername('I').ok).toBe(false)
     })
 
     test('every rejection carries a human-readable reason', () => {
@@ -88,3 +88,4 @@ describe('username (Arts District v2 — identity)', () => {
     })
   })
 })
+

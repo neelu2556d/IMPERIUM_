@@ -1,13 +1,13 @@
 /**
- * Vitality Score engine — the daily 0-100 "did I take care of myself today"
- * number behind the Vee dashboard tile. A consistency/showing-up score graded
+ * Imperium Score engine — the daily 0-100 "did I take care of myself today"
+ * number behind the I dashboard tile. A consistency/showing-up score graded
  * against the user's OWN committed routine (never on a module they didn't set
  * up). Compute-on-read: no new tables. Each module plugs in as one isolated
  * `Contributor`; the engine knows nothing about a module's internals, only the
  * `ContributorResult` shape. Every contributor is wrapped in a safety net in
  * computeVitalityScore (Task 4) so a failing/empty module just drops its slice.
  *
- * Design spec: docs/superpowers/specs/2026-06-13-vitality-score-design.md
+ * Design spec: docs/superpowers/specs/2026-06-13-Imperium-score-design.md
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 
@@ -137,7 +137,7 @@ export async function runContributors(
     try {
       if (await c.isActive(ctx)) active.push(c)
     } catch (err) {
-      console.error(`[vitality-score] isActive failed for ${c.key}`, err)
+      console.error(`[Imperium-score] isActive failed for ${c.key}`, err)
     }
   }
   if (active.length === 0) return { score: null, drivers: [], state: 'no-routine' }
@@ -147,10 +147,11 @@ export async function runContributors(
     try {
       results.push(await c.evaluate(ctx))
     } catch (err) {
-      console.error(`[vitality-score] evaluate failed for ${c.key}`, err)
+      console.error(`[Imperium-score] evaluate failed for ${c.key}`, err)
     }
   }
 
   // If every active slice failed, combineResults returns no-routine (no fake zero).
   return combineResults(results, todayKey)
 }
+

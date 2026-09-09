@@ -1,7 +1,7 @@
 /**
  * Tests for the Vitals Signal engine (lib/vitals/signal.ts) — the pure function
  * that fuses WHOOP recovery + training load + fuel + the goal + what the user
- * told Vee into one daily lean (push / steady / recover). Deterministic, no IO,
+ * told I into one daily lean (push / steady / recover). Deterministic, no IO,
  * never throws. Run with:
  *   npx jest signal --testPathIgnorePatterns "/node_modules/"
  */
@@ -57,8 +57,8 @@ describe('computeSignal', () => {
     const s = computeSignal(base({ recovery: 85, injuryFlags: ['right shoulder'] }))
     expect(s!.lean).not.toBe('push')
     expect(s!.lean).toBe('steady')
-    // injury surfaces a Vee chip
-    expect(s!.chips.some(c => c.source === 'Vee' && c.dir === 'warn')).toBe(true)
+    // injury surfaces a I chip
+    expect(s!.chips.some(c => c.source === 'I' && c.dir === 'warn')).toBe(true)
   })
 
   it('an injury on a low day stays recover and protects the flag in copy', () => {
@@ -95,7 +95,7 @@ describe('computeSignal', () => {
     expect(sources).toContain('WHOOP')
     expect(sources).not.toContain('Train')
     expect(sources).not.toContain('Fuel')
-    expect(sources).not.toContain('Vee')
+    expect(sources).not.toContain('I')
   })
 
   it('builds a goal momentum line with trend word when a goal is present', () => {
@@ -113,3 +113,4 @@ describe('computeSignal', () => {
     expect(allCopy).not.toMatch(/[—–]/)
   })
 })
+

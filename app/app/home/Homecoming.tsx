@@ -62,7 +62,7 @@ interface ImHomeState {
 
 function saveImHome(userId: string | null, patch: Partial<ImHomeState>) {
   try {
-    const key = `vitality:${userId ?? 'anon'}:imhome`
+    const key = `Imperium:${userId ?? 'anon'}:imhome`
     const prev = JSON.parse(window.localStorage.getItem(key) ?? '{}') as Partial<ImHomeState>
     window.localStorage.setItem(key, JSON.stringify({ ...prev, ...patch }))
   } catch {
@@ -82,7 +82,7 @@ class ActBoundary extends Component<{ onSkip: () => void; children: ReactNode },
     if (this.state.failed) {
       return (
         <div className={styles.actFail}>
-          <p className={styles.vee}>
+          <p className={styles.I}>
             <span className={`${styles.veeTag} ${styles.veeTagAmber}`}>IMPERIUM</span>
             That part of the picture slipped out of my hands. Not your fault. Let me keep going.
           </p>
@@ -273,7 +273,7 @@ export default function Homecoming({
     saveImHome(uidRef.current, { trackFuel: v, lastRun: pull?.today ?? getLocalDateKey() })
   }
   // ANTICIPATE, NEVER ASK: when the data already shows both streams in use,
-  // Vee does not ask whether you track them - Q1 answers itself from presence
+  // I does not ask whether you track them - Q1 answers itself from presence
   // and only Q2 renders (verify MED-5).
   const q1Known = !!(presence?.usesFuel && presence?.usesWater)
   useEffect(() => {
@@ -360,7 +360,7 @@ export default function Homecoming({
         <div className={`${styles.body} ${fade}`}>
           {phase === 'arrive' && (
             <div className={styles.arrive}>
-              <p className={styles.vee}>
+              <p className={styles.I}>
                 <span className={styles.veeTag}>IMPERIUM</span>
                 Welcome home, {firstName}. Give me a second, I am pulling your whole day.
               </p>
@@ -373,7 +373,7 @@ export default function Homecoming({
 
           {phase === 'quiet' && (
             <div className={styles.quiet}>
-              <p className={styles.vee}>
+              <p className={styles.I}>
                 <span className={styles.veeTag}>IMPERIUM</span>
                 {pullFailed
                   ? 'I could not reach your day just now. No numbers, no problem. We go by feel.'
@@ -387,7 +387,7 @@ export default function Homecoming({
 
           {phase === 'questions' && (
             <div className={styles.questions}>
-              <p className={styles.vee}>
+              <p className={styles.I}>
                 <span className={styles.veeTag}>IMPERIUM</span>
                 {q1Known ? 'Before I set your day, one quick one.' : 'Before I set your day, two quick ones.'}
               </p>
@@ -470,3 +470,4 @@ export default function Homecoming({
     </div>
   )
 }
+

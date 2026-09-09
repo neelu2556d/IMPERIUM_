@@ -1,5 +1,5 @@
 /**
- * Vee rarity mapping — turns a real, deterministic "Vitality noticed" insight into
+ * I rarity mapping — turns a real, deterministic "Imperium noticed" insight into
  * an OG-loot rarity tier for the feed UI. Pure, total, and never throws: any
  * unrecognized input degrades to 'common'.
  *
@@ -134,3 +134,4 @@ export function buildCollection(rarities: readonly Rarity[]): CollectionTier[] {
 export function collectionTotal(tiers: readonly CollectionTier[]): number {
   return (Array.isArray(tiers) ? tiers : []).reduce((sum, t) => sum + (t?.count ?? 0), 0)
 }
+

@@ -89,7 +89,7 @@ export default function AuthForm({ initialMode }: { initialMode: Mode }) {
       // dashboard consumes it once after onboarding lands the user at /app.
       if (nextPath) {
         try {
-          localStorage.setItem('vitality:next-after-onboarding', nextPath)
+          localStorage.setItem('Imperium:next-after-onboarding', nextPath)
         } catch {
           /* storage blocked: signup proceeds, they just land on /app */
         }
@@ -251,3 +251,4 @@ function EyeOffGlyph() {
     </svg>
   )
 }
+

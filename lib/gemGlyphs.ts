@@ -1,5 +1,5 @@
 /**
- * Gem glyphs — section marks engraved into the Vitality crystal.
+ * Gem glyphs — section marks engraved into the Imperium crystal.
  *
  * Each glyph is a draw function that paints a single architectural stroke
  * (open or simple closed) into a 512² canvas centered at (256, 256). The
@@ -579,3 +579,4 @@ export const ANIM_LOOP: Record<string, AnimLoop> = {
   RADIAL: { period: 2.4, speed: 1.5, holdLoops: 1, brandHold: 1.6, glitchDur: 1.0 },
 }
 export const DEFAULT_LOOP: AnimLoop = { period: 2.3, speed: 1, holdLoops: 4, brandHold: 1.8, glitchDur: 0.55 }
+

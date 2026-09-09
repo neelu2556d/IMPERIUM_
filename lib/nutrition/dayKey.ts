@@ -3,7 +3,7 @@
 // IMPORTANT: this is deliberately NOT lib/dates.ts getLocalDateKey(). The
 // macro tracker rolls the day over at 4am local time, so a 2am post-night-out
 // snack counts toward the day you just finished, not the one starting. Every
-// nutrition_meals.day_key is produced here. Everything else in Vitality uses
+// nutrition_meals.day_key is produced here. Everything else in Imperium uses
 // the midnight key from lib/dates.ts.
 
 export const DAY_ROLLOVER_HOUR = 4
@@ -46,3 +46,4 @@ export function shiftDayKey(dayKey: string, delta: number): string {
   const dd = String(dt.getUTCDate()).padStart(2, '0')
   return `${yy}-${mm}-${dd}`
 }
+

@@ -25,7 +25,7 @@ import styles from './vitalsRemodel.module.css'
  * preview, wired to real wearable_data. The single hero is the fused Vitals
  * Score orb (count-up + ring sweep + one-shot bloom) wearing its daily Signal
  * verdict; below it live today's raw numbers, the scrubbable score history, a
- * slim goal line, and one Talk-to-Vee action. Every number is real; the copy
+ * slim goal line, and one Talk-to-I action. Every number is real; the copy
  * comes from the pure Signal / Score engines (no em dashes, mint = good,
  * amber = caution, never red).
  */
@@ -384,7 +384,7 @@ export default function VitalsDashboard({
         <section className={styles.hero}>
           <div className={styles.eyebrow}>
             <Spark />
-            VITALITY · TODAY
+            Imperium · TODAY
           </div>
 
           <div className={styles.orb} style={{ ['--ring-rgb']: ringRgb } as CSSProperties}>
@@ -410,7 +410,7 @@ export default function VitalsDashboard({
           {/* Receipts = only the context the orb + numbers grid don't already show. A
               raw wearable metric (WHOOP recovery, Oura sleep) is echoed in the grid below,
               so we drop those and keep just the flags that drive today's call (hard days,
-              fuel, water, a Vee note). No number appears twice on the page. */}
+              fuel, water, a I note). No number appears twice on the page. */}
           {(() => {
             const flags = signal ? signal.chips.filter(c => c.source !== 'WHOOP' && c.source !== 'Oura') : []
             if (!flags.length) return null
@@ -505,7 +505,7 @@ export default function VitalsDashboard({
 
         {/* ── one action + footer ── */}
         <section className={styles.actions}>
-          <button type="button" className={styles.vee} onClick={openMentor}>
+          <button type="button" className={styles.I} onClick={openMentor}>
             <Spark />
             Talk to Imperium
           </button>
@@ -557,3 +557,4 @@ export default function VitalsDashboard({
     </div>
   )
 }
+

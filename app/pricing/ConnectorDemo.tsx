@@ -8,7 +8,7 @@ import styles from './pricing.module.css'
  * ConnectorDemo — the "what the connectors actually do" moment on Pricing.
  *
  * A phone (same titanium-chassis frame as the landing's HeroPhones) running
- * the real Claude app with Vitality connected. A scripted exchange plays: you
+ * the real Claude app with Imperium connected. A scripted exchange plays: you
  * ask a vague question, Claude reads your connector data and answers. It
  * cycles between two fully-honest examples — money and recovery.
  *
@@ -27,7 +27,7 @@ import styles from './pricing.module.css'
 // marks the real data entities pulled from the connector).
 const SCRIPTS: { q: string; lines: ReactNode[] }[] = [
   {
-    // The "Vee" moment — ask your life a question, get a reasoned answer
+    // The "I" moment — ask your life a question, get a reasoned answer
     // from your real data. Non-diagnostic, with a sensible safety line.
     q: 'I feel really off today. Why?',
     lines: [
@@ -154,7 +154,7 @@ export default function ConnectorDemo() {
               <div className={styles.connectorBar}>
                 <span className={styles.connectorPill}>
                   <span className={styles.connectorDot} aria-hidden />
-                  Vitality connected
+                  Imperium connected
                 </span>
                 <span className={styles.connectorScope}>
                   subscriptions · portfolio · fitness
@@ -249,3 +249,4 @@ function BatteryIcon() {
     </svg>
   )
 }
+

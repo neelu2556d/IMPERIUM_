@@ -8,21 +8,21 @@ import { logDriftShown } from '@/app/app/goals/driftActions'
 import type { DriftKind } from '@/lib/goals/drift'
 import type { MoodPoint, RawMoodFact } from '@/app/app/mentor/moodData'
 import type { Note } from '@/app/app/mentor/types'
-import { rarityForNotice, type Rarity } from '@/lib/vee/rarity'
+import { rarityForNotice, type Rarity } from '@/lib/I/rarity'
 import type { FeedNotice } from '@/lib/insights/feed'
-import type { SuggestionEvidence, VeeRunStats } from '@/lib/vee/loadNoticed'
+import type { SuggestionEvidence, VeeRunStats } from '@/lib/I/loadNoticed'
 import type { BigGoal, HabitGoal } from '@/app/app/goals/veeTypes'
 import type { TickerRow } from '@/lib/insights/ticker'
 import type { GuideItem, GuideModule } from '@/lib/insights/goalGuide'
 import type { LifeChip } from '@/lib/insights/lifeChips'
-import type { ClaudeHandoffContext } from '@/lib/vee/claudeHandoff'
-import VeeGoalsSection, { type BindingStream } from './vee/VeeGoalsSection'
-import { VeeAsk, VeeKeep } from './vee/VeeBottomStrip'
+import type { ClaudeHandoffContext } from '@/lib/I/claudeHandoff'
+import VeeGoalsSection, { type BindingStream } from './I/VeeGoalsSection'
+import { VeeAsk, VeeKeep } from './I/VeeBottomStrip'
 import styles from './veeNoticed.module.css'
 
-/* VeeNoticed - the launch Vee. Three things: the Echo gem (Vee's face), the ONE
- * gamified "Vitality Noticed" card (the WATCHED mono chip carries what Vee
- * connected), and the slim "feed Vee" strip (mood + a note) that gives Vee more
+/* VeeNoticed - the launch I. Three things: the Echo gem (I's face), the ONE
+ * gamified "Imperium Noticed" card (the WATCHED mono chip carries what I
+ * connected), and the slim "feed I" strip (mood + a note) that gives I more
  * of your life to connect. Standard backdrop + glass. Conversation lives in
  * Claude. Rarity = depth; the card explains itself and stays near-empty. */
 
@@ -55,7 +55,7 @@ interface Props {
   /** Server-assembled Claude handoff context: every ask arrives in Claude with
    *  the user's real goals, states and stats attached (no new DB reads). */
   claudeContext?: ClaudeHandoffContext | null
-  /** Design-harness mode (/vee-live-preview): everything renders, nothing writes. */
+  /** Design-harness mode (/I-live-preview): everything renders, nothing writes. */
   readOnly?: boolean
   /** Harness-only: force the first-ever-click Climb intro overlay open. */
   forceClimbIntro?: boolean
@@ -82,7 +82,7 @@ const RARITY_MEANING: Record<Rarity, string> = {
 }
 
 function claudeHref(notice: FeedNotice): string {
-  const q = `Vee noticed this in my Vitality data: "${notice.lead}" Help me understand what is driving it and what to do next.`
+  const q = `I noticed this in my Imperium data: "${notice.lead}" Help me understand what is driving it and what to do next.`
   return `https://claude.ai/new?q=${encodeURIComponent(q)}`
 }
 
@@ -149,7 +149,7 @@ const ArrowIcon = (
 const TriUp = <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M12 5l8 13H4z" /></svg>
 const TriDn = <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M12 19L4 6h16z" /></svg>
 
-/* Vee's chevron badge that opens the card. A small identity mark (the real gem is
+/* I's chevron badge that opens the card. A small identity mark (the real gem is
  * the hero above), not a hand-rolled gem. */
 function VMark() {
   return (
@@ -186,14 +186,14 @@ function NoticedCard({ feed, readOnly = false }: { feed: FeedNotice[]; readOnly?
   }
 
   return (
-    <section className={`${styles.noticed} ${RARITY_CLASS[rarity]}`} aria-label="Vitality noticed" key={`card-${idx}`}>
+    <section className={`${styles.noticed} ${RARITY_CLASS[rarity]}`} aria-label="Imperium noticed" key={`card-${idx}`}>
       <span className={styles.rarityEdge} aria-hidden />
       <div className={styles.bloom} key={`bloom-${idx}`} aria-hidden />
 
       {/* showcase head: V badge + label + rarity pill left, the watched chip right */}
       <div className={styles.noticedHead}>
         <VMark />
-        <span className={styles.noticedLabel}>VITALITY NOTICED</span>
+        <span className={styles.noticedLabel}>Imperium NOTICED</span>
         <button
           type="button"
           className={styles.rbadge}
@@ -214,7 +214,7 @@ function NoticedCard({ feed, readOnly = false }: { feed: FeedNotice[]; readOnly?
       <p className={styles.statement} key={`statement-${idx}`}>{renderStatement(notice)}</p>
 
       {notice.goalTitle && (
-        <a className={styles.impactRow} href="#vee-goals" key={`impact-${idx}`}>
+        <a className={styles.impactRow} href="#I-goals" key={`impact-${idx}`}>
           <span className={styles.il}>moves your goals</span>
           <span className={`${styles.gimp} ${notice.impact === 'dn' ? styles.gimpDn : styles.gimpUp}`}>
             {notice.impact === 'dn' ? TriDn : TriUp}
@@ -257,7 +257,7 @@ function NoticedCard({ feed, readOnly = false }: { feed: FeedNotice[]; readOnly?
 /* The Rarity Climb - the intro animation. The six tiers stack (mythic at the top,
  * common at the base) and light up from the bottom up, bars filling, mythic
  * flaring last. Explains the whole game in one moment: rarer = deeper. Used both
- * as the zero-data hero and inside the "how Vee works" info overlay. */
+ * as the zero-data hero and inside the "how I works" info overlay. */
 const CLIMB_TIERS = [
   { k: 'common', c: 'var(--r-common)', l: 'Common' },
   { k: 'uncommon', c: 'var(--r-uncommon)', l: 'Uncommon' },
@@ -295,23 +295,23 @@ function RarityClimb({ line }: { line?: ReactNode }) {
   )
 }
 
-const CLIMB_LINE = <>Every tile you log feeds Vee. <b>The more of your life it connects, the rarer the find.</b></>
+const CLIMB_LINE = <>Every tile you log feeds I. <b>The more of your life it connects, the rarer the find.</b></>
 
 /* The one honest cold-start line inside the card: plain words, no promises the
    engine has not earned. Alex tweaks the wording live. */
-const COLD_LINE = 'use Vitality a little each day. your first find comes from what you log.'
+const COLD_LINE = 'use Imperium a little each day. your first find comes from what you log.'
 
 /* The one calm degraded line (loadNoticed.degraded): a failed read must never
    impersonate a cold start, so a daily logger is never told they have not logged. */
 const DEGRADED_LINE = 'some of your data could not be read just now. everything you logged is safe, it will be back on the next open.'
 
-/* The one-sentence explainer that fully tells a confused user what Vee is for.
-   Tops the Climb in the intro overlay and the "how Vee works" tab (Alex tweaks live). */
-const VEE_EXPLAINER = 'Vee reads everything you log across Vitality and shows you the one pattern that is quietly helping or hurting your goals. The rarer the find, the deeper the connection.'
+/* The one-sentence explainer that fully tells a confused user what I is for.
+   Tops the Climb in the intro overlay and the "how I works" tab (Alex tweaks live). */
+const VEE_EXPLAINER = 'I reads everything you log across Imperium and shows you the one pattern that is quietly helping or hurting your goals. The rarer the find, the deeper the connection.'
 
-/* localStorage flag: the Climb intro plays once, on the FIRST-EVER click on Vee. */
+/* localStorage flag: the Climb intro plays once, on the FIRST-EVER click on I. */
 function climbSeenKey(userId: string): string {
-  return `vee:climb-intro-seen:${userId}`
+  return `I:climb-intro-seen:${userId}`
 }
 
 function InfoIcon() {
@@ -375,7 +375,7 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
   const [introOpen, setIntroOpen] = useState(false)
   const seeded = useRef(false)
 
-  // The Climb intro: every new user's FIRST-EVER click on Vee plays it once
+  // The Climb intro: every new user's FIRST-EVER click on I plays it once
   // (decided after mount so SSR and client never disagree; skippable by tap).
   useEffect(() => {
     if (forceClimbIntro) { setIntroOpen(true); return }
@@ -452,8 +452,8 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
             DASHBOARD
           </Link>
           <span style={{ flex: 1 }} />
-          <button type="button" className={styles.infoBtn} onClick={() => setInfoOpen(true)} aria-label="How Vee works">
-            <InfoIcon />how vee works
+          <button type="button" className={styles.infoBtn} onClick={() => setInfoOpen(true)} aria-label="How I works">
+            <InfoIcon />how I works
           </button>
         </header>
 
@@ -461,10 +461,10 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
             vertically centered and balanced. Stacks to gem-then-card on mobile.
             Kills the old full-screen empty scroll before the first card. */}
         <div className={styles.heroRow}>
-          {/* the Echo gem - Vee's face */}
-          <section className={styles.hero} aria-label="Vee">
+          {/* the Echo gem - I's face */}
+          <section className={styles.hero} aria-label="I">
             <div className={styles.gemStage}><CoachGem preset="echo" /></div>
-            <span className={styles.label}>VITALITY · VEE</span>
+            <span className={styles.label}>Imperium · I</span>
             <h1 className={styles.greet} suppressHydrationWarning>
               {greeting}{firstName ? <>, <em>{firstName}</em></> : ''}.
             </h1>
@@ -476,9 +476,9 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
             {degraded && hasFeed && <p className={styles.degradedLine} role="status">{DEGRADED_LINE}</p>}
           </section>
 
-          {/* ·01 the one gamified "Vitality noticed" card, or the calm cold start */}
-          <section className={`${styles.pageSection} ${styles.heroCard}`} aria-label="Vitality noticed">
-            <SecHead num="·01" label="Vitality noticed" />
+          {/* ·01 the one gamified "Imperium noticed" card, or the calm cold start */}
+          <section className={`${styles.pageSection} ${styles.heroCard}`} aria-label="Imperium noticed">
+            <SecHead num="·01" label="Imperium noticed" />
             <p className={styles.secLede}>the rarer the find, the deeper it reached into your life.</p>
             {hasFeed ? (
               <NoticedCard feed={feed} readOnly={readOnly} />
@@ -504,16 +504,16 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
           </section>
         </div>
 
-        {/* ·02 the fused FULL goals engine: author a goal, watch Vee steer it */}
-        <section className={`${styles.pageSection} ${styles.narrow}`} id="vee-goals" aria-label="Your goals">
+        {/* ·02 the fused FULL goals engine: author a goal, watch I steer it */}
+        <section className={`${styles.pageSection} ${styles.narrow}`} id="I-goals" aria-label="Your goals">
           <SecHead num="·02" label="Your goals" />
           <p className={styles.secLede}>set a goal. I steer it with your real data.</p>
           <VeeGoalsSection goals={goals} habits={habits} rows={rows} guides={guides} lifeChips={lifeChips} daysLogged={stats.daysLogged} suggestionEvidence={suggestionEvidence} tileStreams={tileStreams} activeModules={activeModules} readOnly={readOnly} />
         </section>
 
         {/* ·03 refocused on CLAUDE: one composer, one destination */}
-        <section className={`${styles.pageSection} ${styles.narrow}`} aria-label="Ask Vee">
-          <SecHead num="·03" label="Ask Vee" />
+        <section className={`${styles.pageSection} ${styles.narrow}`} aria-label="Ask I">
+          <SecHead num="·03" label="Ask I" />
           <p className={styles.secLede}>ask anything. the conversation lives in Claude.</p>
           <VeeAsk claudeContext={claudeContext} />
         </section>
@@ -526,12 +526,12 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
       </main>
 
       {infoOpen && (
-        <div className={styles.infoOverlay} onClick={() => setInfoOpen(false)} role="dialog" aria-modal="true" aria-label="How Vee works">
+        <div className={styles.infoOverlay} onClick={() => setInfoOpen(false)} role="dialog" aria-modal="true" aria-label="How I works">
           <div className={styles.infoPanel} onClick={e => e.stopPropagation()}>
             <button type="button" className={styles.infoClose} onClick={() => setInfoOpen(false)} aria-label="Close">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
-            <span className={styles.infoTitle}>How Vee works</span>
+            <span className={styles.infoTitle}>How I works</span>
             <p className={styles.explainer}>{VEE_EXPLAINER}</p>
             <RarityClimb line={CLIMB_LINE} />
           </div>
@@ -540,9 +540,9 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
 
       {/* the first-ever-click Climb intro: the whole game in one moment, tap to skip */}
       {introOpen && (
-        <div className={styles.introOverlay} onClick={dismissIntro} role="dialog" aria-modal="true" aria-label="Meet Vee">
+        <div className={styles.introOverlay} onClick={dismissIntro} role="dialog" aria-modal="true" aria-label="Meet I">
           <div className={styles.introPanel}>
-            <span className={styles.introEyebrow}>meet vee</span>
+            <span className={styles.introEyebrow}>meet I</span>
             <p className={styles.explainer}>{VEE_EXPLAINER}</p>
             <RarityClimb line={CLIMB_LINE} />
             <span className={styles.introSkip}>tap anywhere to continue</span>
@@ -552,3 +552,4 @@ export default function VeeNoticed({ firstName, feed, userId, stats, goals, habi
     </div>
   )
 }
+

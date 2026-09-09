@@ -25,7 +25,7 @@ test('sleep-hours variant: it infers an hours-mode duration timer', () => {
   assert.equal(SLEEP.meta.unit, 'h', 'the unit is hours, not minutes');
 });
 
-test('sleep-hours variant: it is Vitality-grade (0 errors, 0 warnings)', () => {
+test('sleep-hours variant: it is Imperium-grade (0 errors, 0 warnings)', () => {
   const r = lintTile(SLEEP.html);
   if (!r.ok || r.warnings > 0) {
     console.log('\n' + r.findings.map((f) => `  [${f.severity}] ${f.rule}: ${f.message}`).join('\n') + '\n');
@@ -52,7 +52,7 @@ test('sleep-hours variant: it renders the HOURS mode, not the minutes stepper', 
 });
 
 test('sleep-hours variant: it reports exactly one valid duration stream', () => {
-  const reports = SLEEP.html.match(/Vitality\.report\s*\(/g) || [];
+  const reports = SLEEP.html.match(/Imperium\.report\s*\(/g) || [];
   assert.equal(reports.length, 1, 'an hours timer reports exactly one stream');
   const v = validateReport({ key: 'sleep', label: 'Sleep', value: 7.5, date: '2026-07-02', kind: 'duration' });
   assert.equal(v.ok, true, 'a fractional-hours value validates against the contract');
@@ -75,7 +75,7 @@ test('sleep-hours variant behaves: a decimal entry logs the exact hours, reports
   // persists across a reopen, and does not re-report on a pure reopen
   const h2 = await h.rehydrate();
   assert.equal(h2.value(), 7.5, 'reopening keeps the logged hours');
-  assert.equal(h2.reports.length, 0, 'a pure reopen does not re-report into Vee');
+  assert.equal(h2.reports.length, 0, 'a pure reopen does not re-report into I');
   // rolls over the next day
   h2.setNow(addDays(now, 1));
   const h3 = await h2.rehydrate();
@@ -85,3 +85,4 @@ test('sleep-hours variant behaves: a decimal entry logs the exact hours, reports
   h2.close();
   h3.close();
 });
+

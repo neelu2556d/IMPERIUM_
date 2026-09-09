@@ -99,8 +99,8 @@ export default async function RoomPage() {
       <p className={s.law}>
         This page is generated from <code>lib/insights/metricRegistry.ts</code> at
         render, never hand-synced. That file is the one source of truth for every
-        drawable series: adding a metric to Vitality is one registry entry, and it
-        appears here, in the goal binding picker, and in Vee&apos;s triage the same
+        drawable series: adding a metric to Imperium is one registry entry, and it
+        appears here, in the goal binding picker, and in I&apos;s triage the same
         moment.
       </p>
       <div className={s.meta}>
@@ -170,3 +170,4 @@ export default async function RoomPage() {
     </main>
   )
 }
+

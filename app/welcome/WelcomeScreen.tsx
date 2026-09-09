@@ -33,7 +33,7 @@ interface WelcomeScreenProps {
 // signing in on a shared browser) gets a fresh greeting per account
 // rather than inheriting the previous tester's "welcomed" flag.
 function welcomedKey(userId: string): string {
-  return `vitality.welcomed:${userId}`
+  return `Imperium.welcomed:${userId}`
 }
 
 /**
@@ -305,3 +305,4 @@ export default function WelcomeScreen({ firstName, tasks, userId }: WelcomeScree
     </main>
   )
 }
+

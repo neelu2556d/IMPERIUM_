@@ -197,7 +197,7 @@ export default function HeroPhones() {
           <div className={styles.dashHeader}>
             <div className={styles.dashWordmarkRow}>
               <span className={styles.dashGlyph}>V</span>
-              <span className={styles.dashWordmark}>Vitality</span>
+              <span className={styles.dashWordmark}>Imperium</span>
             </div>
             <div className={styles.dashGreeting}>
               <span className={styles.serif}>Good evening</span>
@@ -329,3 +329,4 @@ export default function HeroPhones() {
     </>
   )
 }
+

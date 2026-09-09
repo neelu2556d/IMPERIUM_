@@ -1,9 +1,9 @@
-# Vitality
+# Imperium
 
-**An open-source life dashboard.** A multi-user Next.js app that turns your health, training, nutrition, goals, and finances into one calm, beautiful dashboard — with a wearable-agnostic daily Vitality score, deep workout intelligence, and an AI mentor that can build new dashboard tiles for you.
+**An open-source life dashboard.** A multi-user Next.js app that turns your health, training, nutrition, goals, and finances into one calm, beautiful dashboard — with a wearable-agnostic daily Imperium score, deep workout intelligence, and an AI mentor that can build new dashboard tiles for you.
 
 <p align="center">
-  <img src="vitality-dashboard.png" alt="Vitality dashboard" width="720" />
+  <img src="vitality-dashboard.png" alt="Imperium dashboard" width="720" />
 </p>
 
 <p align="center">
@@ -68,11 +68,11 @@ Log food by photo, barcode, or search — then let the scale, not a formula, ste
 - An adaptive coach computes your real maintenance from your own weigh-ins and food log (28-day least-squares trend), waits for 10 weigh-ins before suggesting anything, and nudges at most 250 kcal per week ([lib/nutrition/adaptive.ts](lib/nutrition/adaptive.ts)).
 - Barcode scanning via the browser's native BarcodeDetector against Open Food Facts, and a water target that scales with your actual medications and habits ([app/app/fuel/water/substances.ts](app/app/fuel/water/substances.ts)).
 
-### Goals — Vee only speaks when it's true
+### Goals — I only speak when it's true
 
 ![Goals](media/goals.gif)
 
-Say a goal in your own words; Vee tidies it, wires it to the real data behind it, and only speaks when it has something true to say.
+Say a goal in your own words; I tidy it, wire it to the real data behind it, and only speak when I have something true to say.
 
 - Type *"i wanna get a 3 plate bench"* and AI triage returns a clean title and category — with a deterministic fallback so saving never blocks on a model ([lib/goals/categorize.ts](lib/goals/categorize.ts)).
 - Drift detection only notices a slip from something you *actually did* — training needs 3+ workouts in the last 21 days gone quiet — and surfaces at most one nudge at a time ([lib/goals/drift.ts](lib/goals/drift.ts)).
@@ -126,7 +126,7 @@ Community tiles publish to the **Arts District** and to public maker pages at `/
 
 ## Connect Claude to your dashboard (MCP)
 
-Vitality ships a hosted MCP server — 34 tools behind OAuth 2.1 with PKCE and a real consent screen. Connect claude.ai, Claude Desktop, or Claude Code to your deployment and ask about your data, or have Claude build and publish a new tile onto your dashboard, live. Each request mints a short-lived, row-level-security-scoped database session, so one stateless process serves many users safely ([app/api/mcp/](app/api/mcp/), [mcp/](mcp/)).
+Imperium ships a hosted MCP server — 34 tools behind OAuth 2.1 with PKCE and a real consent screen. Connect claude.ai, Claude Desktop, or Claude Code to your deployment and ask about your data, or have Claude build and publish a new tile onto your dashboard, live. Each request mints a short-lived, row-level-security-scoped database session, so one stateless process serves many users safely ([app/api/mcp/](app/api/mcp/), [mcp/](mcp/)).
 
 It's off by default (`MCP_ENABLED=false`) and a basic deploy never needs it.
 

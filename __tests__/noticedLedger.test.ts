@@ -56,7 +56,7 @@ describe('selectFresh — keep only the seams not currently resting, before the 
     const out = selectFresh([seam(['caffeine', 'recovery'])], {}, today)
     expect(out).toHaveLength(1)
   })
-  it('drops a seam still resting, but keeps a fresh one (so Vee can still surface something)', () => {
+  it('drops a seam still resting, but keeps a fresh one (so I can still surface something)', () => {
     const cooldown: Record<string, NoticedCooldown> = {
       'sleep+training': { lastShownAt: '2026-06-20T08:00:00Z', resolution: null }, // 2 days ago, resting
     }
@@ -81,3 +81,4 @@ describe('selectFresh — keep only the seams not currently resting, before the 
     expect(out).toHaveLength(1)
   })
 })
+

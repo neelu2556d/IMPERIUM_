@@ -1,4 +1,4 @@
-// Supabase access for the Vitality MCP.
+// Supabase access for the Imperium MCP.
 //
 // Two auth modes, resolved in env.ts:
 //   • user    — anon key + email/password sign-in. Every query runs under the
@@ -61,10 +61,10 @@ async function connect(): Promise<VitalityDb> {
     password: env.userPassword!,
   });
   if (error || !data.user) {
-    console.error('[vitality-mcp] sign-in failed:', error?.message ?? 'no user returned');
-    throw new Error(`Vitality sign-in failed: ${error?.message ?? 'unknown error'}`);
+    console.error('[Imperium-mcp] sign-in failed:', error?.message ?? 'no user returned');
+    throw new Error(`Imperium sign-in failed: ${error?.message ?? 'unknown error'}`);
   }
-  console.error(`[vitality-mcp] signed in as ${data.user.email} (RLS-scoped).`);
+  console.error(`[Imperium-mcp] signed in as ${data.user.email} (RLS-scoped).`);
   return { db, userId: data.user.id, mode: 'user', scopes: LOCAL_SCOPES };
 }
 
@@ -110,3 +110,4 @@ export function dbForAccessToken(opts: {
   });
   return { db, userId: opts.userId, mode: 'user', scopes: opts.scopes };
 }
+

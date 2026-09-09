@@ -128,7 +128,7 @@ export default async function MakersPage() {
         <div className={styles.kicker}>Arts District</div>
         <h1 className={styles.title}>Makers</h1>
         <p className={styles.lede}>
-          The people building tiles for Vitality. Every tile they publish is free to add to your own dashboard.
+          The people building tiles for Imperium. Every tile they publish is free to add to your own dashboard.
         </p>
       </header>
 
@@ -168,3 +168,4 @@ export default async function MakersPage() {
     </div>
   )
 }
+

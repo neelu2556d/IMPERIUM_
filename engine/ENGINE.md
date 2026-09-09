@@ -1,6 +1,6 @@
-# Vitality Tile Engine
+# Imperium Tile Engine
 
-You are building a **Vitality dashboard tile**. This folder is the whole engine: the
+You are building a **Imperium dashboard tile**. This folder is the whole engine: the
 design DNA, the real shipped tiles, and a self-check. No app, no keys, no backend, no
 build step. Everything a tile needs is here as ambient context — just ask for a tile
 and build it to this standard.

@@ -179,12 +179,12 @@ input,select{font-family:inherit;color:inherit}
     </div>
   </main>
   <script>
-  var Vitality={_w:{},
-    save:function(d){parent.postMessage({source:'vitality-tile',type:'save',data:d},'*')},
-    load:function(){return new Promise(function(res){var id=Math.random().toString(36).slice(2);Vitality._w[id]=res;parent.postMessage({source:'vitality-tile',type:'load',id:id},'*')})},
-    report:function(s){parent.postMessage({source:'vitality-tile',type:'report',stream:s},'*')}
+  var Imperium={_w:{},
+    save:function(d){parent.postMessage({source:'Imperium-tile',type:'save',data:d},'*')},
+    load:function(){return new Promise(function(res){var id=Math.random().toString(36).slice(2);Imperium._w[id]=res;parent.postMessage({source:'Imperium-tile',type:'load',id:id},'*')})},
+    report:function(s){parent.postMessage({source:'Imperium-tile',type:'report',stream:s},'*')}
   };
-  window.addEventListener('message',function(e){var m=e.data;if(m&&m.source==='vitality-host'&&m.type==='load:result'&&Vitality._w[m.id]){Vitality._w[m.id](m.data);delete Vitality._w[m.id]}});
+  window.addEventListener('message',function(e){var m=e.data;if(m&&m.source==='Imperium-host'&&m.type==='load:result'&&Imperium._w[m.id]){Imperium._w[m.id](m.data);delete Imperium._w[m.id]}});
   (function(){
     var DOW=['Su','Mo','Tu','We','Th','Fr','Sa'];
     var GOAL=3, GD='up', loaded=false;
@@ -194,7 +194,7 @@ input,select{font-family:inherit;color:inherit}
     function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
     function today(){return key(new Date())}
 
-    function writeStore(){Vitality.save(mem);}
+    function writeStore(){Imperium.save(mem);}
 
     function get(k){return mem.days[k]||0}
 
@@ -240,7 +240,7 @@ input,select{font-family:inherit;color:inherit}
     }
 
     function report(v){
-      if(v>0){Vitality.report({key:'deep work',label:'Deep work sessions',value:v,date:today(),kind:'count',goalDirection:'up'});}
+      if(v>0){Imperium.report({key:'deep work',label:'Deep work sessions',value:v,date:today(),kind:'count',goalDirection:'up'});}
     }
 
     function popNum(){
@@ -259,7 +259,7 @@ input,select{font-family:inherit;color:inherit}
     }
 
     function load(){
-      Vitality.load().then(function(s){
+      Imperium.load().then(function(s){
         if(s&&typeof s==='object'){mem.days=s.days||{};if(typeof s.goal==='number')mem.goal=s.goal}
         GOAL=mem.goal||3;
         document.getElementById('goal').value=mem.goal||'';
@@ -281,7 +281,7 @@ input,select{font-family:inherit;color:inherit}
 </body>
 </html>`;
 
-test('deep-work example: the tile is Vitality-grade (0 errors, 0 warnings)', () => {
+test('deep-work example: the tile is Imperium-grade (0 errors, 0 warnings)', () => {
   const result = lintTile(HTML);
   if (!result.ok || result.warnings > 0) {
     console.log('\n' + result.findings.map((f) => `  [${f.severity}] ${f.rule}: ${f.message}`).join('\n') + '\n');
@@ -298,7 +298,7 @@ test('deep-work example: it clears the richness gate as Fuel-grade rich', () => 
 });
 
 test('deep-work example: it reports exactly one valid count stream', () => {
-  const reports = HTML.match(/Vitality\.report\s*\(/g) || [];
+  const reports = HTML.match(/Imperium\.report\s*\(/g) || [];
   assert.equal(reports.length, 1, 'a deep-work tile reports exactly one stream');
   assert.match(HTML, /kind:\s*'count'/, 'reports a count stream');
   assert.match(HTML, /goalDirection:\s*'up'/, 'more focus blocks is an up goal');
@@ -327,7 +327,7 @@ test('deep-work example behaves: reports through the host bridge and survives re
   const now = new Date('2026-07-03T10:00:00');
   const h = await mountDeep(HTML, { now });
   await h.click('#primary');
-  assert.ok(h.reports.length >= 1, 'the tile reports its session count to Vee via the host');
+  assert.ok(h.reports.length >= 1, 'the tile reports its session count to I via the host');
   const v = validateReport(h.reports[h.reports.length - 1]);
   assert.ok(v.ok && v.stream.value === 1, 'the reported value matches the on-screen count');
   const h2 = await h.rehydrate();
@@ -335,3 +335,4 @@ test('deep-work example behaves: reports through the host bridge and survives re
   h.close();
   h2.close();
 });
+

@@ -1,13 +1,13 @@
 // THE SMOKE ALARM for the tile report contract.
 //
-// In plain words: a tile hands its data to Vitality on one fixed "form"
+// In plain words: a tile hands its data to Imperium on one fixed "form"
 // (key, label, value, date, kind). That form is written down in TWO files:
 //   1. the real one, in the dashboard:  lib/tiles/reportContract.ts
 //   2. a copy here, in the MCP:          mcp/src/tiles/reportContract.ts (the mirror)
 // The MCP copy is what teaches a user's Claude how to build their tile. If the
 // two ever stop matching (someone edits one and forgets the other), a user's
 // tile would send data in a shape the dashboard cannot read, and their data
-// would land wrong when they export the tile into Vitality. These tests are the
+// would land wrong when they export the tile into Imperium. These tests are the
 // alarm that beeps the moment the two copies drift apart, so we catch it before
 // any user is bitten.
 //
@@ -30,7 +30,7 @@ import { REPORT_KINDS, GOAL_DIRECTIONS, normalizeKey, validateReport } from './r
 const SOURCE_PATH = 'lib/tiles/reportContract.ts';
 // Where the dashboard source of truth might live. main first (its eventual
 // home), then the dashboard feature branch it lives on today.
-const CANDIDATE_REFS = ['main', 'origin/main', 'vee-tile-fuse', 'origin/vee-tile-fuse'];
+const CANDIDATE_REFS = ['main', 'origin/main', 'I-tile-fuse', 'origin/I-tile-fuse'];
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const MIRROR_PATH = path.join(here, 'reportContract.ts');
@@ -105,3 +105,4 @@ test('locked shape: the alcohol canonical family folds every beer alias to "alco
     assert.equal(normalizeKey(alias), 'alcohol');
   }
 });
+

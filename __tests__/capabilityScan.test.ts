@@ -95,7 +95,7 @@ describe('scanCapability: the long-tail net', () => {
     }
   })
 
-  test('rich-app asks that match a Vitality module point at the module', () => {
+  test('rich-app asks that match a Imperium module point at the module', () => {
     const cases: Array<[string, string]> = [
       ['workout logger', 'train'],
       ['make me a workout logger', 'train'],
@@ -141,3 +141,4 @@ describe('scanCapability: the long-tail net', () => {
     }
   })
 })
+

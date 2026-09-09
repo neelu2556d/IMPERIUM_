@@ -37,24 +37,24 @@ const KIND_TO_CATEGORY: Record<ReportKind, Category> = {
 
 const MINT = '#6EE7B7';
 
-// The kinds that carry a real number Vee can cross-reference. A tile of one of these
-// kinds MUST emit a Vitality.report() or it is a measurable tile that feeds nothing,
+// The kinds that carry a real number I can cross-reference. A tile of one of these
+// kinds MUST emit a Imperium.report() or it is a measurable tile that feeds nothing,
 // the exact failure this gate closes. `done` is included: a habit reports value 1 on
 // the day it is marked (like the stretch-done tile), so it too owns a stream. The only
 // kinds that may legitimately report NOTHING are non-metric note/mentor tiles, which do
 // not carry one of these kinds at all.
 const REPORTING_KINDS = new Set<ReportKind>(['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done']);
 
-/** True when a tile of this kind must feed Vee via Vitality.report(). */
+/** True when a tile of this kind must feed I via Imperium.report(). */
 export function kindMustReport(kind: ReportKind | undefined): boolean {
   return kind !== undefined && REPORTING_KINDS.has(kind);
 }
 
-// Pull the raw argument text of the first Vitality.report(...) call out of the sealed
+// Pull the raw argument text of the first Imperium.report(...) call out of the sealed
 // HTML, or null when no call exists. String-literal aware, so a ')' inside a label (or
 // a crafted name) cannot truncate the args and read the call as broken.
 function reportCallArgs(html: string): string | null {
-  const idx = html.search(/Vitality\.report\s*\(/);
+  const idx = html.search(/Imperium\.report\s*\(/);
   if (idx < 0) return null;
   const open = html.indexOf('(', idx);
   if (open < 0) return null;
@@ -88,7 +88,7 @@ function htmlHasValidReport(html: string): boolean {
 }
 
 /**
- * Best-effort read of the stream identity a hand-built tile's own Vitality.report()
+ * Best-effort read of the stream identity a hand-built tile's own Imperium.report()
  * declares, so a stored tile row can carry the SAME key/label/goalDirection the tile
  * will actually report at runtime (the declared stream share/publish round-trips keep).
  * Only plain string literals are readable statically; a dynamic field comes back
@@ -114,10 +114,10 @@ export function reportIdentityFromHtml(
 }
 
 /**
- * The kind a hand-built tile's own Vitality.report() declares, or null when the call
+ * The kind a hand-built tile's own Imperium.report() declares, or null when the call
  * is absent, dynamic, or names a kind outside the locked 7. This is how a dropped
  * file (no envelope, no tool call) tells the gate which stream shape it speaks:
- * a non-null kind marks the tile Vee-readable and picks its Library category.
+ * a non-null kind marks the tile I-readable and picks its Library category.
  */
 export function reportKindFromHtml(html: string): ReportKind | null {
   const args = reportCallArgs(html);
@@ -149,8 +149,8 @@ export function categoryForKind(kind: ReportKind): Category {
  *
  * When `kind` is known (the envelope and the hand-built addTile path both carry it),
  * a MEASURABLE tile (intake/count/duration/rating/measure/money, plus done) that emits
- * no contract-valid Vitality.report() is refused HERE: lint alone cannot judge this
- * (it never sees the kind), but a measurable tile that feeds Vee nothing is not
+ * no contract-valid Imperium.report() is refused HERE: lint alone cannot judge this
+ * (it never sees the kind), but a measurable tile that feeds I nothing is not
  * exportable. This is the enforcement that makes report() the default a measurable tile
  * cannot silently drop. A note/mentor tile carries no reporting kind and is unaffected.
  *
@@ -173,28 +173,28 @@ export function assertTileExportable(
     errs.push({
       rule: 'report-missing',
       severity: 'error',
-      message: `a "${kind}" tile is measurable but emits no contract-valid Vitality.report(); it would land nothing on the dashboard and feed Vee nothing`,
-      hint: 'Add one Vitality.report({key,label,value,date,kind}) call that posts the tile\'s number.',
+      message: `a "${kind}" tile is measurable but emits no contract-valid Imperium.report(); it would land nothing on the dashboard and feed I nothing`,
+      hint: 'Add one Imperium.report({key,label,value,date,kind}) call that posts the tile\'s number.',
     });
   }
   // The no-maybes floor (ALWAYS runs, even lintProven - check_tile never judged
   // this): a tile that carries a report() call but whose declared kind is not a
   // readable literal from the locked 7 is REFUSED, not admitted as "quiet".
-  // Otherwise it would enter marked Vee-unreadable and then report at runtime
-  // anyway - an unclassified stream talking to Vee behind the gate's back.
+  // Otherwise it would enter marked I-unreadable and then report at runtime
+  // anyway - an unclassified stream talking to I behind the gate's back.
   // When the gate cannot read a stream with certainty, the door stays shut.
   if (kind === undefined && htmlHasValidReport(html) && reportKindFromHtml(html) === null) {
     errs.push({
       rule: 'report-unclassified',
       severity: 'error',
-      message: 'the tile calls Vitality.report() but its kind is not a plain literal from the locked 7 (intake, count, duration, rating, measure, money, done); the gate refuses a stream it cannot classify with certainty',
+      message: 'the tile calls Imperium.report() but its kind is not a plain literal from the locked 7 (intake, count, duration, rating, measure, money, done); the gate refuses a stream it cannot classify with certainty',
       hint: "Write kind as a plain quoted string in the report call, e.g. kind: 'count' - never a variable or expression.",
     });
   }
   if (errs.length === 0) return;
   const lines = errs.map((f) => `  - ${f.rule}: ${f.message}${f.hint ? ` -> ${f.hint}` : ''}`);
   throw new Error(
-    `Cannot export "${label}": it breaks Vitality's hard floor ` +
+    `Cannot export "${label}": it breaks Imperium's hard floor ` +
       `(${errs.length} error${errs.length === 1 ? '' : 's'} must be fixed; warnings never block).\n` +
       lines.join('\n') +
       `\nFix every error (run check_tile to iterate) before uploading.`,
@@ -252,3 +252,4 @@ export function buildUploadEnvelope(input: BuildEnvelopeInput, opts: EnvelopeOpt
     ...(opts.design && opts.design.trim() ? { design: opts.design.trim() } : {}),
   };
 }
+

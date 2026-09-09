@@ -77,10 +77,10 @@ test('kindMustReport: every measurable kind (plus done) must report; nothing els
   assert.equal(kindMustReport(undefined), false, 'a note tile with no kind reports nothing');
 });
 
-test('envelope: a MEASURABLE tile that emits no Vitality.report() is refused (report is default)', () => {
-  // Strip the template's report() call: a measurable tile that feeds Vee nothing.
-  const noReport = GOOD.replace(/Vitality\.report\(\{[^}]*\}\);?/g, '');
-  assert.equal(/Vitality\.report/.test(noReport), false, 'the report() call was actually removed');
+test('envelope: a MEASURABLE tile that emits no Imperium.report() is refused (report is default)', () => {
+  // Strip the template's report() call: a measurable tile that feeds I nothing.
+  const noReport = GOOD.replace(/Imperium\.report\(\{[^}]*\}\);?/g, '');
+  assert.equal(/Imperium\.report/.test(noReport), false, 'the report() call was actually removed');
   assert.throws(
     () => buildUploadEnvelope({ html: noReport, meta: beerMeta }),
     /report-missing/,
@@ -89,7 +89,7 @@ test('envelope: a MEASURABLE tile that emits no Vitality.report() is refused (re
 });
 
 test('assertTileExportable: kind-aware floor blocks a measurable tile with no report, allows a note tile', () => {
-  const noReport = GOOD.replace(/Vitality\.report\(\{[^}]*\}\);?/g, '');
+  const noReport = GOOD.replace(/Imperium\.report\(\{[^}]*\}\);?/g, '');
   // measurable kind provided -> refused
   assert.throws(() => assertTileExportable(noReport, 'beers', 'intake'), /report-missing/);
   // no kind (a note/mentor tile) -> the missing report is not held against it
@@ -112,7 +112,7 @@ test('assertTileExportable: lintProven skips the re-lint (the check just ran it)
 test('assertTileExportable: the kind-aware report gate ALWAYS runs, proof or not', () => {
   // check_tile never knew the kind, so a proven measurable tile with no report
   // is still refused - the proof is a lint cache, never a bypass of the report gate.
-  const noReport = GOOD.replace(/Vitality\.report\(\{[^}]*\}\);?/g, '');
+  const noReport = GOOD.replace(/Imperium\.report\(\{[^}]*\}\);?/g, '');
   assert.throws(
     () => assertTileExportable(noReport, 'beers', 'intake', { lintProven: true }),
     /report-missing/,
@@ -120,7 +120,7 @@ test('assertTileExportable: the kind-aware report gate ALWAYS runs, proof or not
 });
 
 test('reportKindFromHtml: reads the declared kind literal', () => {
-  const html = `<script>Vitality.report({ key: 'shots', label: 'Shots', value: 40, date: d, kind: 'count' })</script>`;
+  const html = `<script>Imperium.report({ key: 'shots', label: 'Shots', value: 40, date: d, kind: 'count' })</script>`;
   assert.equal(reportKindFromHtml(html), 'count');
 });
 
@@ -129,7 +129,7 @@ test('reportKindFromHtml: null when no report call exists', () => {
 });
 
 test('reportKindFromHtml: null for a kind outside the locked 7', () => {
-  const html = `<script>Vitality.report({ key: 'x', value: 1, date: d, kind: 'banana' })</script>`;
+  const html = `<script>Imperium.report({ key: 'x', value: 1, date: d, kind: 'banana' })</script>`;
   assert.equal(reportKindFromHtml(html), null);
 });
 
@@ -138,7 +138,7 @@ test('reportKindFromHtml: reads the kind from a real scaffold tile', () => {
 });
 
 test('assertTileExportable: refuses a reporting tile with an unreadable kind (no-maybes floor)', () => {
-  const sneaky = GOOD.replace(/(Vitality\.report\s*\([\s\S]{0,200}?)kind:\s*['"]intake['"]/, '$1kind: myKind');
+  const sneaky = GOOD.replace(/(Imperium\.report\s*\([\s\S]{0,200}?)kind:\s*['"]intake['"]/, '$1kind: myKind');
   assert.throws(() => assertTileExportable(sneaky, 'sneaky', undefined, { lintProven: true }), /report-unclassified/);
 });
 
@@ -147,3 +147,4 @@ test('assertTileExportable: a declared kind still satisfies the no-maybes floor'
   // so the unclassified refusal must not fire.
   assert.doesNotThrow(() => assertTileExportable(GOOD, 'beers', 'intake', { lintProven: true }));
 });
+

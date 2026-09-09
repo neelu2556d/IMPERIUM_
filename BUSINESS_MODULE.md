@@ -1,6 +1,6 @@
 # Business Module
 
-The Business module is a comprehensive garment business management system built into Vitality. It helps garment manufacturers and traders manage their entire workflow from lot creation to order fulfillment, inventory tracking, and financial reporting.
+The Business module is a comprehensive garment business management system built into Imperium. It helps garment manufacturers and traders manage their entire workflow from lot creation to order fulfillment, inventory tracking, and financial reporting.
 
 ## Features
 
@@ -102,7 +102,7 @@ All endpoints are under `/api/business/*` and require authentication as the busi
 
 ## Styling
 
-Uses Vitality's design system:
+Uses Imperium's design system:
 - Pure black background (`#04060a`)
 - Mint accents (`#6ee7b7`)
 - Inter font family
@@ -144,4 +144,4 @@ The module includes tests for:
 
 ---
 
-*Built for Vitality - An open-source multi-user life dashboard*
+*Built for Imperium - An open-source multi-user life dashboard*

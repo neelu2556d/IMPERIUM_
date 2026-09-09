@@ -131,7 +131,7 @@ describe('buildFeed', () => {
     expect(feed[0].rarity).toBe('epic')
   })
 
-  it('carries the drift kind on the notice (so the Vee card can log its goal_nudges cooldown)', () => {
+  it('carries the drift kind on the notice (so the I card can log its goal_nudges cooldown)', () => {
     const feed = buildFeed({
       convergence: null,
       drift: { kind: 'fuel', line: 'meals went quiet', sub: 'last logged meal was five days ago.', goalId: 'g1' },
@@ -161,3 +161,4 @@ describe('buildFeed', () => {
     expect(cold[0].rarity ?? null).toBeNull()
   })
 })
+

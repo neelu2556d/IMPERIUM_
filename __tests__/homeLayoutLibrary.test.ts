@@ -13,7 +13,7 @@ const localStorageMock = {
 Object.defineProperty(global, 'window', { value: { localStorage: localStorageMock }, writable: true })
 
 const A = 'user-a'
-const homeKey = (userId: string) => `vitality:${userId}:home`
+const homeKey = (userId: string) => `Imperium:${userId}:home`
 beforeEach(() => localStorageMock.clear())
 
 describe('homeLayout: the locked Library tile is always present', () => {
@@ -27,14 +27,14 @@ describe('homeLayout: the locked Library tile is always present', () => {
 
   test('a stored order that predates Library gets it inserted at the prominent default slot', () => {
     // a returning user whose saved order has no 'library'
-    localStorageMock.setItem(homeKey(A), JSON.stringify(['vee', 'train', 'fuel']))
+    localStorageMock.setItem(homeKey(A), JSON.stringify(['I', 'train', 'fuel']))
     const order = homeLayout.getOrder(A)
     expect(order).toContain(LIBRARY_TILE.id)
     // inserted high up (its seeded slot), not dumped at the very end
     expect(order.indexOf(LIBRARY_TILE.id)).toBeLessThan(order.length - 1)
     // the rest of their custom arrangement is preserved in its original order
     // (all three locked tiles, Library + Create + Forge, are backfilled in)
-    expect(order.filter((id) => id !== LIBRARY_TILE.id && id !== CREATE_TILE.id && id !== 'forge')).toEqual(['vee', 'train', 'fuel'])
+    expect(order.filter((id) => id !== LIBRARY_TILE.id && id !== CREATE_TILE.id && id !== 'forge')).toEqual(['I', 'train', 'fuel'])
   })
 
   test('the backfill is persisted so it only appends once (idempotent)', () => {
@@ -48,7 +48,7 @@ describe('homeLayout: the locked Library tile is always present', () => {
   })
 
   test('a stored order that already has the locked tiles is left untouched', () => {
-    const saved = ['vee', LIBRARY_TILE.id, CREATE_TILE.id, 'forge', 'train']
+    const saved = ['I', LIBRARY_TILE.id, CREATE_TILE.id, 'forge', 'train']
     localStorageMock.setItem(homeKey(A), JSON.stringify(saved))
     expect(homeLayout.getOrder(A)).toEqual(saved)
   })
@@ -59,3 +59,4 @@ describe('homeLayout: the locked Library tile is always present', () => {
     expect(homeLayout.getOrder(A)).toContain(LIBRARY_TILE.id)
   })
 })
+

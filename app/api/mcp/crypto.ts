@@ -50,7 +50,7 @@ const b64url = (input: string): string =>
  * the project's JWT secret. This is open-decision #7's load-bearing primitive:
  * it turns the resolver's `user_id` into an RLS principal. The token is built
  * server-side, lives only for the duration of one MCP request (it is sent to
- * Vitality's own Supabase as the Bearer and nowhere else), and carries
+ * Imperium's own Supabase as the Bearer and nowhere else), and carries
  * `role: 'authenticated'` + `sub: userId` so PostgREST sets the right DB role
  * and `auth.uid()` resolves to this user — RLS unchanged.
  */
@@ -225,3 +225,4 @@ export function verifyConsentToken(token: string, secret: string): ConsentData |
   }
   return { clientId: p.clientId, redirectUri: p.redirectUri, codeChallenge: p.codeChallenge, sub: p.sub }
 }
+

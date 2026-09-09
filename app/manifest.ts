@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 /**
- * Web app manifest — makes Vitality installable as a PWA ("Add to Home
+ * Web app manifest — makes Imperium installable as a PWA ("Add to Home
  * Screen"). display:standalone drops the browser chrome so it opens fullscreen
  * like a native app; start_url goes straight to the dashboard. Icons are the
  * build-time generated app icons (app/icon.tsx, app/apple-icon.tsx).
@@ -26,3 +26,4 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   }
 }
+

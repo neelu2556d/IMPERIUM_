@@ -16,7 +16,7 @@ import styles from './homeActGym.module.css'
  * ritual. The shell only mounts this when the account trains (presence).
  * The day comes from inferTodayTrainingDay (lib/home/presence.ts): a locked
  * training_day row stays locked; otherwise the rotation math anticipates it
- * and Vee SAYS so ("Yesterday was Push. Today reads as Pull."). No rotation
+ * and I SAYS so ("Yesterday was Push. Today reads as Pull."). No rotation
  * and nothing locked = no fabricated day name - the card goes open-session.
  * The peak-window line only appears when peak_state exists (bestHourToday
  * over the real curve). No writes in v1 - "Lock it in" is a spoken
@@ -181,8 +181,8 @@ export default function HomeActGym({ pull, firstName, onDone }: Props) {
   if (!resolved && pull.recentWorkouts.length === 0) {
     return (
       <div className={styles.act}>
-        <p className={styles.vee}>
-          <span className={styles.veeTag}>VEE</span>
+        <p className={styles.I}>
+          <span className={styles.veeTag}>I</span>
           I do not see a training plan yet, {firstName}. The Train tile is where we build one.
         </p>
         <button type="button" className={styles.skip} onClick={finish}>
@@ -203,8 +203,8 @@ export default function HomeActGym({ pull, firstName, onDone }: Props) {
             : `Locked. ${resolved.name}${peakTime ? ` at ${peakTime}` : ''}. I will hold you to it.`
     return (
       <div className={styles.beatWrap}>
-        <p className={`${styles.vee} ${styles.veeBig}`}>
-          <span className={styles.veeTag}>VEE</span>
+        <p className={`${styles.I} ${styles.veeBig}`}>
+          <span className={styles.veeTag}>I</span>
           {line}
         </p>
       </div>
@@ -216,8 +216,8 @@ export default function HomeActGym({ pull, firstName, onDone }: Props) {
   if (resolved?.confidence === 'done') {
     return (
       <div className={styles.act}>
-        <p className={styles.vee}>
-          <span className={styles.veeTag}>VEE</span>
+        <p className={styles.I}>
+          <span className={styles.veeTag}>I</span>
           {resolved.name} is already in the books today. That is the whole assignment.
         </p>
         <button type="button" className={styles.skip} onClick={finish}>
@@ -239,8 +239,8 @@ export default function HomeActGym({ pull, firstName, onDone }: Props) {
 
   return (
     <div className={styles.act}>
-      <p className={styles.vee}>
-        <span className={styles.veeTag}>VEE</span>
+      <p className={styles.I}>
+        <span className={styles.veeTag}>I</span>
         {veeLine}
       </p>
 
@@ -268,3 +268,4 @@ export default function HomeActGym({ pull, firstName, onDone }: Props) {
     </div>
   )
 }
+

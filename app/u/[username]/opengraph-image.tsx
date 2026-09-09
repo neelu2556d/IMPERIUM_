@@ -7,7 +7,7 @@ import { normalizeUsername } from '@/lib/profiles/username'
  *
  * The handle is resolved from creator_profiles by the route param, using the
  * same anon server client + normalization as app/u/[username]/page.tsx. Any DB
- * error or missing profile falls back to a generic "A Vitality maker" card, so
+ * error or missing profile falls back to a generic "An Imperium maker" card, so
  * a stale or mistyped link still previews on-brand and this route never throws.
  *
  * Rendered by next/og (Satori) — fully self-contained: the gem is an inline

@@ -1,6 +1,6 @@
-# Contributing to Vitality
+# Contributing to Imperium
 
-Thanks for wanting to make Vitality better. The bar for merging is simple:
+Thanks for wanting to make Imperium better. The bar for merging is simple:
 does it make the dashboard calmer, faster, or more honest about your data?
 
 ## Branching

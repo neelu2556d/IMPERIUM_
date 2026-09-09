@@ -1,9 +1,9 @@
 /**
- * Vee Goals — the single source of truth for what a goal should leave in Vee's
+ * I Goals — the single source of truth for what a goal should leave in I's
  * shared memory (user_facts). Pure + IO-free so it can be unit-tested; the
  * Supabase upsert/delete that acts on it lives in app/app/goals/goalActions.ts.
  *
- * The whole point: Vee's memory must always match the goal's CURRENT state.
+ * The whole point: I's memory must always match the goal's CURRENT state.
  * One canonical fact per goal (keyed by the goal id via user_facts.ref_id), so
  * editing progress refreshes it, flipping to 'silent' retracts it, deleting the
  * goal removes it, and achieving it turns it into a celebration — never a stale
@@ -35,11 +35,11 @@ export function goalFactBody(g: BigGoal): string {
     parts.push(`At ${g.progressCurrent ?? 0} of ${g.progressTarget}${unit}.`)
   }
   parts.push(`${PRIO_WORD[g.priority]} priority.`)
-  parts.push(`Wants Vee to ${PUSH_WANT[g.push]}.`)
+  parts.push(`Wants I to ${PUSH_WANT[g.push]}.`)
   return parts.join(' ')
 }
 
-/** What Vee's memory should hold for this goal right now. */
+/** What I's memory should hold for this goal right now. */
 export type GoalMemory =
   | { op: 'delete' }
   | { op: 'write'; body: string; salience: number }
@@ -47,7 +47,7 @@ export type GoalMemory =
 /**
  * Decide the memory action for a goal's current state. Order matters:
  *   1. 'silent'                  → never remember it (the user asked for privacy)
- *   2. paused / abandoned        → retract it (Vee stops bringing it up)
+ *   2. paused / abandoned        → retract it (I stops bringing it up)
  *   3. achieved                  → a celebration fact, not a to-do
  *   4. active                    → the working-toward fact, salience by priority
  */
@@ -59,3 +59,4 @@ export function goalMemoryAction(g: BigGoal): GoalMemory {
   }
   return { op: 'write', body: goalFactBody(g), salience: PRIO_SALIENCE[g.priority] ?? 0.6 }
 }
+

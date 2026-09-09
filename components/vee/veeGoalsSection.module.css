@@ -1,5 +1,5 @@
-/* VeeGoalsSection - the fused "your goals" board on the new Vee page, wearing
-   the vee-notice-preview signature (ticker rows + the WHY panel). The row and
+/* VeeGoalsSection - the fused "your goals" board on the new I page, wearing
+   the I-notice-preview signature (ticker rows + the WHY panel). The row and
    panel chrome reuse app/app/goals/veeNoticed.module.css (ts.board, ts.grow,
    ts.gdCard, ts.life) and the create sheet reuses goalsVee.module.css; both of
    those modules define their tokens on a PAGE root class we do not mount here,
@@ -289,7 +289,7 @@
 .addBtn:active { transform: scale(0.97); }
 .addBtn:disabled { opacity: 0.5; cursor: default; }
 
-/* "this week with vitality" - the quiet mono disclosure (v1.2). Watched-chip
+/* "this week with Imperium" - the quiet mono disclosure (v1.2). Watched-chip
    language: hairline pill, mono uppercase, a small spark that warms on open.
    The drop opens with a cozy spring, never an always-open block. */
 .weekDisclose {
@@ -318,3 +318,4 @@
 @media (prefers-reduced-motion: reduce) {
   .weekDrop, .weekChev, .bindPick { animation: none !important; transition: none !important; }
 }
+

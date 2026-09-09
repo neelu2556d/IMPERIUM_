@@ -1,9 +1,9 @@
 # CLAUDE.md
 
-This is **Vitality**, an open-source multi-user life dashboard: Next.js 14 (App Router),
+This is **Imperium**, an open-source multi-user life dashboard: Next.js 14 (App Router),
 Supabase (Postgres + RLS + Auth), vanilla CSS, optional Stripe tiers, Claude-powered AI
 features, and a hosted MCP server. Modules: vitals (wearable score), fitness, fuel
-(nutrition), goals (Vee), peak (schedule), finance, brand (creator stats), and a
+(nutrition), goals (I), peak (schedule), finance, brand (creator stats), and a
 user-built tile system (Forge / Studio / Arts District).
 
 ## Hard rules

@@ -3,7 +3,7 @@ import GemCoach from './GemCoach'
 
 export const metadata: Metadata = {
   title: 'Gem Coach concepts · Imperium',
-  description: 'Concept demo for the Vitality coach gem family — real gems, shape + color + personality.',
+  description: 'Concept demo for the Imperium coach gem family — real gems, shape + color + personality.',
 }
 
 // Public route (not under /app, /account, or /welcome — see middleware), so the
@@ -12,3 +12,4 @@ export const metadata: Metadata = {
 export default function GemCoachPage() {
   return <GemCoach />
 }
+

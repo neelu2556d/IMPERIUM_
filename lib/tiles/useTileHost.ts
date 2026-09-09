@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { tileStore } from './tileStore'
 
 /**
- * useTileHost is the host side of the Vitality bridge, fixed for MANY tiles.
+ * useTileHost is the host side of the Imperium bridge, fixed for MANY tiles.
  *
  * The bug it fixes: the BUILD71 host closed a single storage key over one
  * message listener, so ANY tile's save overwrote whatever the host last
@@ -27,8 +27,8 @@ export function useTileHost(
   userId: string,
   onActivity?: (info: { tileId: string; type: 'save' | 'load' | 'report'; count: number }) => void,
   /**
-   * Injected handler for a tile's Vitality.report() stream (one numeric life-stream
-   * into Vee). Passed in (not imported) so this hook stays decoupled from the
+   * Injected handler for a tile's Imperium.report() stream (one numeric life-stream
+   * into I). Passed in (not imported) so this hook stays decoupled from the
    * server action; the create page wires reportStream here. The host only routes
    * and forwards; the server action validates + RLS-writes.
    */
@@ -76,7 +76,7 @@ export function useTileHost(
   useEffect(() => {
     function onMessage(e: MessageEvent) {
       const msg = e.data
-      if (!msg || msg.source !== 'vitality-tile') return
+      if (!msg || msg.source !== 'Imperium-tile') return
       const src = e.source as Window | null
       if (!src) return
       const tileId = reg.current.get(src)
@@ -87,7 +87,7 @@ export function useTileHost(
         if (!ok) {
           // the write was dropped (over the per-tile cap or the storage quota).
           // Tell the tile instead of silently letting it believe it saved.
-          src.postMessage({ source: 'vitality-host', type: 'save:error', id: msg.id, reason: 'too_large_or_full' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'save:error', id: msg.id, reason: 'too_large_or_full' }, '*')
           return
         }
         const count = Array.isArray(msg.data) ? msg.data.length : 0
@@ -101,18 +101,18 @@ export function useTileHost(
         // because a sealed srcDoc tile has an opaque (null) origin; the sender
         // is already verified via the registered e.source, and the payload is
         // the tile's own data going back to it.
-        src.postMessage({ source: 'vitality-host', type: 'load:result', id: msg.id, data }, '*')
+        src.postMessage({ source: 'Imperium-host', type: 'load:result', id: msg.id, data }, '*')
         const count = Array.isArray(data) ? data.length : 0
         activity.current?.({ tileId, type: 'load', count })
         return
       }
 
       if (msg.type === 'report') {
-        // One numeric life-stream into Vee. The host only forwards the raw stream
+        // One numeric life-stream into I. The host only forwards the raw stream
         // plus the SENDER's tileId (from our own registry, never the iframe's
         // claim) so the stream's per-tile identity is trustworthy; the injected
         // handler (the server action) validates it and RLS-writes it under the
-        // session user. The tile itself never blocks on Vee, but the HOST waits
+        // session user. The tile itself never blocks on I, but the HOST waits
         // for the write result before claiming success: the report activity only
         // fires when the datapoint actually landed, and a failed write posts
         // report:error back to the tile (mirroring save:error) so a dropped
@@ -121,14 +121,14 @@ export function useTileHost(
         Promise.resolve(res)
           .then((r) => {
             if (r && typeof r === 'object' && r.ok === false) {
-              src.postMessage({ source: 'vitality-host', type: 'report:error', id: msg.id, reason: r.error || 'failed' }, '*')
+              src.postMessage({ source: 'Imperium-host', type: 'report:error', id: msg.id, reason: r.error || 'failed' }, '*')
               return
             }
             activity.current?.({ tileId, type: 'report', count: 1 })
           })
           .catch(() => {
             // transport-level failure of the voided server action: same honesty
-            src.postMessage({ source: 'vitality-host', type: 'report:error', id: msg.id, reason: 'failed' }, '*')
+            src.postMessage({ source: 'Imperium-host', type: 'report:error', id: msg.id, reason: 'failed' }, '*')
           })
         return
       }
@@ -140,7 +140,7 @@ export function useTileHost(
         // this. Any other sender, including a community/sealed tile that
         // spoofs the same message shape, is refused with no fetch at all.
         if (!trusted.current.has(src)) {
-          src.postMessage({ source: 'vitality-host', type: 'ai:error', id: msg.id, reason: 'forbidden' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'ai:error', id: msg.id, reason: 'forbidden' }, '*')
           return
         }
         // Whitelist only input/kind onto the request body, never spread msg,
@@ -156,10 +156,10 @@ export function useTileHost(
           .then(r => r.json().then(data => ({ ok: r.ok, data })))
           .then(({ ok, data }) => src.postMessage(
             ok
-              ? { source: 'vitality-host', type: 'ai:result', id: msg.id, data }
-              : { source: 'vitality-host', type: 'ai:error', id: msg.id, reason: data?.error || 'failed' },
+              ? { source: 'Imperium-host', type: 'ai:result', id: msg.id, data }
+              : { source: 'Imperium-host', type: 'ai:error', id: msg.id, reason: data?.error || 'failed' },
             '*'))
-          .catch(() => src.postMessage({ source: 'vitality-host', type: 'ai:error', id: msg.id, reason: 'failed' }, '*'))
+          .catch(() => src.postMessage({ source: 'Imperium-host', type: 'ai:error', id: msg.id, reason: 'failed' }, '*'))
         return
       }
 
@@ -169,7 +169,7 @@ export function useTileHost(
         // public). Same trust gate as 'ai': refused with no fetch for any
         // window not registered { trusted: true }.
         if (!trusted.current.has(src)) {
-          src.postMessage({ source: 'vitality-host', type: 'studio:lookup:error', id: msg.id, reason: 'forbidden' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'studio:lookup:error', id: msg.id, reason: 'forbidden' }, '*')
           return
         }
         // Whitelist only the url string; never spread msg.
@@ -182,10 +182,10 @@ export function useTileHost(
           .then(r => r.json().then(data => ({ ok: r.ok, data })))
           .then(({ ok, data }) => src.postMessage(
             ok
-              ? { source: 'vitality-host', type: 'studio:lookup:result', id: msg.id, data }
-              : { source: 'vitality-host', type: 'studio:lookup:error', id: msg.id, reason: data?.error || 'failed' },
+              ? { source: 'Imperium-host', type: 'studio:lookup:result', id: msg.id, data }
+              : { source: 'Imperium-host', type: 'studio:lookup:error', id: msg.id, reason: data?.error || 'failed' },
             '*'))
-          .catch(() => src.postMessage({ source: 'vitality-host', type: 'studio:lookup:error', id: msg.id, reason: 'failed' }, '*'))
+          .catch(() => src.postMessage({ source: 'Imperium-host', type: 'studio:lookup:error', id: msg.id, reason: 'failed' }, '*'))
         return
       }
 
@@ -195,7 +195,7 @@ export function useTileHost(
         // server-side (recent titles + views), which powers voice-match and
         // the don't-repeat list with zero OAuth. Same trust gate as 'ai'.
         if (!trusted.current.has(src)) {
-          src.postMessage({ source: 'vitality-host', type: 'studio:channel:error', id: msg.id, reason: 'forbidden' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'studio:channel:error', id: msg.id, reason: 'forbidden' }, '*')
           return
         }
         // Whitelist only the channel string; never spread msg.
@@ -208,10 +208,10 @@ export function useTileHost(
           .then(r => r.json().then(data => ({ ok: r.ok, data })))
           .then(({ ok, data }) => src.postMessage(
             ok
-              ? { source: 'vitality-host', type: 'studio:channel:result', id: msg.id, data }
-              : { source: 'vitality-host', type: 'studio:channel:error', id: msg.id, reason: data?.error || 'failed' },
+              ? { source: 'Imperium-host', type: 'studio:channel:result', id: msg.id, data }
+              : { source: 'Imperium-host', type: 'studio:channel:error', id: msg.id, reason: data?.error || 'failed' },
             '*'))
-          .catch(() => src.postMessage({ source: 'vitality-host', type: 'studio:channel:error', id: msg.id, reason: 'failed' }, '*'))
+          .catch(() => src.postMessage({ source: 'Imperium-host', type: 'studio:channel:error', id: msg.id, reason: 'failed' }, '*'))
         return
       }
 
@@ -226,11 +226,11 @@ export function useTileHost(
         // stays ON and we accept its fuzzier return signal: null here does
         // NOT mean blocked, and the tile's copy never claims it was.
         if (!trusted.current.has(src)) {
-          src.postMessage({ source: 'vitality-host', type: 'studio:claude:error', id: msg.id, reason: 'forbidden' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'studio:claude:error', id: msg.id, reason: 'forbidden' }, '*')
           return
         }
         window.open('https://claude.ai/new', '_blank', 'noopener')
-        src.postMessage({ source: 'vitality-host', type: 'studio:claude:result', id: msg.id, opened: true }, '*')
+        src.postMessage({ source: 'Imperium-host', type: 'studio:claude:result', id: msg.id, opened: true }, '*')
         return
       }
 
@@ -240,7 +240,7 @@ export function useTileHost(
         // (session cookie), filters to youtube, and returns a minimal shape.
         // Metrics are private data, so this stays behind the trust gate.
         if (!trusted.current.has(src)) {
-          src.postMessage({ source: 'vitality-host', type: 'studio:status:error', id: msg.id, reason: 'forbidden' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'studio:status:error', id: msg.id, reason: 'forbidden' }, '*')
           return
         }
         fetch('/api/connectors', { credentials: 'same-origin' })
@@ -250,7 +250,7 @@ export function useTileHost(
             const list = Array.isArray(data?.connectors) ? data.connectors : []
             const yt = list.find((c: { id?: string }) => c && c.id === 'youtube')
             src.postMessage({
-              source: 'vitality-host',
+              source: 'Imperium-host',
               type: 'studio:status:result',
               id: msg.id,
               data: {
@@ -261,7 +261,7 @@ export function useTileHost(
               },
             }, '*')
           })
-          .catch(() => src.postMessage({ source: 'vitality-host', type: 'studio:status:error', id: msg.id, reason: 'failed' }, '*'))
+          .catch(() => src.postMessage({ source: 'Imperium-host', type: 'studio:status:error', id: msg.id, reason: 'failed' }, '*'))
         return
       }
 
@@ -273,7 +273,7 @@ export function useTileHost(
         // if a popup blocker still eats it, we tell the tile so it can show
         // honest fallback copy instead of pretending.
         if (!trusted.current.has(src)) {
-          src.postMessage({ source: 'vitality-host', type: 'studio:connect:error', id: msg.id, reason: 'forbidden' }, '*')
+          src.postMessage({ source: 'Imperium-host', type: 'studio:connect:error', id: msg.id, reason: 'forbidden' }, '*')
           return
         }
         // No 'noopener' feature: per the HTML spec window.open() returns null
@@ -282,7 +282,7 @@ export function useTileHost(
         // same-origin route that 302s to Google, so there is no opener risk to
         // mitigate; a truthy return is the honest "it opened" signal.
         const win = window.open('/api/connectors/youtube/connect', '_blank')
-        src.postMessage({ source: 'vitality-host', type: 'studio:connect:result', id: msg.id, opened: !!win }, '*')
+        src.postMessage({ source: 'Imperium-host', type: 'studio:connect:result', id: msg.id, opened: !!win }, '*')
         return
       }
     }
@@ -293,3 +293,4 @@ export function useTileHost(
 
   return { register, unregister }
 }
+

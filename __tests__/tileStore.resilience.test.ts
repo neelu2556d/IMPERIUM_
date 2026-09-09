@@ -60,8 +60,8 @@ const withWindow = () => {
 }
 
 const A = 'user-a'
-const indexKey = (userId: string) => `vitality:${userId}:tiles`
-const dataKey = (userId: string, id: string) => `vitality:${userId}:tile:${id}:data`
+const indexKey = (userId: string) => `Imperium:${userId}:tiles`
+const dataKey = (userId: string, id: string) => `Imperium:${userId}:tile:${id}:data`
 
 const valid = (over: Partial<TileEnvelope> = {}): TileEnvelope => ({
   name: 'My to-dos',
@@ -190,3 +190,4 @@ describe('tileStore resilience: no window (SSR / server render)', () => {
     expect(tileStore.importTile(A, valid())).toBeNull()
   })
 })
+

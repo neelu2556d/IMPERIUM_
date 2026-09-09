@@ -15,10 +15,10 @@ body{font-family:'Inter',sans-serif;color:#fff;background:transparent;padding:8p
 <div class="title">Water</div><div class="big" id="v">0</div>
 <button id="add">add</button>
 <script>
-var Vitality={save:function(d){parent.postMessage({source:'vitality-tile',type:'save',data:d},'*')},report:function(s){parent.postMessage({source:'vitality-tile',type:'report',stream:s},'*')}};
+var Imperium={save:function(d){parent.postMessage({source:'Imperium-tile',type:'save',data:d},'*')},report:function(s){parent.postMessage({source:'Imperium-tile',type:'report',stream:s},'*')}};
 function today(){var d=new Date();var m=String(d.getMonth()+1).padStart(2,'0');var dd=String(d.getDate()).padStart(2,'0');return d.getFullYear()+'-'+m+'-'+dd}
 var n=0;
-document.getElementById('add').onclick=function(){n++;document.getElementById('v').textContent=n;Vitality.save({n:n});Vitality.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})};
+document.getElementById('add').onclick=function(){n++;document.getElementById('v').textContent=n;Imperium.save({n:n});Imperium.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})};
 </script></body></html>`;
 
 const ids = (html: string) => lintTile(html).findings.map((f) => f.rule);
@@ -31,7 +31,7 @@ test('a clean on-brand sealed tile passes with no errors and no warnings', () =>
 });
 
 test('error: an external script src is rejected (sealed isolation)', () => {
-  const bad = GOOD.replace('<script>\nvar Vitality', '<script src="https://cdn.example.com/x.js"></script>\n<script>\nvar Vitality');
+  const bad = GOOD.replace('<script>\nvar Imperium', '<script src="https://cdn.example.com/x.js"></script>\n<script>\nvar Imperium');
   const r = lintTile(bad);
   assert.equal(r.ok, false);
   assert.ok(ids(bad).includes('sealed-external-script'));
@@ -135,12 +135,12 @@ test('warn: animation present but no reduced-motion block is flagged', () => {
 });
 
 test('warn: more than one report() call is flagged', () => {
-  const bad = GOOD.replace('Vitality.save({n:n});', "Vitality.save({n:n});Vitality.report({key:'x',label:'X',value:1,date:today(),kind:'count'});");
+  const bad = GOOD.replace('Imperium.save({n:n});', "Imperium.save({n:n});Imperium.report({key:'x',label:'X',value:1,date:today(),kind:'count'});");
   assert.ok(ids(bad).includes('report-multiple'));
 });
 
 test('warn: localStorage without try/catch is flagged', () => {
-  const bad = GOOD.replace('Vitality.save({n:n});', "localStorage.setItem('n',n);");
+  const bad = GOOD.replace('Imperium.save({n:n});', "localStorage.setItem('n',n);");
   assert.ok(ids(bad).includes('storage-unwrapped'));
 });
 
@@ -160,7 +160,7 @@ test('warn: using .select() on an input is flagged (focus, not select)', () => {
 });
 
 test('error: a report() missing required fields is a hard-floor error (a broken stream lands nothing)', () => {
-  const bad = GOOD.replace("Vitality.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})", "Vitality.report({value:n})");
+  const bad = GOOD.replace("Imperium.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})", "Imperium.report({value:n})");
   const r = lintTile(bad);
   assert.ok(ids(bad).includes('report-shape'));
   const f = r.findings.find((x) => x.rule === 'report-shape');
@@ -179,8 +179,8 @@ test('over-fire guard: a report() whose label carries a paren is not read as bro
   // firstCallArgs is string-literal aware, so a ")" inside a quoted label (or a crafted
   // name) does not truncate the args and false-flag the four required fields as missing.
   const withParen = GOOD.replace(
-    "Vitality.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})",
-    "Vitality.report({key:'water',label:'Water (cups)',value:n,date:today(),kind:'count'})",
+    "Imperium.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})",
+    "Imperium.report({key:'water',label:'Water (cups)',value:n,date:today(),kind:'count'})",
   );
   const r = lintTile(withParen);
   assert.equal(r.errors, 0, 'a paren in the label must not false-fail report-shape: ' + JSON.stringify(r.findings));
@@ -242,22 +242,22 @@ test('over-fire guard: addEventListener / .onclick= in JS is NOT an inline handl
   // The GOOD tile assigns document.getElementById('add').onclick=... in its script; that
   // JS property assignment is not an HTML attribute and must not trip the markup-only rule.
   assert.equal(ids(GOOD).includes('inline-event-handler'), false, 'a JS handler is not an inline attribute');
-  const withListener = GOOD.replace("document.getElementById('add').onclick=function()", "document.getElementById('add').addEventListener('click',function()").replace('Vitality.report({key:\'water\',label:\'Water\',value:n,date:today(),kind:\'count\'})};', "Vitality.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})});");
+  const withListener = GOOD.replace("document.getElementById('add').onclick=function()", "document.getElementById('add').addEventListener('click',function()").replace('Imperium.report({key:\'water\',label:\'Water\',value:n,date:today(),kind:\'count\'})};', "Imperium.report({key:'water',label:'Water',value:n,date:today(),kind:'count'})});");
   assert.equal(ids(withListener).includes('inline-event-handler'), false, 'addEventListener is not an inline attribute');
 });
 
-test('warn: a tile with no Vitality bridge call is flagged (cannot persist or report)', () => {
+test('warn: a tile with no Imperium bridge call is flagged (cannot persist or report)', () => {
   const bad = GOOD
-    .replace(/var Vitality=\{[^;]*\};/, '')
-    .replace('Vitality.save({n:n});Vitality.report({key:\'water\',label:\'Water\',value:n,date:today(),kind:\'count\'})', 'n=n');
+    .replace(/var Imperium=\{[^;]*\};/, '')
+    .replace('Imperium.save({n:n});Imperium.report({key:\'water\',label:\'Water\',value:n,date:today(),kind:\'count\'})', 'n=n');
   assert.ok(ids(bad).includes('bridge-missing'), 'a bridgeless tile must be flagged: ' + JSON.stringify(lintTile(bad).findings));
 });
 
 test('over-fire guard: a tile that uses the bridge does NOT get bridge-missing', () => {
-  assert.equal(ids(GOOD).includes('bridge-missing'), false, 'the GOOD tile calls Vitality.save/report');
+  assert.equal(ids(GOOD).includes('bridge-missing'), false, 'the GOOD tile calls Imperium.save/report');
 });
 
-test('every scaffold_tile template is Vitality-grade: zero errors AND zero warnings', () => {
+test('every scaffold_tile template is Imperium-grade: zero errors AND zero warnings', () => {
   const goals = ['track my water', 'meditation minutes', 'rate my mood out of 10', 'log my weight', 'track my daily spend', 'did I read today'];
   for (const goal of goals) {
     const full = scaffoldTile({ goal }).text;
@@ -267,3 +267,4 @@ test('every scaffold_tile template is Vitality-grade: zero errors AND zero warni
     assert.equal(r.warnings, 0, `scaffold "${goal}" must have 0 lint warnings, got: ${JSON.stringify(r.findings.filter((f) => f.severity === 'warn'))}`);
   }
 });
+

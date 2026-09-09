@@ -23,8 +23,9 @@ describe('rankInsights — always reach for the deepest TRUE insight', () => {
     expect(selectStrongest([neg, pos])).toBe(neg)
   })
 
-  it('selects nothing from an empty set (Vee stays quiet)', () => {
+  it('selects nothing from an empty set (I stays quiet)', () => {
     expect(selectStrongest([])).toBeNull()
     expect(rankInsights([])).toEqual([])
   })
 })
+

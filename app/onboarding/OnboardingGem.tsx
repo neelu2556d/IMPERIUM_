@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { saveOnboardingProfile, completeOnboarding } from './actions'
-import { loadOnboardingCache, saveOnboardingCache, clearOnboardingCache } from '@/lib/vitality/onboardingCache'
+import { loadOnboardingCache, saveOnboardingCache, clearOnboardingCache } from '@/lib/Imperium/onboardingCache'
 import { GemBurst, useGemBurst, type BurstKind } from '@/components/GemBurst'
 import { BirthdayPicker } from './BirthdayPicker'
 import styles from './onboardingGem.module.css'
@@ -680,3 +680,4 @@ function chapterFor(step: number): string {
     default: return ''
   }
 }
+

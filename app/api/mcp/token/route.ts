@@ -69,8 +69,9 @@ export async function POST(req: Request): Promise<Response> {
 
   const base = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin
   const addCommand =
-    `claude mcp add --transport http vitality ${base}/api/mcp/mcp ` +
+    `claude mcp add --transport http Imperium ${base}/api/mcp/mcp ` +
     `--header "Authorization: Bearer ${raw}"`
 
   return Response.json({ raw, addCommand, expiresAt }, { headers: noStore })
 }
+

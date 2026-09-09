@@ -16,7 +16,7 @@ function extractTile(): string {
   return full[0];
 }
 
-test('mentor example: the recipe tile is Vitality-grade (0 errors, 0 warnings)', () => {
+test('mentor example: the recipe tile is Imperium-grade (0 errors, 0 warnings)', () => {
   const html = extractTile();
   const result = lintTile(html);
   if (!result.ok || result.warnings > 0) {
@@ -37,5 +37,6 @@ test('mentor example: it is a real BYO-key Claude tile that renders output safel
   assert.match(html, /\.textContent\s*=\s*contentText/, 'renders bubbles via textContent');
   // a settings gear holds the key, and the tile reports no stream (a mentor has none)
   assert.match(html, /id="key"[^>]*type="password"/, 'a key field in settings');
-  assert.equal((html.match(/Vitality\.report\s*\(/g) || []).length, 0, 'a mentor reports no stream');
+  assert.equal((html.match(/Imperium\.report\s*\(/g) || []).length, 0, 'a mentor reports no stream');
 });
+

@@ -40,7 +40,7 @@ const TYPE_LABEL: Record<MealType, string> = {
 
 const round = (n: number) => Math.round(n || 0)
 
-// Meal-type → Vitality icon (sunrise / noon sun / moon+star / cookie; plate for the rest).
+// Meal-type → Imperium icon (sunrise / noon sun / moon+star / cookie; plate for the rest).
 const MEAL_ICON: Record<MealType, IconName> = {
   breakfast: 'breakfast',
   lunch: 'lunch',
@@ -189,7 +189,7 @@ export default function Macros({ extraSections, coachSlot, foodStoryDone = false
         {!m.tipsSeen && (
           <div className={styles.onboard}>
             <ol className={styles.onboardSteps}>
-              <li><strong>Snap a photo.</strong> Vitality finds the foods and estimates the portions.</li>
+              <li><strong>Snap a photo.</strong> Imperium finds the foods and estimates the portions.</li>
               <li><strong>Or add by name.</strong> Search foods, then set the amount.</li>
               <li><strong>Or skip the photo.</strong> Use Quick drinks, add by name, or scan a barcode.</li>
             </ol>
@@ -286,7 +286,7 @@ export default function Macros({ extraSections, coachSlot, foodStoryDone = false
             onLogWater={() => {
               // Water isn't a drink here — bounce to its own section (·04).
               setShowDrinks(false)
-              window.dispatchEvent(new CustomEvent('vitality:goto-water'))
+              window.dispatchEvent(new CustomEvent('Imperium:goto-water'))
             }}
             onLog={(r: DrinkLogResult) => {
               // Every drink logs as a meal — calories, or a 0-kcal entry like
@@ -1038,3 +1038,4 @@ function MealCard({
     </article>
   )
 }
+

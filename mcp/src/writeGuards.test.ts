@@ -57,13 +57,13 @@ const isoAgo = (ms: number) => new Date(Date.now() - ms).toISOString();
 
 test('requireWrite: kill-switch paused marker gets the honest paused message, not reconnect advice', () => {
   const v: VitalityDb = { db: null as never, userId: 'user-1', mode: 'user', scopes: ['mcp:read', WRITE_PAUSED_SCOPE] };
-  assert.throws(() => requireWrite(v), /temporarily paused by the Vitality team/);
+  assert.throws(() => requireWrite(v), /temporarily paused by the Imperium team/);
   assert.throws(() => requireWrite(v), (err: unknown) => !/disconnect|Allow it again/i.test((err as Error).message));
 });
 
 test('requireWrite: a genuinely read-only credential keeps the reconnect guidance', () => {
   const v: VitalityDb = { db: null as never, userId: 'user-1', mode: 'user', scopes: ['mcp:read'] };
-  assert.throws(() => requireWrite(v), /disconnect the Vitality connector.*Allow it again/);
+  assert.throws(() => requireWrite(v), /disconnect the Imperium connector.*Allow it again/);
 });
 
 test('requireWrite: a write-granted credential passes', () => {
@@ -115,3 +115,4 @@ test('rate limit: comfortably under the ceiling passes through', async () => {
   assert.equal(cap.table, 'tiles');
   assert.equal(out.id, 'tile-123');
 });
+

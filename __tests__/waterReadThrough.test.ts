@@ -1,7 +1,7 @@
 import { mergeWaterLogs } from '@/app/app/fuel/water/state'
 
 /**
- * Water read-through (the Phase 0 enabling fix for "Vitality, I'm home"):
+ * Water read-through (the Phase 0 enabling fix for "Imperium, I'm home"):
  * day logs from this browser and the Supabase mirror merge per-day by MAX,
  * so neither a debounce-lost drink (local ahead) nor another device's days
  * (server ahead) are ever dropped.
@@ -47,3 +47,4 @@ describe('mergeWaterLogs: local + server day logs merge per-day by max', () => {
     expect(server).toEqual({ '2026-07-01': 2 })
   })
 })
+

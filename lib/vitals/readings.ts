@@ -39,7 +39,7 @@ const CLIENT_ID_ENV: Record<WearableProviderId, string | undefined> = {
   manual: 'manual',
 }
 
-// A band shows in the gallery ONLY when a central Vitality app is configured
+// A band shows in the gallery ONLY when a central Imperium app is configured
 // for it (CLIENT_ID_ENV set) or it is manual. The bring-your-own-keys path is
 // retired (Alex, 2026-07-12): no user is ever sent to paste their own keys.
 // WHOOP has a central app (WHOOP_CLIENT_ID/SECRET) so it shows. Oura has none
@@ -175,3 +175,4 @@ export async function loadReadings(
     latest: week[0], week, history, quiz, goal, signal, vitalsScore, scoreSeries,
   }
 }
+

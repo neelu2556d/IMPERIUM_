@@ -18,17 +18,17 @@ import styles from './tileBuilder.module.css'
 import '@/components/libraryViz.css'
 
 /** One-time Claude Code hookup for the honesty-gate handoff. */
-const MCP_ADD_CMD = 'claude mcp add --transport http vitality http://localhost:3000/api/mcp/mcp'
+const MCP_ADD_CMD = 'claude mcp add --transport http Imperium http://localhost:3000/api/mcp/mcp'
 
 /**
  * TileBuilder - the build-your-own EDITOR (BUILD79: no free text anywhere),
- * staged as three acts on the signature Vitality world.
+ * staged as three acts on the signature Imperium world.
  *
  * Act 1 THE SHELF: six shape cards (the whole menu, visible) + the Big Brother
  *                  card ("something bigger? that one deserves Claude").
  * Act 2 THE BIRTH: the picked shape's deterministic default build goes to the
  *                  server (/api/create-tile -> infer + renderTile) behind a held
- *                  "VEE IS SHAPING IT" beat; the REAL sealed tile then settles
+ *                  "I IS SHAPING IT" beat; the REAL sealed tile then settles
  *                  onto the bench inside its frame while the world pulses.
  * Act 3 THE CRAFT: a two-column workbench. Left: the tile piece (the sealed
  *                  iframe + instrument dock: goal / name / accent) and the ON
@@ -41,7 +41,7 @@ const MCP_ADD_CMD = 'claude mcp add --transport http vitality http://localhost:3
  * can never race a later accent/knob, a failed rebuild reverts the optimistic knob,
  * and a rebuild never wipes a name the user is mid-typing. The preview host is a
  * showroom (answers load with sample days, accepts save into memory, IGNORES report),
- * so nothing here reaches Vee or the registry - the added tile starts empty + honest.
+ * so nothing here reaches I or the registry - the added tile starts empty + honest.
  */
 
 interface BuiltMeta {
@@ -66,7 +66,7 @@ type Phase = 'opening' | 'beat' | 'craft'
 
 const ACCENT_LIST = Object.keys(ACCENTS) as TileAccent[]
 
-/** Ink-on-accent for the Vee send button (chrome only; the tile recolors itself). */
+/** Ink-on-accent for the I send button (chrome only; the tile recolors itself). */
 const ACCENT_INK: Record<TileAccent, string> = {
   mint: '#042a1c',
   iris: '#10163a',
@@ -283,11 +283,11 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
   const [glowGo, setGlowGo] = useState(false)
   const [fsOpen, setFsOpen] = useState(false)
   // The Big Brother storefront: opened by the "something bigger" card - the
-  // honest pitch that real apps are built with Claude + the Vitality MCP.
+  // honest pitch that real apps are built with Claude + the Imperium MCP.
   const [handoff, setHandoff] = useState(false)
   const [cmdCopied, setCmdCopied] = useState(false)
   // The finder bar: FINDS pieces in the library, never generates.
-  // ?idea=<text> (the Vee goals "Create a tile for this" door) prefills it,
+  // ?idea=<text> (the I goals "Create a tile for this" door) prefills it,
   // so the shelves open already ranked for the goal the user came from.
   const [query, setQuery] = useState(initialIdea)
   const [ghostIdx, setGhostIdx] = useState(0)
@@ -337,18 +337,18 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
   useEffect(() => {
     function onMessage(e: MessageEvent) {
       const m = e.data
-      if (!m || m.source !== 'vitality-tile') return
+      if (!m || m.source !== 'Imperium-tile') return
       const src = e.source as Window | null
       if (!src) return
       if (m.type === 'load') {
         src.postMessage(
-          { source: 'vitality-host', type: 'load:result', id: m.id, data: previewDays.current },
+          { source: 'Imperium-host', type: 'load:result', id: m.id, data: previewDays.current },
           '*',
         )
       } else if (m.type === 'save') {
         if (Array.isArray(m.data)) previewDays.current = m.data
       }
-      // 'report' is intentionally ignored - the preview never writes to Vee.
+      // 'report' is intentionally ignored - the preview never writes to I.
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
@@ -416,7 +416,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
     fbTimer.current = setTimeout(() => setConfirm((c) => ({ ...c, show: false })), 4200)
   }, [])
 
-  /** Build failures land where the user is: opening error line, or a Vee warn. */
+  /** Build failures land where the user is: opening error line, or a I warn. */
   const failFeedback = useCallback(
     (msg: string) => {
       if (phaseRef.current === 'craft') flashFeedback(msg, true)
@@ -669,7 +669,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
   // The finder: empty query = the full shelves; typed = ranked matches.
   const matches = findPresets(query)
   const searching = query.trim().length > 0
-  // No library match: is the ask platform/AI/app-shaped? Then Vee names why.
+  // No library match: is the ask platform/AI/app-shaped? Then I names why.
   const missVerdict = searching && matches.length === 0 ? scanCapability(query) : null
   const findGhost = FIND_GHOSTS[ghostIdx % FIND_GHOSTS.length]
   const showGoalKnob = meta?.target != null
@@ -691,14 +691,14 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
       <div className={styles.burstLayer} ref={burstRef} aria-hidden />
 
       {/* Always-there way home */}
-      <Link href="/app" className={styles.homePill} aria-label="Back to your Vitality dashboard">
+      <Link href="/app" className={styles.homePill} aria-label="Back to your Imperium dashboard">
         <svg viewBox="0 0 24 24">
           <path d={P.chev} />
         </svg>
         DASHBOARD
       </Link>
 
-      {/* THE BEAT: Vee takes the sentence */}
+      {/* THE BEAT: I takes the sentence */}
       <div className={`${styles.beat} ${phase === 'beat' ? styles.beatShow : ''}`} aria-hidden={phase !== 'beat'}>
         <div className={styles.beatInner}>
           <svg className={styles.beatSpark} viewBox="0 0 24 24">
@@ -709,7 +709,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
             <i />
             <i />
           </span>
-          <span className={styles.beatText}>VEE IS SHAPING IT</span>
+          <span className={styles.beatText}>I IS SHAPING IT</span>
         </div>
       </div>
 
@@ -717,7 +717,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
         {/* ============ THE BIG BROTHER STOREFRONT ============
             Opened by the "something bigger" card: the honest pitch that real
             apps - live numbers, AI, whole layouts - are built with Claude +
-            the Vitality MCP, and land on this same dashboard. */}
+            the Imperium MCP, and land on this same dashboard. */}
         {phase === 'opening' && handoff && (
           <section className={`${styles.act} ${styles.actOpen} ${leaving ? styles.leave : ''}`}>
             <div className={styles.handoffWrap}>
@@ -725,15 +725,15 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
                 <svg viewBox="0 0 24 24">
                   <path d={P.spark} />
                 </svg>
-                VEE · STRAIGHT WITH YOU
+                I · STRAIGHT WITH YOU
               </div>
               <h1 className={`${styles.oTitle} ${styles.hTitle}`}>
                 Bigger ideas deserve <em>Claude</em>.
               </h1>
               <p className={styles.hVee}>
-                <span className={styles.hVeeTag}>VEE</span>
+                <span className={styles.hVeeTag}>I</span>
                 a whole app, live numbers, a mind of its own - more than six simple shapes. In
-                Claude Code, with the Vitality MCP, you build the real thing: pro grade,
+                Claude Code, with the Imperium MCP, you build the real thing: pro grade,
                 on-brand, still yours.
               </p>
 
@@ -745,7 +745,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
                 <div className={styles.hStep}>
                   <span className={styles.hStepNum}>2</span>
                   <span className={styles.hStepBody}>
-                    Connect Vitality once
+                    Connect Imperium once
                     <code className={styles.hCmd}>{MCP_ADD_CMD}</code>
                   </span>
                 </div>
@@ -783,7 +783,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
               <svg viewBox="0 0 24 24">
                 <path d={P.spark} />
               </svg>
-              VITALITY · QUICK TILE
+              Imperium · QUICK TILE
             </div>
             <h1 className={styles.oTitle}>
               What do you want
@@ -859,7 +859,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
             {searching && matches.length === 0 && (
               <div className={styles.noMatch}>
                 <p className={styles.noMatchVee}>
-                  <span className={styles.hVeeTag}>VEE</span>
+                  <span className={styles.hVeeTag}>I</span>
                   {missVerdict && missVerdict.verdict !== 'buildable'
                     ? `"${query.trim()}" - ${missVerdict.why ?? 'that one is bigger than the library'}.`
                     : `nothing that small in the library yet - but Claude builds exactly that, pro grade, straight onto this dashboard.`}
@@ -982,7 +982,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
               <div className={styles.brandBlk}>
                 <span className={styles.eyebrow}>TILE BUILDER</span>
                 <span className={styles.headSerif}>
-                  Built by Vee. <em>Finished by you.</em>
+                  Built by I. <em>Finished by you.</em>
                 </span>
               </div>
               <span className={styles.draft}>{meta.label.toUpperCase()} · DRAFT</span>
@@ -1226,7 +1226,7 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
                       </svg>
                     </span>
                     <span className={styles.msg}>
-                      <span className={styles.msgTag}>VEE</span>
+                      <span className={styles.msgTag}>I</span>
                       {confirm.msg}
                     </span>
                   </span>
@@ -1296,3 +1296,4 @@ export default function TileBuilder({ userId, initialIdea = '' }: { userId: stri
     </div>
   )
 }
+

@@ -17,14 +17,14 @@ describe('buildVentTeaser', () => {
   it('builds a REAL sleep teaser from a real run of short nights', () => {
     const t = buildVentTeaser({ ...NONE, sleepNightsTracked: 7, sleepNightsUnder6: 5 })
     expect(t.real).toBe(true)
-    expect(t.vee).toContain('5 of the last 7 nights')
-    expect(t.emphasis && t.vee.includes(t.emphasis)).toBe(true)
+    expect(t.I).toContain('5 of the last 7 nights')
+    expect(t.emphasis && t.I.includes(t.emphasis)).toBe(true)
   })
 
   it('builds a REAL recovery teaser on a genuine dip', () => {
     const t = buildVentTeaser({ ...NONE, latestRecovery: 33 })
     expect(t.real).toBe(true)
-    expect(t.vee).toContain('33')
+    expect(t.I).toContain('33')
   })
 
   it('does NOT flag a healthy recovery', () => {
@@ -35,12 +35,12 @@ describe('buildVentTeaser', () => {
   it('builds a REAL training-load teaser on a heavy week', () => {
     const t = buildVentTeaser({ ...NONE, sessionsDone7d: 6 })
     expect(t.real).toBe(true)
-    expect(t.vee).toContain('6 times')
+    expect(t.I).toContain('6 times')
   })
 
   it('prioritises sleep over recovery over training when several are true', () => {
     const t = buildVentTeaser({ sleepNightsTracked: 7, sleepNightsUnder6: 3, latestRecovery: 30, sessionsDone7d: 6 })
-    expect(t.vee).toContain('sleep')
+    expect(t.I).toContain('sleep')
   })
 
   it('the emphasis is always a real substring of the reply', () => {
@@ -51,7 +51,8 @@ describe('buildVentTeaser', () => {
     ]) {
       const t = buildVentTeaser(s)
       expect(t.emphasis).toBeTruthy()
-      expect(t.vee.includes(t.emphasis as string)).toBe(true)
+      expect(t.I.includes(t.emphasis as string)).toBe(true)
     }
   })
 })
+

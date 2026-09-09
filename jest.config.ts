@@ -26,8 +26,9 @@ const config: Config = {
   // test"; ignore those paths here so `npm test` stays green.
   testPathIgnorePatterns: ['/node_modules/', '/.worktrees/', '/.claude/worktrees/', '/.next/', '/docs/patreon/factory/', '/mcp/'],
   // Keep the haste map from crawling the worktree copies too (they share the
-  // package name "vitality", which otherwise collides and can hang the crawl).
+  // package name "Imperium", which otherwise collides and can hang the crawl).
   modulePathIgnorePatterns: ['<rootDir>/.worktrees/', '<rootDir>/.claude/worktrees/'],
 }
 
 export default createJestConfig(config)
+

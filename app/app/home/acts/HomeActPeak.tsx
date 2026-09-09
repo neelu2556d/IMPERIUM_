@@ -440,7 +440,7 @@ export default function HomeActPeak({
 
   // The whole beat is one anticipation: the debt story when there is one,
   // otherwise where the day peaks. Nothing is asked.
-  const vee =
+  const I =
     hasDebt && ceiling && debt != null
       ? `You are carrying ${debt.toFixed(1)} hours of sleep debt. Clear it tonight and tomorrow lifts from ${ceiling.asIs} to ${ceiling.cleared}.`
       : `Here is today's curve, ${firstName}. Your best window left lands at ${fmtHourLabel(bestHour)}.`
@@ -450,9 +450,9 @@ export default function HomeActPeak({
   return (
     <div className={styles.act}>
       <div className={styles.page}>
-        <p className={styles.vee}>
-          <span className={styles.veeTag}>VEE</span>
-          {vee}
+        <p className={styles.I}>
+          <span className={styles.veeTag}>I</span>
+          {I}
         </p>
 
         <div className={styles.chartWrap}>
@@ -639,3 +639,4 @@ export default function HomeActPeak({
     </div>
   )
 }
+

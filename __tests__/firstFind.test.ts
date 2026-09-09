@@ -1,6 +1,6 @@
 import { buildFirstFind, type FirstFindInput } from '@/lib/insights/firstFind'
 import { buildFeed } from '@/lib/insights/feed'
-import { rarityForNotice } from '@/lib/vee/rarity'
+import { rarityForNotice } from '@/lib/I/rarity'
 
 const EMPTY: FirstFindInput = {
   sessions7: 0,
@@ -158,3 +158,4 @@ describe('buildFeed step 3.5 — the first-find in the feed', () => {
     expect(feed[0].source).toBe('starter')
   })
 })
+

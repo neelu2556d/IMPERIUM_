@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useTransition } from 'react'
 import styles from './business.module.css'
 import { createClient } from '@/lib/supabase/client'
 import { useBusinessState } from '@/lib/business/state'
-import { getBusinessTileStats, type DashboardTileStats } from '@/lib/vitality/dashboardStats'
+import { getBusinessTileStats, type DashboardTileStats } from '@/lib/Imperium/dashboardStats'
 import BusinessModule from '@/components/business/BusinessModule'
 import type { BusinessTab } from '@/lib/business/types'
 import WelcomeBackdrop from '@/components/WelcomeBackdrop'
@@ -94,7 +94,7 @@ export default function BusinessPage() {
           </Link>
           <div className={styles.greetWrap}>
             <div className={styles.greetText}>
-              <span className={styles.greetLabel}>VITALITY · IMPERIUM</span>
+              <span className={styles.greetLabel}>Imperium · IMPERIUM</span>
               <span className={styles.greetLine} suppressHydrationWarning>
                 {user?.user_metadata?.first_name ? `, ${user.user_metadata.first_name}` : ''}.
               </span>

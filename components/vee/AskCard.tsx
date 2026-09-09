@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import VeeTile from './VeeTile'
 import styles from './veeTile.module.css'
-import { ASK_GLYPHS, resolveAskGlyph } from '@/lib/vee/askGlyphs'
-import type { CardStyle, LayoutKind } from '@/lib/vee/askLayout'
+import { ASK_GLYPHS, resolveAskGlyph } from '@/lib/I/askGlyphs'
+import type { CardStyle, LayoutKind } from '@/lib/I/askLayout'
 import type { VeeAsk, VeeAskOption } from '@/app/app/mentor/types'
 
 /*
- * AskCard — Vee asks a clarifying question as a cozy tappable card. One question
+ * AskCard — I asks a clarifying question as a cozy tappable card. One question
  * can wear any of ten layouts (see public/mentor-ask-layouts.html); the layout +
  * entrance + lead-reveal are chosen once per message (cardStyle) and frozen, so
  * re-renders are stable. Tapping an option plays a brief select animation, then
@@ -244,3 +244,4 @@ export default function AskCard({
     </VeeTile>
   )
 }
+

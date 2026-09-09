@@ -13,7 +13,7 @@ const localStorageMock = {
 Object.defineProperty(global, 'window', { value: { localStorage: localStorageMock }, writable: true })
 
 const A = 'user-a'
-const homeKey = (userId: string) => `vitality:${userId}:home`
+const homeKey = (userId: string) => `Imperium:${userId}:home`
 beforeEach(() => localStorageMock.clear())
 
 describe('homeLayout: the optional Create tile', () => {
@@ -36,3 +36,4 @@ describe('homeLayout: the optional Create tile', () => {
     expect(homeLayout.getOrder(A)).not.toContain(CREATE_TILE.id)
   })
 })
+

@@ -11,7 +11,7 @@ import styles from './explainerCard.module.css'
  * ExplainerCard - the one cozy Vitals explainer overlay. Rarity-card INSPIRED
  * framing (bordered card, mono eyebrow, serif lede) with its own calmer look.
  * Two bodies on one shell:
- *   - { kind: 'score' }: what the Vitality score IS - the big number plus a
+ *   - { kind: 'score' }: what the Imperium score IS - the big number plus a
  *     vertical column of its real ingredients, named straight from the score
  *     engine (lib/vitals/score.ts subDefs): recovery .30, sleep performance .20,
  *     HRV vs baseline .15, RHR vs baseline .15, sleep hours .10, strain .10.
@@ -60,7 +60,7 @@ function ScoreBody({ score, subs }: { score: number | null; subs?: SubScore[] })
 
   return (
     <>
-      <div className={styles.eyebrow}>THE VITALITY SCORE</div>
+      <div className={styles.eyebrow}>THE Imperium SCORE</div>
       <p className={styles.lede}>One number for how <em>ready</em> your body is today.</p>
       <p className={styles.sub}>
         It refreshes each morning from last night&rsquo;s data. Every ingredient below feeds it,
@@ -178,7 +178,7 @@ export default function ExplainerCard({
   let label: string
   if (target.kind === 'score') {
     body = <ScoreBody score={score} subs={subs} />
-    label = 'What the Vitality score is'
+    label = 'What the Imperium score is'
   } else {
     body = <MetricBody name={target.name} tier={target.tier} />
     label = `What ${target.name} means`
@@ -196,3 +196,4 @@ export default function ExplainerCard({
     </div>
   )
 }
+

@@ -1,6 +1,6 @@
 /* ======================================================================
-   VEE · REMODEL
-   Ported 1:1 from public/vee-remodel.html. The gold-standard /app/create
+   I · REMODEL
+   Ported 1:1 from public/I-remodel.html. The gold-standard /app/create
    recipe as one calm screen: tokens, riseIn, the one easing, the /welcome
    atmosphere. Fonts come from next/font vars (--font-serif / --font-mono /
    --font-inter), never a Google Fonts link.
@@ -229,7 +229,7 @@
 }
 
 /* ================================================================
-   2 · THE ONE "VITALITY NOTICED" CARD · the loud element
+   2 · THE ONE "Imperium NOTICED" CARD · the loud element
    ================================================================ */
 .noticed {
   position: relative;
@@ -519,7 +519,7 @@
   padding: 0 2px;
 }
 
-/* Vee's markdown, scoped to the bubble */
+/* I's markdown, scoped to the bubble */
 .mdPara { margin: 0 0 8px; }
 .mdPara:last-child { margin: 0; }
 .mdList { margin: 6px 0 8px 18px; display: flex; flex-direction: column; gap: 4px; }
@@ -815,3 +815,4 @@
   }
   .particles span { animation: none !important; opacity: 0.4 !important; }
 }
+

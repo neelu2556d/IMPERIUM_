@@ -5,7 +5,7 @@ import { registerTools } from './tools.js';
 
 test('listSections finds the pack across dna/data/recipes/lessons + MCP-VALUE', () => {
   const names = listSections().map((s) => s.name);
-  for (const n of ['gotchas', 'theme', 'voice', 'motion', 'food-library', 'exercise-library', 'supplement-library', 'feature-vee', 'feature-vitals', 'api-plugins', 'MCP-VALUE']) {
+  for (const n of ['gotchas', 'theme', 'voice', 'motion', 'food-library', 'exercise-library', 'supplement-library', 'feature-I', 'feature-vitals', 'api-plugins', 'MCP-VALUE']) {
     assert.ok(names.includes(n), `missing ${n}`);
   }
 });
@@ -71,3 +71,4 @@ test('vitality_tile_kit tool is registered and returns the kit (pure, no getVdb)
   assert.match(res.content[0].text, /#6EE7B7/);
   assert.notEqual(res.isError, true);
 });
+

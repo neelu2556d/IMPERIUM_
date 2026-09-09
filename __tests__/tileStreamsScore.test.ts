@@ -7,7 +7,7 @@ import {
   buildStreamWindows,
   BASELINE_SCORE,
   type StreamWindow,
-} from '@/lib/vitality/contributors/tileStreams'
+} from '@/lib/Imperium/contributors/tileStreams'
 import { getRecentDateKeys } from '@/lib/dates'
 import type { TileStreamRow, TileReportRow } from '@/lib/tiles/reportContract'
 
@@ -243,3 +243,4 @@ describe('buildStreamWindows — raw rows to daily windows', () => {
     expect(b.byDay.size).toBe(0)
   })
 })
+

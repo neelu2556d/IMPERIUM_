@@ -22,9 +22,9 @@
   width: 100%;
 }
 
-/* ── Vee's one-line bubble (same grammar as homecoming) ─────────────────── */
+/* ── I's one-line bubble (same grammar as homecoming) ─────────────────── */
 
-.vee {
+.I {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -439,7 +439,7 @@
 @media (max-width: 640px) {
   .act { margin-top: 96px; width: calc(100% - 40px); }
   .pageCol { gap: 18px; }
-  .vee { font-size: 15.5px; }
+  .I { font-size: 15.5px; }
   .stepVal { font-size: 40px; min-width: 84px; }
   .reads { grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
   .readScore { font-size: 40px; }
@@ -453,6 +453,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .act { transition: none; }
-  .vee, .field, .optRow, .read, .graphCard, .savedBeat, .savedText, .savedLine { animation: none; }
+  .I, .field, .optRow, .read, .graphCard, .savedBeat, .savedText, .savedLine { animation: none; }
   .savedDot { animation: none; }
 }
+

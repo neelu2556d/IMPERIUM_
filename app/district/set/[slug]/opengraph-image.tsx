@@ -48,7 +48,7 @@ export default async function SetOgImage({
 }) {
   const collection = FEATURED_COLLECTIONS.find((c) => c.id === params.slug)
   const tiles = collection ? tilesForCollection(collection.id) : []
-  const title = collection ? collection.title : 'A Vitality set'
+  const title = collection ? collection.title : 'An Imperium set'
   const line = collection
     ? `${tiles.length} tiles · add the whole set in one tap`
     : 'A ready-made set of tiles for your dashboard.'
@@ -108,7 +108,7 @@ export default async function SetOgImage({
                 textTransform: 'uppercase',
               }}
             >
-              Vitality
+              Imperium
             </div>
           </div>
           <div

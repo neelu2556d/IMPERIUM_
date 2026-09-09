@@ -28,7 +28,7 @@ const BACKFILLERS: Record<string, (sb: SupabaseClient, userId: string) => Promis
 }
 
 /**
- * GET /api/home/pull - the one composite read behind "Vitality, I'm home".
+ * GET /api/home/pull - the one composite read behind "Imperium, I'm home".
  *
  * When the user taps the gem, the ritual opens on a single RLS-scoped pull of
  * everything the acts need, so the "pulling your whole day" beat is honest:
@@ -45,7 +45,7 @@ const BACKFILLERS: Record<string, (sb: SupabaseClient, userId: string) => Promis
  * The response shape is the shared HomePull contract (lib/home/pullTypes.ts).
  * Every branch null-guards: a missing table or empty row degrades to null so
  * the ritual renders its "not much logged yet" state instead of erroring.
- * See docs/ideas/VITALITY-IM-HOME-PLAN.md.
+ * See docs/ideas/Imperium-IM-HOME-PLAN.md.
  */
 export async function GET(request: Request) {
   const supabase = createClient()
@@ -184,3 +184,4 @@ export async function GET(request: Request) {
     recentWorkouts: workoutsRes.error ? [] : (workoutsRes.data ?? []),
   })
 }
+

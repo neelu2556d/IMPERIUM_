@@ -78,6 +78,7 @@ export interface UpdateLinkBody {
   position?: number
 }
 
-/** The one stream the Studio tile reports into Vee. */
+/** The one stream the Studio tile reports into I. */
 export const REPORT_KEY = 'videos_published' as const
 export const REPORT_KIND: ReportKind = 'count'
+

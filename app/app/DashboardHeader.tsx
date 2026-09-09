@@ -31,9 +31,9 @@ function pickGreeting(): { text: string; punct: string } {
   const pool = new Date().getHours() < 12 ? GREETINGS : GREETINGS.filter((g) => g.text !== 'Morning')
   let i = Math.floor(Math.random() * pool.length)
   try {
-    const last = window.sessionStorage.getItem('vitality:greet-last')
+    const last = window.sessionStorage.getItem('Imperium:greet-last')
     if (pool.length > 1 && pool[i].text === last) i = (i + 1) % pool.length
-    window.sessionStorage.setItem('vitality:greet-last', pool[i].text)
+    window.sessionStorage.setItem('Imperium:greet-last', pool[i].text)
   } catch {
     /* storage unavailable: any pick works */
   }
@@ -44,7 +44,7 @@ function pickGreeting(): { text: string; punct: string } {
  * The editorial greeting + date. Prop-driven so a user can personalise it
  * (lib/tiles/dashboardChrome): keep the randomized auto line or write their own,
  * show / accent their name, scale it, and pick the date format (or hide it). The
- * FONT stays Instrument Serif italic (the unified Vitality voice) — only wording,
+ * FONT stays Instrument Serif italic (the unified Imperium voice) — only wording,
  * name, accent, and scale are exposed. The line is picked client-side in an
  * effect (server renders it empty, exactly as before) so SSR never mismatches.
  */
@@ -71,7 +71,7 @@ export default function DashboardHeader({ firstName, greeting, date, revealed = 
   const dateText = d.format === 'today' ? todayDate : fullDate
 
   // Each word is its own span so the reveal can stream them in with a small
-  // stagger (public/vitality-intro-a.html word-in). Graceful without a name:
+  // stagger (public/Imperium-intro-a.html word-in). Graceful without a name:
   // the punctuation rides on the last phrase word instead.
   const words = word ? word.split(' ') : []
   const dly = (i: number) => ({ ['--d' as string]: `${(0.05 + i * 0.09).toFixed(2)}s` })
@@ -99,3 +99,4 @@ export default function DashboardHeader({ firstName, greeting, date, revealed = 
     </div>
   )
 }
+

@@ -445,7 +445,7 @@ function ProfileStep({
   return (
     <>
       <p className={styles.stepIntro}>
-        Synced with your Vitality profile. Changes here update everywhere.
+        Synced with your Imperium profile. Changes here update everywhere.
       </p>
 
       <div className={styles.fieldRow}>
@@ -724,3 +724,4 @@ function Segmented<T extends string>({ options, value, onChange }: SegmentedProp
     </div>
   )
 }
+

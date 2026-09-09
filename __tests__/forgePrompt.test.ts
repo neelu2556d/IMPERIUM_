@@ -29,7 +29,7 @@ describe('buildForgePrompt - both lanes', () => {
 
   it.each(variants)('%s demands one sealed bridge-wired file', (_name, p) => {
     expect(p).toContain('sealed')
-    expect(p).toContain('Vitality.report')
+    expect(p).toContain('Imperium.report')
     expect(p.toLowerCase()).toContain('no em dashes')
   })
 
@@ -68,7 +68,7 @@ describe('buildForgePrompt - the universal brief (drop-zone lane)', () => {
 
   it('carries the FULL spec inline so a no-fetch AI still has the rulebook', () => {
     expect(brief).toContain('THE BUILD SPEC')
-    expect(brief).toContain('VITALITY TILE SPEC')
+    expect(brief).toContain('Imperium TILE SPEC')
     expect(brief).toContain('THE DESIGN DNA')
     expect(brief).toContain('#6EE7B7')
     // The spec must match the real linter: color-scheme is forbidden, not required.
@@ -107,7 +107,7 @@ describe('buildForgePrompt - the Claude Code lane (MCP ritual)', () => {
   })
 
   it('offers the kit domain list from the real tool schema', () => {
-    expect(code).toContain('food, workout, supplement, vee, finance, vitals, goals')
+    expect(code).toContain('food, workout, supplement, I, finance, vitals, goals')
   })
 
   it('demands proof at 0 errors before shipping', () => {
@@ -142,3 +142,4 @@ describe('buildForgePrompt - the idea cap', () => {
     expect(capped).not.toMatch(/—/)
   })
 })
+

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { loadNoticed, type NoticedData } from '@/lib/vee/loadNoticed'
-import { buildHandoffContext, type ClaudeHandoffContext } from '@/lib/vee/claudeHandoff'
+import { loadNoticed, type NoticedData } from '@/lib/I/loadNoticed'
+import { buildHandoffContext, type ClaudeHandoffContext } from '@/lib/I/claudeHandoff'
 import { readFacts } from '@/lib/memory/userFacts'
 import { MOOD_KIND, buildMoodStrip, localDateKey, type MoodPoint, type RawMoodFact } from '@/app/app/mentor/moodData'
 import VeeNoticed from '@/components/VeeNoticed'
@@ -12,10 +12,10 @@ export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Imperium' }
 
 /**
- * /app/mentor-next - the new, launch-grade Vee: one vertical scroll. The Echo
- * gem (Vee's face) with the run-stats proof strip, the fused FULL goals engine
- * (authoring + per-goal live steering), the gamified "Vitality Noticed" card,
- * and the feed-Vee flywheel. A safe preview beside the untouched live /app/mentor.
+ * /app/mentor-next - the new, launch-grade I: one vertical scroll. The Echo
+ * gem (I's face) with the run-stats proof strip, the fused FULL goals engine
+ * (authoring + per-goal live steering), the gamified "Imperium Noticed" card,
+ * and the feed-I flywheel. A safe preview beside the untouched live /app/mentor.
  *
  * Gated server component: auth first, then load the same real engine data the
  * mentor page builds (extended with goals/guides/chips/stats), filter out the
@@ -117,3 +117,4 @@ export default async function MentorNextPage() {
     />
   )
 }
+

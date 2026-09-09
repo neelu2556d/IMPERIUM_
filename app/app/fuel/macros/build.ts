@@ -1,6 +1,6 @@
 // Client-side meal builders. Each returns a SaveMealInput (no id / loggedAt —
 // the server assigns those). Mirrors the standalone's mealFrom* helpers but
-// emits Vitality's camelCase Meal shape.
+// emits Imperium's camelCase Meal shape.
 
 import type {
   Macros,
@@ -241,3 +241,4 @@ export function buildRepeatMeal(meal: Meal, dayKey: string): SaveMealInput {
     sourceRef: null,
   }
 }
+

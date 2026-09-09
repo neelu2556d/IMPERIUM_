@@ -1,5 +1,5 @@
 // checkTile: run a finished tile through the linter and render a human-readable
-// "Vitality-grade" receipt. This is what the check_tile MCP tool returns, so the
+// "Imperium-grade" receipt. This is what the check_tile MCP tool returns, so the
 // caller's Claude can see exactly what to fix and iterate to green before shipping.
 //
 // A PASSING receipt also carries a Proof line: a keyed digest of the exact html
@@ -50,19 +50,19 @@ function line(f: LintFinding): string {
 }
 
 /**
- * A one-line Vitality-grade receipt for stamping onto a build (e.g. the
+ * A one-line Imperium-grade receipt for stamping onto a build (e.g. the
  * scaffold_tile header), so every tile the MCP hands back self-certifies without
  * a separate check_tile round-trip. The full multi-line receipt is checkTile().
  */
 export function gradeStamp(html: string): string {
   const r = lintTile(html);
   if (r.ok && r.warnings === 0) {
-    return 'Vitality-grade: PASS. Sealed, local date keys, buttery 60fps motion (transform/opacity only), on-brand, 0 warnings.';
+    return 'Imperium-grade: PASS. Sealed, local date keys, buttery 60fps motion (transform/opacity only), on-brand, 0 warnings.';
   }
   if (r.ok) {
-    return `Vitality-grade: PASS with ${r.warnings} polish warning(s). Run check_tile for the list.`;
+    return `Imperium-grade: PASS with ${r.warnings} polish warning(s). Run check_tile for the list.`;
   }
-  return `Vitality-grade: FAIL, ${r.errors} error(s) must be fixed. Run check_tile for the list.`;
+  return `Imperium-grade: FAIL, ${r.errors} error(s) must be fixed. Run check_tile for the list.`;
 }
 
 export function checkTile(html: string): { text: string; ok: boolean } {
@@ -72,7 +72,7 @@ export function checkTile(html: string): { text: string; ok: boolean } {
   const out: string[] = [];
 
   if (r.ok) {
-    out.push('VITALITY-GRADE: PASS');
+    out.push('Imperium-GRADE: PASS');
     out.push('Passes the hard floor: sealed (no external libs), a complete document, local date keys, transform/opacity motion, honest report wiring.');
     const proof = checkProofFor(html);
     if (proof) {
@@ -80,7 +80,7 @@ export function checkTile(html: string): { text: string; ok: boolean } {
       out.push('Pass this Proof value to vitality_add_tile as `check` with the IDENTICAL html and it skips the re-lint (any edit invalidates it).');
     }
   } else {
-    out.push(`VITALITY-GRADE: FAIL (${errors.length} error${errors.length === 1 ? '' : 's'} must be fixed before this tile ships)`);
+    out.push(`Imperium-GRADE: FAIL (${errors.length} error${errors.length === 1 ? '' : 's'} must be fixed before this tile ships)`);
     out.push('Errors:');
     out.push(...errors.map(line));
   }
@@ -96,3 +96,4 @@ export function checkTile(html: string): { text: string; ok: boolean } {
 
   return { text: out.join('\n'), ok: r.ok };
 }
+

@@ -1,5 +1,5 @@
 /**
- * Series adapters — Stage 1 of the "Vitality noticed" engine. This is the layer
+ * Series adapters — Stage 1 of the "Imperium noticed" engine. This is the layer
  * that turns each domain's raw logs (caffeine, recovery, sleep, mood, training,
  * spend, ...) into ONE canonical daily series the rest of the engine reads. It is
  * the literal "the more you log, the more it knows" layer: every value the user
@@ -77,3 +77,4 @@ export function toDailySeries(rows: RawRow[], opts: { density: Density; agg?: Ag
     .sort((a, b) => a.key.localeCompare(b.key))
   return { points, density: opts.density }
 }
+

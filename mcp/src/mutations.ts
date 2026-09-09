@@ -1,4 +1,4 @@
-// Write layer for the Vitality MCP — the mutating analogue of queries.ts.
+// Write layer for the Imperium MCP — the mutating analogue of queries.ts.
 //
 // This is the FIRST departure from read-only (BUILD42). Every write here:
 //   • runs through the caller's own RLS-scoped client, so it can structurally
@@ -33,11 +33,11 @@ export function requireWrite(v: VitalityDb): void {
   if (v.scopes.includes(WRITE_SCOPE)) return;
   if (v.scopes.includes(WRITE_PAUSED_SCOPE)) {
     throw new Error(
-      'Writes are temporarily paused by the Vitality team, so nothing can be added or logged right now. Your data is safe and reading still works. The pause is on our side, so reconnecting will not change it. Try again in a little while.',
+      'Writes are temporarily paused by the Imperium team, so nothing can be added or logged right now. Your data is safe and reading still works. The pause is on our side, so reconnecting will not change it. Try again in a little while.',
     );
   }
   throw new Error(
-    'This Vitality connection is read-only, so it cannot add a tile or log data yet. Fix it in one step: disconnect the Vitality connector in your MCP client, then Allow it again. New connections get read and write access by default. (Or use a Vitality CLI token from your account for full access.)',
+    'This Imperium connection is read-only, so it cannot add a tile or log data yet. Fix it in one step: disconnect the Imperium connector in your MCP client, then Allow it again. New connections get read and write access by default. (Or use a Imperium CLI token from your account for full access.)',
   );
 }
 
@@ -530,7 +530,7 @@ export interface AddTileInput extends Omit<UploadTileInput, 'goal'> {
    *  floor-checked and stored instead of building a deterministic template from `goal`. */
   html?: string;
   /** Optional report-stream identity for a hand-built tile (so its number can wire into
-   *  Vee). Omit for a tile that reports nothing. Ignored on the `goal` path (derived). */
+   *  I). Omit for a tile that reports nothing. Ignored on the `goal` path (derived). */
   stream?: { key: string; label: string; kind: ReportKind; goalDirection?: GoalDirection } | null;
   /** The Proof value from this exact html's PASSING check_tile receipt. When it
    *  verifies, the identical re-lint is skipped (the check just ran it); absent or
@@ -540,7 +540,7 @@ export interface AddTileInput extends Omit<UploadTileInput, 'goal'> {
    *  (lib/goals/categories.ts). Declared at build time so the goal triage never
    *  scans or guesses. Optional; an unknown value is dropped, never coerced. */
   goalCategory?: string;
-  /** One line of why this tile was built - the "note for Vee". Optional. */
+  /** One line of why this tile was built - the "note for I". Optional. */
   veeNote?: string;
 }
 
@@ -556,7 +556,7 @@ function cleanGoalCategory(v: string | undefined): string | null {
   return GOAL_CATEGORIES.has(k) ? k : null;
 }
 
-/** Clamp the note for Vee to one honest line (<= 200 chars, no newlines). */
+/** Clamp the note for I to one honest line (<= 200 chars, no newlines). */
 function cleanVeeNote(v: string | undefined): string | null {
   const line = (v ?? '').replace(/\s+/g, ' ').trim().slice(0, 200);
   return line || null;
@@ -629,7 +629,7 @@ async function resolveCurrency(v: VitalityDb): Promise<string> {
 }
 
 // A generous ceiling on hand-built tile HTML. The tool schema already caps at 400K, but
-// addTile itself had no bound; a rich Vitality tile is ~15-30K chars, so 200K is ~8-10x
+// addTile itself had no bound; a rich Imperium tile is ~15-30K chars, so 200K is ~8-10x
 // headroom for a very elaborate one while refusing a multi-megabyte payload before it
 // hits the row. Tunable via env for ops.
 const TILE_HTML_MAX = clampInt(process.env.MCP_TILE_HTML_MAX, 200_000, 20_000, 400_000);
@@ -643,13 +643,13 @@ export async function addTile(v: VitalityDb, input: AddTileInput): Promise<Added
     const html = input.html.trim();
     if (html.length > TILE_HTML_MAX) {
       throw new Error(
-        `This tile's HTML is too large (${html.length.toLocaleString()} chars; limit ${TILE_HTML_MAX.toLocaleString()}). A rich Vitality tile is usually 15,000-30,000 chars, so trim unused code or split it into two tiles.`,
+        `This tile's HTML is too large (${html.length.toLocaleString()} chars; limit ${TILE_HTML_MAX.toLocaleString()}). A rich Imperium tile is usually 15,000-30,000 chars, so trim unused code or split it into two tiles.`,
       );
     }
     // Floor-enforce a hand-built tile too: an unsealed/off-brand one throws the fix-it
     // list here and never lands. The declared kind comes from an explicit `stream` when
     // one is given, else from the tool's `kind` arg (the only kind field vitality_add_tile
-    // exposes), so a measurable hand-built tile that forgot its Vitality.report() is
+    // exposes), so a measurable hand-built tile that forgot its Imperium.report() is
     // refused with the report-missing guidance, never silently landed dark.
     const name = (input.name && input.name.trim()) || 'Untitled tile';
     const declaredKind = input.stream?.kind ?? input.kind;
@@ -678,7 +678,7 @@ export async function addTile(v: VitalityDb, input: AddTileInput): Promise<Added
       });
       if (!probe.ok) {
         throw new Error(
-          `This tile's stream identity is not contract-valid: ${probe.error}. Fix the stream's key/label/kind (the same shape as Vitality.report) and try again.`,
+          `This tile's stream identity is not contract-valid: ${probe.error}. Fix the stream's key/label/kind (the same shape as Imperium.report) and try again.`,
         );
       }
       stream = {
@@ -730,7 +730,7 @@ export async function addTile(v: VitalityDb, input: AddTileInput): Promise<Added
   }
 
   // Born classified (TRAIN 5): stamp the declared life bucket + the one-line
-  // "note for Vee" onto the row, only when the caller actually passed them (so
+  // "note for I" onto the row, only when the caller actually passed them (so
   // the insert stays valid against a DB without the additive migration).
   const goalCategory = cleanGoalCategory(input.goalCategory);
   const veeNote = cleanVeeNote(input.veeNote);
@@ -760,3 +760,4 @@ export async function addTile(v: VitalityDb, input: AddTileInput): Promise<Added
   await recordWrite(v, 'vitality_add_tile', `Added tile "${row.name}" (${row.category}) to the dashboard`);
   return { id: (data?.id as string | undefined) ?? null, name: row.name, category: row.category };
 }
+

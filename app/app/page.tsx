@@ -6,15 +6,15 @@ import SetupNudge from '@/components/SetupNudge'
 import RemoteUpdateWatcher from '@/components/RemoteUpdateWatcher'
 import type { Units } from '@/lib/units'
 import { getChecklistTasks } from '@/lib/checklistTasks'
-import { computeVitalityScore } from '@/lib/vitality/computeVitalityScore'
-import type { VitalityScore } from '@/lib/vitality/score'
-import { getDashboardTileStats, type DashboardTileStats } from '@/lib/vitality/dashboardStats'
+import { computeVitalityScore } from '@/lib/Imperium/computeVitalityScore'
+import type { VitalityScore } from '@/lib/Imperium/score'
+import { getDashboardTileStats, type DashboardTileStats } from '@/lib/Imperium/dashboardStats'
 import { getAvatarUrl } from '@/lib/profiles/avatar'
 import { isFounderEmail } from '@/lib/founders'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Main Dashboard · Vitality',
+  title: 'Main Dashboard · Imperium',
 }
 
 export default async function DashboardPage() {
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
   // meals against their timezone, not Vercel's UTC. See getDashboardTileStats.
   const localDayKey = cookies().get('vitality_local_date')?.value
 
-  const [tasks, vitality, tileStats] = await Promise.all([
+  const [tasks, Imperium, tileStats] = await Promise.all([
     getChecklistTasks(supabase, user.id),
     computeVitalityScore(user.id).catch((): VitalityScore => ({
       score: null,
@@ -97,11 +97,12 @@ export default async function DashboardPage() {
         userId={user.id}
         creatorHandle={creatorHandle}
         avatarUrl={avatarUrl}
-        score={vitality.score}
-        scoreState={vitality.state}
+        score={Imperium.score}
+        scoreState={Imperium.state}
         tileStats={tileStats}
         isFounder={isFounderEmail(user.email)}
       />
     </>
   )
 }
+

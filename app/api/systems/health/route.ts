@@ -76,8 +76,8 @@ function buildSystems(): SystemHealth[] {
       checks: [anthropic()],
     },
     {
-      key: 'vee-mentor',
-      name: 'Vee mentor',
+      key: 'I-mentor',
+      name: 'I mentor',
       detail: 'The chat mentor and daily triage. Runs on Claude.',
       checks: [anthropic()],
     },
@@ -101,3 +101,4 @@ export async function GET() {
 
   return Response.json({ systems: buildSystems() })
 }
+

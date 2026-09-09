@@ -205,7 +205,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
         t: 'rejected',
         errors: ['- too-large: the file is over 1000kb'],
         fixBrief:
-          'You built a Vitality dashboard tile and the file is over the 1000kb ceiling. Inline assets leaner (no embedded video or large images) and return ONE smaller sealed .html file.',
+          'You built a Imperium dashboard tile and the file is over the 1000kb ceiling. Inline assets leaner (no embedded video or large images) and return ONE smaller sealed .html file.',
       })
       return
     }
@@ -230,7 +230,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
           t: 'rejected',
           errors: ['- install-failed: the tile passed the gate but could not be saved'],
           fixBrief:
-            'The tile passed the Vitality gate but failed to install (likely a storage limit on this device). Try again; if it repeats, return a leaner single .html file.',
+            'The tile passed the Imperium gate but failed to install (likely a storage limit on this device). Try again; if it repeats, return a leaner single .html file.',
         })
         return
       }
@@ -258,7 +258,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
       <div className={styles.grain} aria-hidden />
 
       {/* Always-there way home */}
-      <Link href="/app" className={styles.homePill} aria-label="Back to your Vitality dashboard">
+      <Link href="/app" className={styles.homePill} aria-label="Back to your Imperium dashboard">
         <svg viewBox="0 0 24 24">
           <path d={P.chev} />
         </svg>
@@ -271,7 +271,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
             <svg viewBox="0 0 24 24">
               <path d={P.spark} />
             </svg>
-            VITALITY · FORGE
+            Imperium · FORGE
           </div>
 
           <h1 className={styles.title}>
@@ -328,7 +328,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
                 </strong>
                 <span>
                   {drop.veeRead
-                    ? 'Imperium can read this tile: it carries the Vee mark.'
+                    ? 'Imperium can read this tile: it carries the I mark.'
                     : 'A quiet tile: it keeps its notes to itself.'}
                 </span>
               </div>
@@ -482,7 +482,7 @@ export default function ForgeStudio({ userId }: { userId: string }) {
               </button>
               <span className={styles.codeHint}>
                 Paste once in any terminal, then just ask for tiles. Undo anytime with claude mcp
-                remove vitality.
+                remove Imperium.
               </span>
             </div>
           )}
@@ -491,3 +491,4 @@ export default function ForgeStudio({ userId }: { userId: string }) {
     </div>
   )
 }
+

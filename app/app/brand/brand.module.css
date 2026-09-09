@@ -1,5 +1,5 @@
 /* ============================================================
- * Brand module — Vitality theme.
+ * Brand module — Imperium theme.
  *
  * Mirrors the water / supplements page shell so all three feel like
  * siblings. Mint is the accent; amber shows up only on "hit target"
@@ -6070,3 +6070,4 @@ a.accountCompactHandle:hover {
 .patreonFoot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .patreonSynced { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .patreonChart { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+

@@ -31,7 +31,7 @@ for (const kind of REPORT_KINDS) {
     // the HTML must actually wire that report with the right key + kind. key/label
     // are emitted as JSON.stringify'd (double-quoted, injection-safe) literals; kind
     // is a fixed-enum value still written single-quoted. Accept either quote on key.
-    assert.match(html, new RegExp(`Vitality\\.report\\([^)]*key:["']${meta.key}["']`));
+    assert.match(html, new RegExp(`Imperium\\.report\\([^)]*key:["']${meta.key}["']`));
     assert.match(html, new RegExp(`kind:'${meta.kind}'`));
     // bridge present
     assert.match(html, /type:'save'/);
@@ -61,3 +61,4 @@ test('scaffold: overrides flow through to the tile', () => {
   assert.match(html, /goalDirection:'up'/);
   assert.match(html, /Brews/);
 });
+

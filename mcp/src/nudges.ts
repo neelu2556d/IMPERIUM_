@@ -1,4 +1,4 @@
-// Nudge engine for the Vitality MCP.
+// Nudge engine for the Imperium MCP.
 //
 // Pulls the read layer, then derives a prioritized list of nudges across every
 // server-readable domain. This is what powers `vitality_daily_briefing` and the
@@ -71,7 +71,7 @@ export interface Nudge {
 
 const SEVERITY_RANK: Record<Severity, number> = { urgent: 0, suggest: 1, info: 2 };
 
-// ── Recovery → training tier (SKILL.md "Vitality score" tiers) ─────────────────
+// ── Recovery → training tier (SKILL.md "Imperium score" tiers) ─────────────────
 function recoveryTier(recovery: number): { label: string; advice: string } {
   if (recovery >= 80) return { label: 'Peak', advice: 'push hard — green light for a heavy session' };
   if (recovery >= 65) return { label: 'Solid', advice: 'train normal' };
@@ -308,7 +308,7 @@ function subscriptionNudges(subs: SubscriptionData, todayKey: string): Nudge[] {
   }
 
   // Review candidates — the honest version of "cancel what you don't use".
-  // Vitality stores no usage signal, so we surface the priciest and say so.
+  // Imperium stores no usage signal, so we surface the priciest and say so.
   const candidates = subs.subs.slice(0, 3);
   if (candidates.length) {
     out.push({
@@ -317,7 +317,7 @@ function subscriptionNudges(subs: SubscriptionData, todayKey: string): Nudge[] {
       title: 'Worth a review: your priciest subscriptions',
       detail:
         candidates.map((s) => `${s.name} (${round(s.monthlyChf, 2)} CHF/mo)`).join(' · ') +
-        '. Heads up: Vitality does not track last-used, so I can\'t tell which you actually use — these are simply the costliest. You decide if each earns its keep.',
+        '. Heads up: Imperium does not track last-used, so I can\'t tell which you actually use — these are simply the costliest. You decide if each earns its keep.',
     });
   }
 
@@ -783,7 +783,7 @@ export interface BriefingInputs {
 // and the copy. Adding a seam is ONE entry below, never new detection code.
 //
 // Curated on purpose. The engine makes adding a seam cheap; it does NOT license firing
-// on every pair — most are noise and Vee would cry wolf (multiple comparisons). Only
+// on every pair — most are noise and I would cry wolf (multiple comparisons). Only
 // seams with a plausible mechanism live here, and each still has to clear its gate.
 //
 // The honesty contract for every `narrate`: show the receipts (the numbers), frame it
@@ -826,7 +826,7 @@ const tiredEatingSeam: SeamDef = {
       : mostlyEaten
         ? ' Today reads low — no guilt about what you ate; just finish the day gently.'
         : ' Today reads low, so be kind to yourself and keep meals simple and satisfying.';
-    // Always calm 'info' — a gentle mirror, never an alarm (Vitality's no-shame law).
+    // Always calm 'info' — a gentle mirror, never an alarm (Imperium's no-shame law).
     return {
       severity: 'info',
       title: todayIsLow
@@ -954,9 +954,9 @@ function seamNudges(d: BriefingInputs): Nudge[] {
   return out;
 }
 
-// ── Mind: a gentle reach-out when mood reads low (ties to "Vee notices slipping") ──
+// ── Mind: a gentle reach-out when mood reads low (ties to "I notices slipping") ──
 // Mood is now a number (explicit 1–5 taps + journal sentiment). When the recent
-// stretch reads low or is clearly dipping, Vee reaches out first — warm, calm,
+// stretch reads low or is clearly dipping, I reaches out first — warm, calm,
 // never alarmed, never a diagnosis. Gated on enough days so it never over-reaches.
 function moodNudges(moodDaily: MoodDay[]): Nudge[] {
   const t = moodTrend(moodDaily);
@@ -1050,7 +1050,7 @@ export async function buildBriefing(v: VitalityDb): Promise<Briefing> {
 export function renderBriefing(b: Briefing): string {
   const icon: Record<Severity, string> = { urgent: '🔴', suggest: '🟡', info: '·' };
   const lines: string[] = [];
-  lines.push(`Vitality briefing — ${b.dayKey}${b.greetingName ? ` for ${b.greetingName}` : ''}`);
+  lines.push(`Imperium briefing — ${b.dayKey}${b.greetingName ? ` for ${b.greetingName}` : ''}`);
   lines.push('');
   for (const n of b.nudges) {
     lines.push(`${icon[n.severity]} [${n.domain}] ${n.title}`);
@@ -1058,3 +1058,4 @@ export function renderBriefing(b: Briefing): string {
   }
   return lines.join('\n');
 }
+

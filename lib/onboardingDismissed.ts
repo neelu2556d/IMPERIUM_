@@ -11,5 +11,6 @@
  * cross-user pollution.
  */
 export function dismissedKeyForUser(userId: string): string {
-  return `vitality.onboarding.dismissed:${userId}`
+  return `Imperium.onboarding.dismissed:${userId}`
 }
+

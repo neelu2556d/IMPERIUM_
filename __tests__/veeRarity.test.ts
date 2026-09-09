@@ -5,7 +5,7 @@ import {
   watchedDepth,
   normalizeRarity,
   type Rarity,
-} from '@/lib/vee/rarity'
+} from '@/lib/I/rarity'
 
 describe('rarityForNotice — maps a real insight to an OG-loot tier', () => {
   it('honors the engine grade verbatim when one was set', () => {
@@ -90,3 +90,4 @@ describe('buildCollection — the six-tier grid', () => {
     expect(collectionTotal([])).toBe(0)
   })
 })
+

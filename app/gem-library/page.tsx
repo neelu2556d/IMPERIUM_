@@ -3,7 +3,7 @@ import GemLibrary from './GemLibrary'
 
 export const metadata: Metadata = {
   title: 'Gem Library v2 · Imperium',
-  description: 'Internal design lab for the canonical Vitality gem and its signature animations.',
+  description: 'Internal design lab for the canonical Imperium gem and its signature animations.',
 }
 
 // Public route (not under /app, /account, or /welcome — see middleware), so
@@ -14,3 +14,4 @@ export const metadata: Metadata = {
 export default function GemLibraryPage() {
   return <GemLibrary />
 }
+

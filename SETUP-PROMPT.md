@@ -1,4 +1,4 @@
-# Vitality — agent setup prompt
+# Imperium — agent setup prompt
 
 The one-prompt version (works from any empty folder — no clone needed first):
 
@@ -11,7 +11,7 @@ Or paste everything below this line into Claude Code, Codex, or any coding agent
 
 ---
 
-You are setting up **Vitality**, an open-source multi-user life dashboard (Next.js 14 + Supabase, repo: https://github.com/ohwisey/vitality-oss). Your job is to take it from nothing to a running app — locally, and optionally deployed to Vercel — doing everything yourself except the few things that need my accounts. Work through the phases in order. Verify each phase before moving on. Never print, log, or commit secret values; they belong only in `.env.local` (gitignored) and in Vercel's env store.
+You are setting up **Imperium**, an open-source multi-user life dashboard (Next.js 14 + Supabase, repo: https://github.com/ohwisey/vitality-oss). Your job is to take it from nothing to a running app — locally, and optionally deployed to Vercel — doing everything yourself except the few things that need my accounts. Work through the phases in order. Verify each phase before moving on. Never print, log, or commit secret values; they belong only in `.env.local` (gitignored) and in Vercel's env store.
 
 Start by asking me one question: **"Local only, or local + deploy to Vercel?"** Then proceed.
 

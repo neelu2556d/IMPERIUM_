@@ -2,13 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { evalPrompts, evalCases, EVAL_PROMPTS, EVAL_CASES } from './evalTiles.js';
 
-test('eval: every diverse prompt builds a Vitality-grade tile (0 errors, 0 warnings) and exports', () => {
+test('eval: every diverse prompt builds a Imperium-grade tile (0 errors, 0 warnings) and exports', () => {
   const report = evalPrompts();
   // Print the receipt so the proof is visible in the test output, not just asserted.
   console.log('\n' + report.receipt + '\n');
   assert.ok(report.total >= 20, `expected >=20 prompts, got ${report.total}`);
   const dirty = report.rows.filter((r) => r.errors > 0 || r.warnings > 0 || !r.exportable);
-  assert.equal(dirty.length, 0, 'these prompts did not come out Vitality-grade: ' + JSON.stringify(dirty, null, 2));
+  assert.equal(dirty.length, 0, 'these prompts did not come out Imperium-grade: ' + JSON.stringify(dirty, null, 2));
   assert.equal(report.allClean, true);
   assert.equal(report.clean, report.total);
   // Beyond the lint floor: every tile must also clear the structural richness gate,
@@ -68,6 +68,7 @@ test('eval: every locked goal also builds a clean, rich, exportable tile', () =>
   assert.equal(
     dirty.length,
     0,
-    'these locked goals did not build Vitality-grade:\n' + JSON.stringify(dirty, null, 2),
+    'these locked goals did not build Imperium-grade:\n' + JSON.stringify(dirty, null, 2),
   );
 });
+

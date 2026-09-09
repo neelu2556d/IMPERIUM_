@@ -191,13 +191,13 @@ export default async function PricingPage() {
           </p>
         </header>
 
-        {/* IT'S A CONNECTOR — Vitality shown live in Claude's connector list. */}
+        {/* IT'S A CONNECTOR — Imperium shown live in Claude's connector list. */}
         <ConnectorPanel />
 
         {/* WHAT GOES IN — the modules, each clickable to preview in the app. */}
         <InputSources />
 
-        {/* THE PROOF — your app (laptop, the Vee notice) beside Claude (phone,
+        {/* THE PROOF — your app (laptop, the I notice) beside Claude (phone,
             connected), so you see input and brain side by side. */}
         <div className={styles.deviceScene}>
           <VeeNotice />
@@ -363,3 +363,4 @@ export default async function PricingPage() {
     </main>
   )
 }
+

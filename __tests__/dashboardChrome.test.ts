@@ -26,7 +26,7 @@ describe('dashboardChrome: the themeable world (wallpaper)', () => {
   })
 
   test('a partial stored world blob merges up to a full background', () => {
-    localStorageMock.setItem('vitality:user-a:chrome', JSON.stringify({ background: { mode: 'world', accent: '#F5B044' } }))
+    localStorageMock.setItem('Imperium:user-a:chrome', JSON.stringify({ background: { mode: 'world', accent: '#F5B044' } }))
     const bg = dashboardChrome.get(A).background
     expect(bg).toEqual({ mode: 'world', accent: '#F5B044', particles: 24, mountains: true, speed: 1 })
   })
@@ -47,3 +47,4 @@ describe('dashboardChrome: the themeable world (wallpaper)', () => {
     expect(backgroundAccent({ mode: 'solid', color: '#000000' })).toBe('#6EE7B7')
   })
 })
+

@@ -1,11 +1,11 @@
 'use client'
 
 import { Component, type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import styles from './vitalityIntro.module.css'
+import styles from './imperiumIntro.module.css'
 
 /**
  * "The Swipe" app-open splash, ported from the approved
- * public/vitality-intro-a.html. A fixed full-screen black overlay: the I mark
+ * public/Imperium-intro-a.html. A fixed full-screen black overlay: the I mark
  * streaks in from the right trailing mint motion lines, the IMPERIUM letters
  * settle right to left in its wake, then the whole splash fades out to reveal
  * the dashboard.
@@ -187,7 +187,7 @@ function IntroInner({ onReveal }: IntroProps) {
     {/* suppressHydrationWarning: the parse-time script below may have stamped
         style="display:none" on the server HTML before React hydrates. */}
     <div
-      id="vitality-intro"
+      id="Imperium-intro"
       suppressHydrationWarning
       className={`${styles.overlay}${phase === 'fading' ? ` ${styles.hide}` : ''}`}
       aria-hidden="true"
@@ -199,12 +199,12 @@ function IntroInner({ onReveal }: IntroProps) {
           <div className={`${styles.streak} ${styles.s2}`} />
           <svg className={styles.vSvg} viewBox="0 0 100 100" aria-label="Imperium mark">
             <defs>
-              <linearGradient id="vitality-intro-vg" x1="0" y1="0" x2="1" y2="1">
+              <linearGradient id="Imperium-intro-vg" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stopColor="#9be7b8" />
                 <stop offset="1" stopColor="#6EE7B7" />
               </linearGradient>
             </defs>
-            <path d="M20 10 L50 90 L80 10" stroke="url(#vitality-intro-vg)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <path d="M20 10 L50 90 L80 10" stroke="url(#Imperium-intro-vg)" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </svg>
         </div>
         <div className={styles.word}>
@@ -225,9 +225,10 @@ function IntroInner({ onReveal }: IntroProps) {
     <script
       dangerouslySetInnerHTML={{
         __html:
-          "try{if(sessionStorage.getItem('imperium:intro-played'))document.getElementById('vitality-intro').style.display='none'}catch(e){document.getElementById('vitality-intro').style.display='none'}",
+          "try{if(sessionStorage.getItem('imperium:intro-played'))document.getElementById('Imperium-intro').style.display='none'}catch(e){document.getElementById('Imperium-intro').style.display='none'}",
       }}
     />
     </>
   )
 }
+

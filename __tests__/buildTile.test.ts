@@ -13,7 +13,7 @@ describe('buildTile', () => {
     expect(b.meta.kind).toBe('intake')
     expect(b.meta.key).toMatch(/^[a-z0-9_]+$/)
     expect(b.meta.target).toBeGreaterThan(0)
-    expect(b.html).toContain('vitality-tile') // the bridge is present
+    expect(b.html).toContain('Imperium-tile') // the bridge is present
     expect(lintTile(b.html).errors).toBe(0)
     expect(b.sampleValues).toHaveLength(7)
   })
@@ -125,3 +125,4 @@ describe('buildTile x quickLibrary presets - direction + key honesty', () => {
     }
   })
 })
+

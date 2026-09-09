@@ -1,5 +1,5 @@
 /**
- * Vee Goals repo — pure row<->domain mappers + thin RLS-scoped read helpers.
+ * I Goals repo — pure row<->domain mappers + thin RLS-scoped read helpers.
  * Mappers are IO-free (unit-tested in __tests__/veeGoalsRepo.test.ts); the
  * Supabase writes live in app/app/goals/goalActions.ts. Mirrors the style of
  * lib/vitals/goalsRepo.ts (numerics arrive from PostgREST as strings).
@@ -214,3 +214,4 @@ export async function getStreak(supabase: SupabaseClient, userId: string): Promi
   if (error) throw new Error(`goals_streak read failed: ${error.message}`)
   return rowToStreak((data as StreakRow) ?? null)
 }
+

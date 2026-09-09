@@ -21,20 +21,20 @@ const USERNAME_RE = /^[a-z0-9_]+$/
 
 /**
  * Handles we never hand to a user. Two reasons:
- *  - route collisions: `/u`, `/app`, `/account`, `/api`, `/mcp`, `/vee` etc.
+ *  - route collisions: `/u`, `/app`, `/account`, `/api`, `/mcp`, `/I` etc.
  *    (a handle that shadows a real path is a footgun even though `/u/<h>` is
  *    namespaced — it reads as official).
- *  - brand / impersonation: `vitality`, `admin`, `support`, `team`, `official`.
+ *  - brand / impersonation: `Imperium`, `admin`, `support`, `team`, `official`.
  */
 const RESERVED = new Set<string>([
   // routes / namespaces
   'u', 'app', 'api', 'account', 'auth', 'login', 'signup', 'logout',
-  'onboarding', 'welcome', 'pricing', 'mcp', 'vee', 'settings', 'www',
+  'onboarding', 'welcome', 'pricing', 'mcp', 'I', 'settings', 'www',
   'assets', 'static', 'public', 'favicon', 'robots', 'sitemap',
   // legal / meta
   'about', 'terms', 'privacy', 'help', 'contact', 'support', 'not-found', 'notfound',
   // brand / authority
-  'vitality', 'admin', 'administrator', 'root', 'team', 'official', 'staff',
+  'Imperium', 'admin', 'administrator', 'root', 'team', 'official', 'staff',
   'mod', 'moderator', 'system', 'null', 'undefined', 'anonymous', 'me',
 ])
 
@@ -80,3 +80,4 @@ export function validateUsername(raw: string): UsernameResult {
 
   return { ok: true, value }
 }
+

@@ -1,4 +1,4 @@
-/* components/vee/veeTile.module.css
+/* components/I/veeTile.module.css
  * Self-contained timing tokens (--vt-spring / --vt-ease) so the springy feel
  * matches the kit exactly regardless of where the card renders. Color + font
  * tokens (--iris, --iris-hi, --ink, --ink-dim, --mint, --rule-strong,
@@ -73,7 +73,7 @@
 @keyframes choicePop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 
 /* ─────────────────────────────────────────────────────────────────────────
- * AskCard additions (Vee ask cards). Purely additive — new classes only, so
+ * AskCard additions (I ask cards). Purely additive — new classes only, so
  * the v1 kit (ConfirmTile / ChoiceTile / TrainingDayCard) is untouched.
  * ───────────────────────────────────────────────────────────────────────── */
 
@@ -267,3 +267,4 @@
 
 @media (prefers-reduced-motion:reduce){.tile,.tile *{animation:none!important; transition:none!important}
   .askKey{opacity:1} .dialThumb{opacity:1} .dialRail,.trail::before{transform:none}}
+

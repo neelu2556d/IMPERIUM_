@@ -4,7 +4,7 @@
  * The registry is the one source of truth for every drawable series, so these
  * tests are the door: every entry must carry a valid category, a REAL /app
  * route that exists on disk, and non-empty classifying words; and the counts
- * are pinned to the Vee Library's 34 so a drive-by edit can never silently
+ * are pinned to the I Library's 34 so a drive-by edit can never silently
  * shrink or bloat the catalog.
  */
 import fs from 'fs'
@@ -68,7 +68,7 @@ describe('metric registry entries', () => {
   })
 })
 
-describe('metric registry counts (the 34 of the Vee Library)', () => {
+describe('metric registry counts (the 34 of the I Library)', () => {
   it('matches the snapshot per category', () => {
     const counts = Object.fromEntries(
       GOAL_CATEGORIES.map((c) => [c, metricsForCategory(c).length]),
@@ -117,3 +117,4 @@ describe('the binding wire (goalGuide reads the registry)', () => {
     }
   })
 })
+

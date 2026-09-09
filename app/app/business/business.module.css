@@ -6,7 +6,11 @@
   position: relative;
   min-height: 100vh;
   background: var(--bg, #04060a);
-  color: var(--fg, #e8eef5);
+  /* Override CSS variables for better contrast in Business tile */
+  --fg: #f4f4f5;
+  --muted: #71717a;
+  --muted-strong: #a1a1aa;
+  --border: #1a2330;
   font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
 }
 

@@ -111,7 +111,7 @@ async function resolveCredential(bearer: string, env: McpEnv): Promise<Resolved 
 }
 
 /** Build the per-request RLS-scoped client: the minted JWT rides as the Bearer
- *  to Vitality's own Supabase (and nowhere else), so auth.uid() = userId. The
+ *  to Imperium's own Supabase (and nowhere else), so auth.uid() = userId. The
  *  granted scopes travel on the client so write tools can refuse a read-only
  *  credential — RLS already confines rows; scope confines capability. */
 function buildVitalityDb(userId: string, scope: string, env: McpEnv): VitalityDb {
@@ -148,7 +148,7 @@ export async function authenticateMcpRequest(req: Request): Promise<AuthResult> 
   // Global kill-switch: neutralize write capability before the client is built so
   // a single Vercel env flip pauses the whole write surface (read stays). The
   // granted 'mcp:write' is swapped for a paused marker rather than dropped, so
-  // requireWrite can tell "paused by the Vitality team" apart from "never granted"
+  // requireWrite can tell "paused by the Imperium team" apart from "never granted"
   // and give guidance that actually helps (wait vs reconnect). Mirrors
   // WRITE_PAUSED_SCOPE in mcp/src/supabase.ts; keep the literals identical.
   const effectiveScope = writesEnabled()
@@ -175,3 +175,4 @@ export async function authenticateMcpRequest(req: Request): Promise<AuthResult> 
 
   return { ok: true, vdb }
 }
+

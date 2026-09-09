@@ -34,10 +34,11 @@ describe('isFirstPartyAiHtml', () => {
     // The featured html is the canonical tile; if these markers vanish the
     // envelope/report contract broke somewhere upstream of trust.
     const html = studio!.envelope.html
-    expect(html).toContain("source:'vitality-tile'")
+    expect(html).toContain("source:'Imperium-tile'")
     expect(html).toContain('videos_published')
     expect(html).toContain('studio:lookup')
     expect(html).toContain('studio:status')
     expect(html).toContain('studio:connect')
   })
 })
+

@@ -18,7 +18,7 @@ import type { Skin } from './tileSkin'
  * parseTileCodeResult is the new helper that also hands back WHY it failed.
  */
 
-const PREFIX = 'vitality:tile:'
+const PREFIX = 'Imperium:tile:'
 
 /**
  * Max decoded html a share code may carry, mirroring tileStore.MAX_TILE_HTML and
@@ -32,7 +32,7 @@ const MAX_CODE_LENGTH = Math.ceil((MAX_SHARE_HTML * 4) / 3) + 4096
 
 /** Every reason parseTileCodeResult can fail with, so callers can map to copy. */
 export type ShareCodeFailReason =
-  | 'not_a_code' // no vitality:tile: prefix (caller should try plain JSON / raw HTML)
+  | 'not_a_code' // no Imperium:tile: prefix (caller should try plain JSON / raw HTML)
   | 'too_large' // the pasted code (or its decoded payload) exceeds the size we will accept
   | 'bad_base64' // the payload after the prefix is not decodable base64url
   | 'bad_json' // decoded fine but is not valid JSON
@@ -161,3 +161,4 @@ export function parseTileCode(text: string): TileEnvelope | null {
 export function isTileCode(text: string): boolean {
   return typeof text === 'string' && text.trim().startsWith(PREFIX)
 }
+

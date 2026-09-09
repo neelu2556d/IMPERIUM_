@@ -18,7 +18,7 @@ const URGENCY: Record<Severity, number> = { urgent: 100, suggest: 40, info: 10 }
 // moodNudges' gate) leads over a routine training 'suggest' — being in someone's
 // corner comes before the deload reminder. A true 'urgent' (100) still wins.
 const CARE_BOOST: Partial<Record<Nudge['domain'], number>> = {
-  mind: 40,       // a low-mood reach-out — Vitality's emotional core
+  mind: 40,       // a low-mood reach-out — Imperium's emotional core
   nutrition: 12,  // the tired→eating cross-tile pattern surfaces here
   finance: 12,    // a renewal / large debit worth a word
   peak: 8,        // the caffeine→recovery seam — a cross-tile steer leads over a routine suggest, but stays under a low-mood reach-out
@@ -49,7 +49,7 @@ export function selectLeadInsight(nudges: Nudge[]): Nudge | null {
   return best;
 }
 
-// ── The greeting shaper (Vee's voice/format contract) ─────────────────────────
+// ── The greeting shaper (I's voice/format contract) ─────────────────────────
 // Domains worth a one-line readout, in scan order. The lead insight is pulled OUT
 // so it isn't said twice.
 // 'mind' is included so a low-mood reach-out never silently vanishes: when it
@@ -81,10 +81,10 @@ const OFFER: Partial<Record<Nudge['domain'], string>> = {
 };
 
 /**
- * Shape the briefing into the Start-My-Day greeting in Vee's voice contract:
+ * Shape the briefing into the Start-My-Day greeting in I's voice contract:
  * a warm "Howdy", a 3-second scannable readout, the ONE insight that matters
  * most, and an optional one-tap offer. Returns finished text; the connected
- * Claude delivers it warmly as Vee (per the Project instruction).
+ * Claude delivers it warmly as I (per the Project instruction).
  */
 export function shapeStartMyDay(b: Briefing): string {
   const name = b.greetingName?.trim() || 'there';
@@ -93,7 +93,7 @@ export function shapeStartMyDay(b: Briefing): string {
 
   const out: string[] = [];
   out.push(
-    "[Deliver the below warmly, in Vee's voice — in their corner, honest, no shame. " +
+    "[Deliver the below warmly, in I's voice — in their corner, honest, no shame. " +
       'Lead with the greeting, keep it scannable, end on the one insight + offer.]',
   );
   out.push('');
@@ -121,3 +121,4 @@ export function shapeStartMyDay(b: Briefing): string {
 
   return out.join('\n');
 }
+

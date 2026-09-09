@@ -1,5 +1,5 @@
 /**
- * claudeHandoff - the pure Claude prefill composer for the Vee page.
+ * claudeHandoff - the pure Claude prefill composer for the I page.
  * Honesty rules under test: quick questions only for modules with real data
  * (generic fallback when nothing is tracked), the context block never invents
  * a line for an empty field, and a contextless hop stays the bare question.
@@ -12,7 +12,7 @@ import {
   contextBlock,
   quickQuestions,
   type ClaudeHandoffContext,
-} from '@/lib/vee/claudeHandoff'
+} from '@/lib/I/claudeHandoff'
 
 const FULL_CTX: ClaudeHandoffContext = {
   firstName: 'Alex',
@@ -83,7 +83,7 @@ describe('contextBlock / composePrefill', () => {
   it('prefill = question first, context block after', () => {
     const p = composePrefill('am i overtraining?', FULL_CTX)
     expect(p.startsWith('am i overtraining?')).toBe(true)
-    expect(p).toContain('Context from my Vitality dashboard')
+    expect(p).toContain('Context from my Imperium dashboard')
   })
 
   it('href encodes the whole prefill for claude.ai/new', () => {
@@ -139,3 +139,4 @@ describe('buildHandoffContext', () => {
     expect(ctx.noticeLead).toBe('first lead')
   })
 })
+

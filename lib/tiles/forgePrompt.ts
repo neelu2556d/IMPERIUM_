@@ -33,10 +33,10 @@ export const TILE_SPEC_URL = 'http://localhost:3000/tile-spec'
 /** The one-time Claude Code hookup. --scope user: registered for every folder,
  *  not just the directory it was run in ("worked yesterday, broken today in a
  *  new project" is a support ticket we refuse to ship). */
-export const FORGE_CONNECT_CMD = `claude mcp add --scope user --transport http vitality ${FORGE_MCP_URL}`
+export const FORGE_CONNECT_CMD = `claude mcp add --scope user --transport http Imperium ${FORGE_MCP_URL}`
 
 /** The kit's real domain list (vitality_tile_kit inputSchema in mcp/src/tools.ts). */
-const KIT_DOMAINS = 'food, workout, supplement, vee, finance, vitals, goals'
+const KIT_DOMAINS = 'food, workout, supplement, I, finance, vitals, goals'
 
 export interface ForgePrompt {
   /** The universal build brief: any AI, no tools assumed, ends at the drop zone. */
@@ -67,15 +67,15 @@ function cleanIdea(raw: string): string {
  *  complete rulebook + design DNA even if it cannot fetch a URL. */
 function universalBrief(idea: string): string {
   return [
-    'You are building a custom tile for my Vitality dashboard: ONE sealed, self-contained HTML file that runs sandboxed and talks to the dashboard only through the Vitality bridge.',
+    'You are building a custom tile for my Imperium dashboard: ONE sealed, self-contained HTML file that runs sandboxed and talks to the dashboard only through the Imperium bridge.',
     '',
     `My idea: "${idea}"`,
     '',
-    `The complete build spec is included below this brief (it is also live at ${TILE_SPEC_URL}). Follow it exactly: the sealed-file rules, the Vitality design DNA, the bridge API (Vitality.save / Vitality.load), and the Vitality.report({key,label,value,date,kind}) contract with its seven kinds: intake, count, duration, rating, measure, money, done.`,
+    `The complete build spec is included below this brief (it is also live at ${TILE_SPEC_URL}). Follow it exactly: the sealed-file rules, the Imperium design DNA, the bridge API (Imperium.save / Imperium.load), and the Imperium.report({key,label,value,date,kind}) contract with its seven kinds: intake, count, duration, rating, measure, money, done.`,
     '',
-    'Hand-author ONE complete single-file .html tile for my idea that meets every hard-floor rule in the spec. Full-grade, not a stub. Style it with the design DNA (no emoji, no em dashes, the palette and type recipe) so it looks native to Vitality, unless I ask for my own style - looks are my freedom, only the floor and the data contract are law.',
+    'Hand-author ONE complete single-file .html tile for my idea that meets every hard-floor rule in the spec. Full-grade, not a stub. Style it with the design DNA (no emoji, no em dashes, the palette and type recipe) so it looks native to Imperium, unless I ask for my own style - looks are my freedom, only the floor and the data contract are law.',
     '',
-    "When you are done, give me the finished file to download (or the complete html to save as a .html file). I will upload it on Vitality's Forge page, where a gate re-checks every rule. If it fails, I will paste the gate's fix list back to you: fix every item and return the corrected file, keeping it ONE sealed .html file.",
+    "When you are done, give me the finished file to download (or the complete html to save as a .html file). I will upload it on Imperium's Forge page, where a gate re-checks every rule. If it fails, I will paste the gate's fix list back to you: fix every item and return the corrected file, keeping it ONE sealed .html file.",
     '',
     'If my idea is ambiguous, pick the strongest interpretation and tell me what you chose.',
     '',
@@ -88,17 +88,17 @@ function universalBrief(idea: string): string {
 /** The MCP ritual for the Claude Code lane (the real tool surface, in order). */
 function mcpBrief(idea: string): string {
   return [
-    'You are building a custom tile for my Vitality dashboard: ONE sealed, self-contained HTML file that runs sandboxed and talks to the dashboard only through the Vitality bridge.',
+    'You are building a custom tile for my Imperium dashboard: ONE sealed, self-contained HTML file that runs sandboxed and talks to the dashboard only through the Imperium bridge.',
     '',
     `My idea: "${idea}"`,
     '',
     'In order:',
     '',
-    '1. Check your tools. If the Vitality tools (vitality_tile_kit, check_tile, vitality_add_tile) are not connected yet, run the claude mcp add command at the top of this message once, approve it, then continue.',
+    '1. Check your tools. If the Imperium tools (vitality_tile_kit, check_tile, vitality_add_tile) are not connected yet, run the claude mcp add command at the top of this message once, approve it, then continue.',
     '',
     `2. Call vitality_tile_kit with the best-fit domain, one of: ${KIT_DOMAINS} (no arguments if none fits) and build to what it returns. Its descriptions steer simple trackers to a goal-only default - here the hand-authored kit path is exactly what I am asking for. Do not take the goal-only shortcut or scaffold_tile.`,
     '',
-    '3. Hand-author ONE complete single-file HTML tile that meets every kit floor rule: sealed and self-contained, transform/opacity motion only, local YYYY-MM-DD dates, bridge wired (Vitality.save / Vitality.load, plus one honest Vitality.report). Style it native (dark Vitality look, no emoji, no em dashes) unless I ask for my own style - taste warns, never blocks. Full-grade, not a stub.',
+    '3. Hand-author ONE complete single-file HTML tile that meets every kit floor rule: sealed and self-contained, transform/opacity motion only, local YYYY-MM-DD dates, bridge wired (Imperium.save / Imperium.load, plus one honest Imperium.report). Style it native (dark Imperium look, no emoji, no em dashes) unless I ask for my own style - taste warns, never blocks. Full-grade, not a stub.',
     '',
     '4. Prove it with check_tile; fix every error until it passes with 0 errors, and keep the Proof line from the passing receipt.',
     '',
@@ -115,3 +115,4 @@ export function buildForgePrompt(idea: string): ForgePrompt {
     code: `${FORGE_CONNECT_CMD}\n\n${mcpBrief(clean)}`,
   }
 }
+

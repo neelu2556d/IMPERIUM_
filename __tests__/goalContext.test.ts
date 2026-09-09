@@ -50,25 +50,26 @@ describe('deriveGoalMode', () => {
   })
 })
 
-describe('deriveGoalMode honors the Vee goal (hand in hand with the goals tab)', () => {
-  it('uses the Vee goal when no nutrition outcome is set', () => {
+describe('deriveGoalMode honors the I goal (hand in hand with the goals tab)', () => {
+  it('uses the I goal when no nutrition outcome is set', () => {
     expect(deriveGoalMode({ goalOutcome: null, bigGoal: { title: 'Lose weight for summer' } })).toBe('lose')
     expect(deriveGoalMode({ goalOutcome: null, bigGoal: { title: 'Get leaner and stronger' } })).toBe('build')
     expect(deriveGoalMode({ goalOutcome: null, bigGoal: { identityTag: 'a lifter' } })).toBe('build')
   })
 
-  it('a Vee goal overrides a neutral MAINTAIN nutrition outcome', () => {
+  it('a I goal overrides a neutral MAINTAIN nutrition outcome', () => {
     expect(deriveGoalMode({ goalOutcome: 'MAINTAIN', bigGoal: { title: 'lose weight' } })).toBe('lose')
     expect(deriveGoalMode({ goalOutcome: 'MAINTAIN', bigGoal: { title: 'build muscle' } })).toBe('build')
   })
 
-  it('an explicit nutrition cut/bulk still wins over the Vee goal', () => {
+  it('an explicit nutrition cut/bulk still wins over the I goal', () => {
     expect(deriveGoalMode({ goalOutcome: 'CUT', bigGoal: { title: 'build muscle' } })).toBe('lose')
     expect(deriveGoalMode({ goalOutcome: 'LEAN_BULK', bigGoal: { title: 'lose weight' } })).toBe('build')
   })
 
-  it('a non-fitness or vague Vee goal does not flip the grade', () => {
+  it('a non-fitness or vague I goal does not flip the grade', () => {
     expect(deriveGoalMode({ goalOutcome: 'MAINTAIN', bigGoal: { title: 'Read 12 books', category: 'craft' } })).toBe('balanced')
     expect(deriveGoalMode({ bigGoal: { category: 'fitness' } })).toBe('balanced')
   })
 })
+

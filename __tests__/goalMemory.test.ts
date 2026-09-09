@@ -20,14 +20,14 @@ const base: BigGoal = {
   achievedAt: null,
 }
 
-describe('goalMemoryAction — Vee remembers exactly what the goal currently is', () => {
+describe('goalMemoryAction — I remembers exactly what the goal currently is', () => {
   it('a silent goal is private: write nothing, ever', () => {
     expect(goalMemoryAction({ ...base, push: 'silent' })).toEqual({ op: 'delete' })
     // silent wins even when achieved
     expect(goalMemoryAction({ ...base, push: 'silent', status: 'achieved' })).toEqual({ op: 'delete' })
   })
 
-  it('a paused or abandoned goal retracts the memory (Vee goes quiet about it)', () => {
+  it('a paused or abandoned goal retracts the memory (I goes quiet about it)', () => {
     expect(goalMemoryAction({ ...base, status: 'paused' })).toEqual({ op: 'delete' })
     expect(goalMemoryAction({ ...base, status: 'abandoned' })).toEqual({ op: 'delete' })
   })
@@ -39,7 +39,7 @@ describe('goalMemoryAction — Vee remembers exactly what the goal currently is'
     expect(a.salience).toBe(0.6) // medium
     expect(a.body).toContain('Personal goal: Run a half marathon.')
     expect(a.body).toContain('Medium priority.')
-    expect(a.body).toContain('Wants Vee to nudge them if they drift.')
+    expect(a.body).toContain('Wants I to nudge them if they drift.')
     // no date / no progress phrasing when those are absent
     expect(a.body).not.toMatch(/Target date/)
     expect(a.body).not.toMatch(/ of /)
@@ -61,7 +61,7 @@ describe('goalMemoryAction — Vee remembers exactly what the goal currently is'
     expect(a.body).toContain('Target date 2026-09-01.')
     expect(a.body).toContain('At 640 of 1000 subs.')
     expect(a.body).toContain('High priority.')
-    expect(a.body).toContain('Wants Vee to push them to show up.')
+    expect(a.body).toContain('Wants I to push them to show up.')
   })
 
   it('progress with no target is treated as milestone-style (no count phrase)', () => {
@@ -88,6 +88,7 @@ describe('goalMemoryAction — Vee remembers exactly what the goal currently is'
 describe('goalFactBody', () => {
   it('builds the canonical working-toward line', () => {
     expect(goalFactBody({ ...base, cleanTitle: null }))
-      .toBe('Personal goal: Run a half marathon. Medium priority. Wants Vee to nudge them if they drift.')
+      .toBe('Personal goal: Run a half marathon. Medium priority. Wants I to nudge them if they drift.')
   })
 })
+

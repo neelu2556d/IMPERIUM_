@@ -48,7 +48,7 @@
 
 /* Resets scoped with :where() so they carry element/pseudo specificity ONLY
    (like the preview's bare `button{}`), never overriding the single-class
-   component styles below (.vee mint fill, .gear/.info borders, .scoredBtn size). */
+   component styles below (.I mint fill, .gear/.info borders, .scoredBtn size). */
 :where(.root) * { box-sizing: border-box; }
 :where(.root) button {
   font: inherit; color: inherit; background: none; border: none; cursor: pointer;
@@ -292,7 +292,7 @@
   display: flex; flex-direction: column; align-items: center; gap: 16px;
   animation: riseIn 0.9s var(--ease) 0.5s both;
 }
-.vee {
+.I {
   display: inline-flex; align-items: center; gap: 10px;
   border-radius: 999px; padding: 13px 24px;
   background: var(--mint); color: var(--mint-ink);
@@ -302,7 +302,7 @@
   animation: invite 1.6s ease-in-out infinite;
   transition: background 0.3s, transform 0.25s var(--ease), box-shadow 0.3s;
 }
-.vee svg { width: 15px; height: 15px; fill: var(--mint-ink); }
+.I svg { width: 15px; height: 15px; fill: var(--mint-ink); }
 .foot {
   display: flex; align-items: center; gap: 7px;
   font-family: var(--mono); font-size: 8.5px; font-weight: 500; letter-spacing: 0.18em;
@@ -356,7 +356,7 @@
   .help:hover { border-color: rgba(167, 243, 208, 0.35); color: var(--mint); }
   .card:hover { border-color: rgba(167, 243, 208, 0.28); background: rgba(167, 243, 208, 0.03); transform: translateY(-2px); }
   .info:hover { border-color: rgba(167, 243, 208, 0.4); color: var(--mint); }
-  .vee:hover { background: var(--mint-hover); transform: translateY(-1px); box-shadow: 0 10px 24px -14px rgba(110, 231, 183, 0.4); }
+  .I:hover { background: var(--mint-hover); transform: translateY(-1px); box-shadow: 0 10px 24px -14px rgba(110, 231, 183, 0.4); }
   .scoredBtn:hover { color: var(--mint); }
   .sheetClose:hover { border-color: rgba(167, 243, 208, 0.35); color: var(--tx); }
 }
@@ -407,3 +407,4 @@
   color: #fcd34d;
   font-weight: 600;
 }
+

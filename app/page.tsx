@@ -114,7 +114,7 @@ export default function HomePage() {
       </aside>
 
       <aside className={`${styles.caption} ${styles.captionRight}`} aria-label="Studio metadata">
-        <span className={styles.captionNum}>Vitality Studio &nbsp;·&nbsp; MMXXVI</span>
+        <span className={styles.captionNum}>Imperium Studio &nbsp;·&nbsp; MMXXVI</span>
         <div className={styles.captionTitle}>Built By Nishant Baksani</div>
         <div className={styles.captionMeta}>From a YouTube channel.<br />Cancel anytime.</div>
         <div className={styles.captionRule} />
@@ -145,3 +145,4 @@ export default function HomePage() {
     </main>
   )
 }
+

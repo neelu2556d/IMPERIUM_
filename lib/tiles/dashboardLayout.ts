@@ -11,10 +11,10 @@ import type { Tile } from './types'
  * another's.
  *
  * Key:
- *   vitality:<userId>:dashboard   -> string[]  (placed tile ids, in display order)
+ *   Imperium:<userId>:dashboard   -> string[]  (placed tile ids, in display order)
  */
 
-const key = (userId: string) => `vitality:${userId}:dashboard`
+const key = (userId: string) => `Imperium:${userId}:dashboard`
 const hasStorage = () => typeof window !== 'undefined' && !!window.localStorage
 
 function read(userId: string): string[] {
@@ -76,3 +76,4 @@ function placed(userId: string, tiles: Tile[]): Tile[] {
 }
 
 export const dashboardLayout = { getPlaced, add, remove, setPlaced, placed }
+

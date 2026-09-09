@@ -21,8 +21,8 @@
   margin-top: 104px;
 }
 
-/* Vee's one-line bubble (same voice as the shell). */
-.vee {
+/* I's one-line bubble (same voice as the shell). */
+.I {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -522,7 +522,7 @@
 
 @media (max-width: 640px) {
   .page { margin-top: 78px; gap: 18px; }
-  .vee { font-size: 15px; }
+  .I { font-size: 15px; }
   .bigTime { font-size: 52px; }
   .barRow { grid-template-columns: 84px 1fr 30px; gap: 10px; }
   .planList { max-height: 132px; }
@@ -530,7 +530,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .act, .vee, .sleepBlock, .bars, .barFill, .chartWrap, .planBlock, .config,
+  .act, .I, .sleepBlock, .bars, .barFill, .chartWrap, .planBlock, .config,
   .scoreBlock, .tipCard, .planNow { animation: none; transition: none; }
 }
 
@@ -596,3 +596,4 @@
 @media (prefers-reduced-motion: reduce) {
   .antRows { animation: none; }
 }
+

@@ -8,7 +8,7 @@
  * same Supabase swap seam applies later.
  *
  * Key:
- *   vitality:<userId>:chrome  -> DashboardChrome (JSON)
+ *   Imperium:<userId>:chrome  -> DashboardChrome (JSON)
  */
 
 /** The background can be the animated brand World, a two-stop Gradient, or a Solid. */
@@ -86,7 +86,7 @@ export const GRADIENT_PRESETS: { name: string; c1: string; c2: string; angle: nu
   { name: 'Obsidian', c1: '#0e1013', c2: '#020203', angle: 176 },
 ]
 
-const key = (userId: string) => `vitality:${userId}:chrome`
+const key = (userId: string) => `Imperium:${userId}:chrome`
 const hasStorage = () => typeof window !== 'undefined' && !!window.localStorage
 
 function mergeBackground(b: unknown): Background {
@@ -164,3 +164,4 @@ export function backgroundAccent(bg: Background): string {
 }
 
 export const dashboardChrome = { get, update, setBackground, reset }
+

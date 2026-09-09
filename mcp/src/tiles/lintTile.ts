@@ -1,6 +1,6 @@
-// The tile linter: a pure, IO-free check that a generated tile meets Vitality's
+// The tile linter: a pure, IO-free check that a generated tile meets Imperium's
 // hard floor before it is ever returned. Errors are the floor (a tile that trips
-// one is not Vitality-grade and must not ship); warnings are quality nudges.
+// one is not Imperium-grade and must not ship); warnings are quality nudges.
 // Rules are distilled straight from dna/gotchas.md. Run on the final HTML string.
 
 // BUMP THIS whenever the ruleset changes (a rule added, removed, or tightened).
@@ -233,20 +233,20 @@ export function lintTile(html: string): LintResult {
 
   // --- Text hygiene (warnings - taste is advice, not law) ---
   // Alex, 2026-07-11: a user's own tile is theirs to personalize, emoji and
-  // all. These warn so the receipt still teaches the native Vitality voice,
+  // all. These warn so the receipt still teaches the native Imperium voice,
   // but they never block. Only safety, function, and data honesty block.
   // Glyph coverage: emoji + symbols + pictographs (1F000-1FAFF), misc symbols
   // (2600-26FF), alarm-clock/hourglass (2300-23FF), dingbats incl. sparkles
   // (2700-27BF), stars/arrows (2B00-2BFF), variation selectors (FE00-FE0F),
   // and flag letters (1F1E6-1F1FF).
   if (/[\u{1F000}-\u{1FAFF}\u{2600}-\u{26FF}\u{2300}-\u{23FF}\u{2700}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}]/u.test(html)) {
-    add('no-emoji', 'warn', 'an emoji or decorative glyph was found; the native Vitality voice draws glyphs as inline SVG', 'For the native look, use inline SVG glyphs instead of emoji.');
+    add('no-emoji', 'warn', 'an emoji or decorative glyph was found; the native Imperium voice draws glyphs as inline SVG', 'For the native look, use inline SVG glyphs instead of emoji.');
   }
   if (/[—–]/.test(html)) {
-    add('no-em-dash', 'warn', 'an em or en dash was found; the native Vitality voice uses commas, periods, or colons', 'For the native look, avoid em dashes in copy.');
+    add('no-em-dash', 'warn', 'an em or en dash was found; the native Imperium voice uses commas, periods, or colons', 'For the native look, avoid em dashes in copy.');
   }
   if (/[✅✓✔✖✗✘❌]/u.test(html)) {
-    add('no-unicode-check', 'warn', 'a unicode checkmark or cross glyph was found; the native Vitality voice draws these as inline SVG', 'For the native look, use an inline SVG glyph.');
+    add('no-unicode-check', 'warn', 'a unicode checkmark or cross glyph was found; the native Imperium voice draws these as inline SVG', 'For the native look, use an inline SVG glyph.');
   }
 
   // --- State, storage, brand (warnings) ---
@@ -299,43 +299,43 @@ export function lintTile(html: string): LintResult {
     add('select-not-focus', 'warn', '.select() highlights the value as a blue block; focus the input instead', 'Use .focus(), not .select().');
   }
 
-  // --- Host bridge (warning): a real tile speaks to the host through the Vitality bridge ---
-  // The bridge (Vitality.save / load / report) is the ONLY channel out of the sealed
-  // iframe and the difference between a Vitality tile and a stray HTML page. A tile with
+  // --- Host bridge (warning): a real tile speaks to the host through the Imperium bridge ---
+  // The bridge (Imperium.save / load / report) is the ONLY channel out of the sealed
+  // iframe and the difference between a Imperium tile and a stray HTML page. A tile with
   // no bridge reference at all persists nothing and reports nothing, so it can never land
   // data on the dashboard. It is flagged as a quality nudge (not a hard-floor error) so a
   // deliberately-minimal fixture still exports; every real template calls the bridge, and
   // the envelope's report-contract probe already rejects a bridgeless stream on the wired
-  // upload path. At least one of Vitality.save/load/report should be present.
-  const hasBridge = /Vitality\s*\.\s*(?:save|load|report)\b/.test(html);
+  // upload path. At least one of Imperium.save/load/report should be present.
+  const hasBridge = /Imperium\s*\.\s*(?:save|load|report)\b/.test(html);
   if (!hasBridge) {
-    add('bridge-missing', 'warn', 'no Vitality host bridge call found (no Vitality.save, Vitality.load, or Vitality.report); a tile with no bridge cannot persist its data or land a stream on the dashboard', 'Call the Vitality bridge: Vitality.save/load to persist, Vitality.report to send its one stream.');
+    add('bridge-missing', 'warn', 'no Imperium host bridge call found (no Imperium.save, Imperium.load, or Imperium.report); a tile with no bridge cannot persist its data or land a stream on the dashboard', 'Call the Imperium bridge: Imperium.save/load to persist, Imperium.report to send its one stream.');
   }
 
   // --- Report contract ---
-  // A measurable tile's whole point is to feed Vee: it MUST emit one contract-valid
-  // Vitality.report(). So a report that IS present but malformed is now a hard-floor
+  // A measurable tile's whole point is to feed I: it MUST emit one contract-valid
+  // Imperium.report(). So a report that IS present but malformed is now a hard-floor
   // ERROR (not a warning): a broken stream lands nothing and silently poisons the
   // cross-reference engine, which is worse than no tile. `report-multiple` stays a
   // warning (a second call is wrong but not corrupting). Whether a tile that emits
   // ZERO reports is allowed is kind-dependent and enforced at the envelope
   // (assertTileExportable, which knows the tile's kind); lint here is HTML-only.
   const REPORT_KINDS = ['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done'];
-  const reportCount = (html.match(/Vitality\.report\s*\(/g) || []).length;
+  const reportCount = (html.match(/Imperium\.report\s*\(/g) || []).length;
   if (reportCount > 1) {
-    add('report-multiple', 'warn', 'more than one Vitality.report() call; a tile reports at most one stream', 'Report a single number.');
+    add('report-multiple', 'warn', 'more than one Imperium.report() call; a tile reports at most one stream', 'Report a single number.');
   }
   if (reportCount >= 1) {
-    const args = firstCallArgs(html, html.search(/Vitality\.report\s*\(/));
+    const args = firstCallArgs(html, html.search(/Imperium\.report\s*\(/));
     const missing = ['key', 'value', 'date', 'kind'].filter((k) => !new RegExp('\\b' + k + '\\s*:').test(args));
     if (missing.length) {
-      add('report-shape', 'error', 'a Vitality.report() call is missing required fields (' + missing.join(', ') + '); a broken stream lands nothing on the dashboard', 'Report {key, label, value, date, kind}.');
+      add('report-shape', 'error', 'a Imperium.report() call is missing required fields (' + missing.join(', ') + '); a broken stream lands nothing on the dashboard', 'Report {key, label, value, date, kind}.');
     }
     // The kind literal, when written inline, must be a member of the fixed taxonomy;
     // a typo'd kind is silently dropped by validateReport, so catch it at the floor.
     const kindLit = /\bkind\s*:\s*['"]([^'"]*)['"]/.exec(args);
     if (kindLit && !REPORT_KINDS.includes(kindLit[1])) {
-      add('report-kind-invalid', 'error', 'a Vitality.report() call uses a kind ("' + kindLit[1] + '") outside the fixed taxonomy (' + REPORT_KINDS.join(', ') + ')', 'Use one of: ' + REPORT_KINDS.join(', ') + '.');
+      add('report-kind-invalid', 'error', 'a Imperium.report() call uses a kind ("' + kindLit[1] + '") outside the fixed taxonomy (' + REPORT_KINDS.join(', ') + ')', 'Use one of: ' + REPORT_KINDS.join(', ') + '.');
     }
   }
 
@@ -343,3 +343,4 @@ export function lintTile(html: string): LintResult {
   const warnings = findings.filter((f) => f.severity === 'warn').length;
   return { ok: errors === 0, errors, warnings, findings };
 }
+

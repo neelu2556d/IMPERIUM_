@@ -1,4 +1,4 @@
-// Environment loading + validation for the Vitality MCP.
+// Environment loading + validation for the Imperium MCP.
 //
 // No dotenv dependency: we parse a local `.env` ourselves (KEY=VALUE lines) so
 // the server runs the same whether launched by Claude, a cron, or the CLI.
@@ -45,7 +45,7 @@ function loadDotenv(): void {
         if (process.env[k] === undefined) process.env[k] = v;
       }
     } catch (err) {
-      console.error(`[vitality-mcp] failed to read ${candidate}:`, err);
+      console.error(`[Imperium-mcp] failed to read ${candidate}:`, err);
     }
   }
 }
@@ -71,8 +71,8 @@ export interface VitalityEnv {
 function required(name: string): string {
   const v = process.env[name];
   if (!v) {
-    console.error(`[vitality-mcp] missing required env var: ${name}`);
-    console.error('[vitality-mcp] copy mcp/.env.example to mcp/.env and fill it in.');
+    console.error(`[Imperium-mcp] missing required env var: ${name}`);
+    console.error('[Imperium-mcp] copy mcp/.env.example to mcp/.env and fill it in.');
     process.exit(1);
   }
   return v;
@@ -99,14 +99,14 @@ export function getEnv(): VitalityEnv {
   if (wantsService) {
     authMode = 'service';
     console.error(
-      '[vitality-mcp] ⚠ running in SERVICE-ROLE mode — this key bypasses RLS. ' +
+      '[Imperium-mcp] ⚠ running in SERVICE-ROLE mode — this key bypasses RLS. ' +
         'Local/personal use only; never expose this process to a client or shared host.',
     );
   } else {
     authMode = 'user';
     if (!userEmail || !userPassword) {
       console.error(
-        '[vitality-mcp] no auth configured. Set VITALITY_USER_EMAIL + VITALITY_USER_PASSWORD ' +
+        '[Imperium-mcp] no auth configured. Set VITALITY_USER_EMAIL + VITALITY_USER_PASSWORD ' +
           '(recommended), or VITALITY_SUPABASE_SERVICE_ROLE_KEY + VITALITY_USER_ID (opt-in).',
       );
       process.exit(1);
@@ -125,3 +125,4 @@ export function getEnv(): VitalityEnv {
   };
   return cached;
 }
+

@@ -47,9 +47,9 @@ function loadUsdaKey(): string | null {
   }
   const candidates = [
     join(process.cwd(), '.env.local'),
-    // process.cwd() is the worktree (…/vitality/.claude/worktrees/<name>); the
+    // process.cwd() is the worktree (…/Imperium/.claude/worktrees/<name>); the
     // main repo checkout that owns the real .env.local is three levels up
-    // (<name> → worktrees → .claude → vitality).
+    // (<name> → worktrees → .claude → Imperium).
     join(process.cwd(), '..', '..', '..', '.env.local'),
     // Belt-and-suspenders: also try four up in case of a deeper nesting.
     join(process.cwd(), '..', '..', '..', '..', '.env.local'),
@@ -350,3 +350,4 @@ describeOrSkip('USDA live plausibility audit (network)', () => {
     console.log(lines.join('\n'))
   })
 })
+

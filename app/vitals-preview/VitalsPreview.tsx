@@ -4,7 +4,7 @@ import SectionGem from '@/components/SectionGem'
 import styles from './vitals.module.css'
 
 /**
- * Vitals page — visual prototype (sample data) built from the real Vitality
+ * Vitals page — visual prototype (sample data) built from the real Imperium
  * design system. Public preview route so it renders without auth; once the
  * look is locked we wire it to the real wearable_data + move it into place.
  */
@@ -178,3 +178,4 @@ export default function VitalsPreview() {
     </main>
   )
 }
+

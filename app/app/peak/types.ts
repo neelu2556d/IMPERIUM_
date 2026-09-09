@@ -228,7 +228,7 @@ export interface PeakState {
   lastPlannedDate?: string
 }
 
-/** Tier label, mirrors SKILL.md vitality score tiers. */
+/** Tier label, mirrors SKILL.md Imperium score tiers. */
 export type ScoreTier = 'Peak' | 'Solid' | 'Tired' | 'Low' | 'Drained'
 
 /** A predicted "best window for hard work" on today's curve. */
@@ -242,3 +242,4 @@ export interface PeakWindow {
   /** Hour of the local maximum inside the window. */
   peakHour: number
 }
+

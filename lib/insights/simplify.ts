@@ -1,6 +1,6 @@
 /**
- * simplifyLead — the "simple" read for the "Vitality noticed" card (the detailed/simple
- * toggle Alex loved in public/vee-noticed-rarity-demo.html). Detailed keeps the real
+ * simplifyLead — the "simple" read for the "Imperium noticed" card (the detailed/simple
+ * toggle Alex loved in public/I-noticed-rarity-demo.html). Detailed keeps the real
  * numbers (the personal sauce); simple strips them so the insight scans in a second.
  *
  * It works by dropping the number-heavy sentence (the receipts read aloud) and keeping
@@ -23,3 +23,4 @@ export function simplifyLead(lead: string): string {
     .replace(/\s+([.,!?])/g, '$1')
     .trim()
 }
+

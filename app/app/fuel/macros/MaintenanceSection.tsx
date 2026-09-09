@@ -170,7 +170,7 @@ export default function MaintenanceSection({
   const loggedWeightToday = weighIns.some((w) => w.date === getLocalDateKey())
   function goLogWeight() {
     document.getElementById('weight-logger')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    if (!loggedWeightToday) window.dispatchEvent(new Event('vitality:log-weight'))
+    if (!loggedWeightToday) window.dispatchEvent(new Event('Imperium:log-weight'))
   }
   // The coach also needs a few days of food. Scroll up to the macro logger
   // (Snap a meal / Add food) so a missing-food nudge has somewhere to land.
@@ -210,7 +210,7 @@ export default function MaintenanceSection({
             </span>
             <span className={styles.mGateTitle}>Want your plan to adjust itself?</span>
             <p className={styles.mGateText}>
-              You picked the no-numbers way, and that is perfectly fine. If you would like Vitality to quietly learn your real
+              You picked the no-numbers way, and that is perfectly fine. If you would like Imperium to quietly learn your real
               maintenance and gently nudge your calories, turn on macro counting whenever you are ready.
             </p>
             <button className={styles.mPrimary} onClick={toggleEnabled}>Turn on macro counting</button>
@@ -248,7 +248,7 @@ export default function MaintenanceSection({
   )
 
   // ── "just a number" pieces, shared by the calibrating + calm cards ──
-  // The card leads with one number: what Vitality currently thinks your real
+  // The card leads with one number: what Imperium currently thinks your real
   // maintenance is. A small Stocks-style delta shows how far that has moved from
   // your setup estimate (mint up, amber down, never red — a falling number is
   // your body, not a failure). The graph is tucked behind a button and only
@@ -443,3 +443,4 @@ export default function MaintenanceSection({
     </section>
   )
 }
+

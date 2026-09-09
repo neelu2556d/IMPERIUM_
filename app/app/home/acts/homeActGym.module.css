@@ -1,5 +1,5 @@
 /* ACT 3 - GYM. Renders inside the homecoming stage (shell owns the backdrop,
-   docked gem, exit, crossfades). One non-scrolling column: Vee line, the
+   docked gem, exit, crossfades). One non-scrolling column: I line, the
    session button-card, the peak-window line, the quiet skip. */
 
 .act {
@@ -11,8 +11,8 @@
   margin-top: 110px;
 }
 
-/* Vee's one-line bubble - same voice as the shell. */
-.vee {
+/* I's one-line bubble - same voice as the shell. */
+.I {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -149,12 +149,13 @@
 @media (max-width: 640px) {
   .act { margin-top: 96px; gap: 22px; }
   .beatWrap { margin-top: 120px; }
-  .vee { font-size: 15.5px; }
+  .I { font-size: 15.5px; }
   .veeBig { font-size: 17px; }
   .cardDay { font-size: clamp(40px, 11vw, 52px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vee, .card, .peakLine, .skip { animation: none; }
+  .I, .card, .peakLine, .skip { animation: none; }
   .card, .lockPill, .skip { transition: none; }
 }
+

@@ -1,4 +1,4 @@
-// Tool registration for the Vitality MCP — transport-agnostic.
+// Tool registration for the Imperium MCP — transport-agnostic.
 //
 // This is the heart of the server: every read tool, defined once. It is
 // deliberately decoupled from HOW we authenticate. Instead of reaching for a
@@ -99,7 +99,7 @@ function fmtBusinessMetric(m: BusinessMetric): string {
 export type VdbProvider = () => Promise<VitalityDb>;
 
 /**
- * Register every Vitality read tool on `server`, resolving data through `getVdb`.
+ * Register every Imperium read tool on `server`, resolving data through `getVdb`.
  * Behaviour is identical regardless of transport — only the identity source
  * (which `getVdb` encapsulates) differs.
  */
@@ -110,8 +110,8 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       return text(await fn());
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error('[vitality-mcp] tool error:', msg); // full detail to stderr
-      return { content: [{ type: 'text', text: `Vitality error: ${sanitizeError(msg)}` }], isError: true };
+      console.error('[Imperium-mcp] tool error:', msg); // full detail to stderr
+      return { content: [{ type: 'text', text: `Imperium error: ${sanitizeError(msg)}` }], isError: true };
     }
   };
 
@@ -122,7 +122,7 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       annotations: { readOnlyHint: true },
       title: 'Who am I',
       description:
-        'Profile + plan summary for the connected Vitality user: name, age, sex, units, goal, focus areas, and billing tier/subscription status. Call this first to ground every other answer.',
+        'Profile + plan summary for the connected Imperium user: name, age, sex, units, goal, focus areas, and billing tier/subscription status. Call this first to ground every other answer.',
     },
     safe(async () => {
       const v = await getVdb();
@@ -159,14 +159,14 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
     }),
   );
 
-  // ── start my day (the Vee greeting) ────────────────────────────────────────
+  // ── start my day (the I greeting) ────────────────────────────────────────
   server.registerTool(
     'vitality_start_my_day',
     {
       annotations: { readOnlyHint: true },
       title: 'Start my day',
       description:
-        'Call this FIRST when opening a session for the person — the morning greeting. Greets them by name with a 3-second scannable read of their day (sleep/recovery, training, nutrition, hydration, goals, money) and the ONE insight that matters most right now, plus an optional one-tap offer backed by a real action. Returns finished, in-voice content — deliver it warmly as Vee, do not just list it. Use this instead of vitality_daily_briefing to OPEN a chat (daily_briefing is the raw prioritized list; this is the shaped greeting).',
+        'Call this FIRST when opening a session for the person — the morning greeting. Greets them by name with a 3-second scannable read of their day (sleep/recovery, training, nutrition, hydration, goals, money) and the ONE insight that matters most right now, plus an optional one-tap offer backed by a real action. Returns finished, in-voice content — deliver it warmly as I, do not just list it. Use this instead of vitality_daily_briefing to OPEN a chat (daily_briefing is the raw prioritized list; this is the shaped greeting).',
     },
     safe(async () => {
       const v = await getVdb();
@@ -371,7 +371,7 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       annotations: { readOnlyHint: true },
       title: 'Subscriptions',
       description:
-        'All recurring subscriptions with monthly-normalized cost, total burn, trials ending soon, recent price hikes, and renewals due this week. Note: Vitality stores no usage signal, so "unused" cannot be auto-detected — this surfaces cost, trials, and price changes instead.',
+        'All recurring subscriptions with monthly-normalized cost, total burn, trials ending soon, recent price hikes, and renewals due this week. Note: Imperium stores no usage signal, so "unused" cannot be auto-detected — this surfaces cost, trials, and price changes instead.',
     },
     safe(async () => {
       const v = await getVdb();
@@ -1018,26 +1018,26 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       annotations: { readOnlyHint: true },
       title: 'Check this connection\'s access level',
       description:
-        'Report this Vitality connection\'s access level: read+write, temporarily paused (a server-side pause by the Vitality team - waiting is the only fix), or read-only. Call it BEFORE a build/log session (or when a write tool refuses) so you know whether the write tools (vitality_add_tile, upload_tile, the loggers) will work. If it reports read-only, relay its fix steps to the user and have them reconnect with write access; if paused, say so honestly and try again later. Never quietly fall back to handing them HTML to paste.',
+        'Report this Imperium connection\'s access level: read+write, temporarily paused (a server-side pause by the Imperium team - waiting is the only fix), or read-only. Call it BEFORE a build/log session (or when a write tool refuses) so you know whether the write tools (vitality_add_tile, upload_tile, the loggers) will work. If it reports read-only, relay its fix steps to the user and have them reconnect with write access; if paused, say so honestly and try again later. Never quietly fall back to handing them HTML to paste.',
       inputSchema: {},
     },
     safe(async () => {
       const v = await getVdb();
       if (v.scopes.includes(WRITE_SCOPE)) {
-        return 'This Vitality connection has READ + WRITE access. Everything works: reads, logging, and vitality_add_tile / upload_tile land tiles straight on the dashboard with no copy-paste.';
+        return 'This Imperium connection has READ + WRITE access. Everything works: reads, logging, and vitality_add_tile / upload_tile land tiles straight on the dashboard with no copy-paste.';
       }
       if (v.scopes.includes(WRITE_PAUSED_SCOPE)) {
         // Mirrors requireWrite's paused copy: the pause is server-side, so
         // reconnect advice here would send the user into a loop that cannot help.
         return (
-          'Writes are temporarily paused by the Vitality team, so nothing can be added or logged right now. ' +
+          'Writes are temporarily paused by the Imperium team, so nothing can be added or logged right now. ' +
           'Your data is safe and reading still works. The pause is on our side, so reconnecting will not change it. Try again in a little while.'
         );
       }
       return (
-        'This Vitality connection is READ-ONLY: reads work, but logging and the tile-landing tools will refuse. ' +
-        'Fix it in one step: disconnect the Vitality connector in your MCP client, then Allow it again - new connections are granted read and write by default. ' +
-        '(Or connect from Claude Code with a Vitality CLI token from the /account page, which always carries full access.) ' +
+        'This Imperium connection is READ-ONLY: reads work, but logging and the tile-landing tools will refuse. ' +
+        'Fix it in one step: disconnect the Imperium connector in your MCP client, then Allow it again - new connections are granted read and write by default. ' +
+        '(Or connect from Claude Code with a Imperium CLI token from the /account page, which always carries full access.) ' +
         'Reconnect rather than falling back to copy-paste.'
       );
     }),
@@ -1050,7 +1050,7 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       annotations: { readOnlyHint: true },
       title: 'List the user\'s tiles (board vs library)',
       description:
-        'List every custom tile in the user\'s registry with its BOARD status: ON BOARD (placed on the dashboard, actively seen and logged) vs IN LIBRARY (removed from the board; it exists but is not active). Use this before reasoning about, editing, or building on "their tiles" so a removed tile is never treated as active - and to avoid building a duplicate of a tile they already have. Also shows each measurable tile\'s stream key/kind (its report identity) and, when declared at build time, its life bucket (goalCategory) and why-built note for Vee.',
+        'List every custom tile in the user\'s registry with its BOARD status: ON BOARD (placed on the dashboard, actively seen and logged) vs IN LIBRARY (removed from the board; it exists but is not active). Use this before reasoning about, editing, or building on "their tiles" so a removed tile is never treated as active - and to avoid building a duplicate of a tile they already have. Also shows each measurable tile\'s stream key/kind (its report identity) and, when declared at build time, its life bucket (goalCategory) and why-built note for I.',
       inputSchema: {},
     },
     safe(async () => {
@@ -1084,20 +1084,20 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       annotations: { destructiveHint: true },
       title: 'Add a tile to the dashboard',
       description:
-        'WRITE. Build a finished, on-brand Vitality tile and put it straight onto the user\'s dashboard (their tile registry), no copy-paste. Use when the user says "add X to my dashboard" / "make me a Y tile". DEFAULT PATH: pass `goal` in plain English; it runs the same deterministic builder as scaffold_tile (full Vitality signature, floor-clean at 0 errors, no tokens spent, cannot break) and persists the tile. Right for essentially every tracker. ADVANCED PATH: only for what the templates cannot express (multi-metric, an AI bring-your-own-key chat, a bespoke multi-section layout or domain visual), hand-author from vitality_tile_kit, run check_tile to green, and pass it here as `html` (floor-enforced on the way in; an off-brand or unsealed tile is refused). Returns the new tile\'s id, name, and category. Requires a write-enabled connection: a read-only one gets one-step reconnect instructions - relay them to the user and try again; never quietly fall back to copy-paste.',
+        'WRITE. Build a finished, on-brand Imperium tile and put it straight onto the user\'s dashboard (their tile registry), no copy-paste. Use when the user says "add X to my dashboard" / "make me a Y tile". DEFAULT PATH: pass `goal` in plain English; it runs the same deterministic builder as scaffold_tile (full Imperium signature, floor-clean at 0 errors, no tokens spent, cannot break) and persists the tile. Right for essentially every tracker. ADVANCED PATH: only for what the templates cannot express (multi-metric, an AI bring-your-own-key chat, a bespoke multi-section layout or domain visual), hand-author from vitality_tile_kit, run check_tile to green, and pass it here as `html` (floor-enforced on the way in; an off-brand or unsealed tile is refused). Returns the new tile\'s id, name, and category. Requires a write-enabled connection: a read-only one gets one-step reconnect instructions - relay them to the user and try again; never quietly fall back to copy-paste.',
       inputSchema: {
-        goal: z.string().min(1).max(300).optional().describe('What the tile tracks, in plain words. The DEFAULT: builds the deterministic, floor-clean Vitality template (full signature, live chart, report wired). Right for essentially every tracker. Omit only if you pass `html`.'),
-        html: z.string().min(1).max(400000).optional().describe('ADVANCED. A ready-made sealed tile to add AS-IS, only for what the templates cannot express (multi-metric, AI chat, bespoke layout). Build it from vitality_tile_kit and pass check_tile first; it is floor-enforced on the way in. If the tile tracks a number or a done-mark, ALSO pass `kind`: that wires its stream registration and enforces the Vitality.report() call it must carry to feed Vee.'),
+        goal: z.string().min(1).max(300).optional().describe('What the tile tracks, in plain words. The DEFAULT: builds the deterministic, floor-clean Imperium template (full signature, live chart, report wired). Right for essentially every tracker. Omit only if you pass `html`.'),
+        html: z.string().min(1).max(400000).optional().describe('ADVANCED. A ready-made sealed tile to add AS-IS, only for what the templates cannot express (multi-metric, AI chat, bespoke layout). Build it from vitality_tile_kit and pass check_tile first; it is floor-enforced on the way in. If the tile tracks a number or a done-mark, ALSO pass `kind`: that wires its stream registration and enforces the Imperium.report() call it must carry to feed I.'),
         check: z.string().min(8).max(64).optional().describe('The Proof value from this exact html\'s PASSING check_tile receipt. When it matches, the identical re-lint is skipped; absent or stale, the full lint runs. Only meaningful with `html`.'),
-        kind: z.enum(['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done']).optional().describe('The tile type. Goal path: overrides the inferred type. Html path: REQUIRED whenever the tile is measurable (tracks a number or a done-mark); it registers the tile\'s report stream and refuses html that lacks Vitality.report() wiring, so the tile cannot land dark.'),
+        kind: z.enum(['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done']).optional().describe('The tile type. Goal path: overrides the inferred type. Html path: REQUIRED whenever the tile is measurable (tracks a number or a done-mark); it registers the tile\'s report stream and refuses html that lacks Imperium.report() wiring, so the tile cannot land dark.'),
         name: z.string().min(1).max(60).optional().describe('Tile title (also the dashboard display name); required-ish when passing html'),
         unit: z.string().min(1).max(24).optional().describe('Unit for the copy, e.g. "min", "kg", "glasses" (goal path)'),
         goalDirection: z.enum(['up', 'down', 'neutral']).optional().describe('Override whether up, down, or neither is the goal (goal path; on the html path it is stamped onto the registered stream when the tile\'s own report() does not declare one)'),
         currency: z.string().min(3).max(3).optional().describe("ISO 4217 currency code ('USD','GBP','EUR','JPY',…) for money tiles; prints its symbol instead of '$'. Auto-read from the user's finance preference when omitted (defaults to USD) (goal path)."),
         category: z.enum(['fitness', 'health', 'finance', 'mind', 'data']).optional().describe('Dashboard category (auto-filled from the tile type on the goal path; defaults to "data" for html)'),
         color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'color must be a 3- or 6-digit hex like #6EE7B7').optional().describe('Hex accent color (default mint #6EE7B7)'),
-        goalCategory: z.string().max(20).optional().describe('Born classification: which of the nine life buckets this tile serves - fitness, health, mind, money, career, craft, audience, people, or general. Declare it whenever the purpose is clear (Vee\'s goal triage reads it - no scanning, no guessing). Case/whitespace near-misses are clamped to the bucket; anything outside the nine is dropped (the tile lands unclassified), never guessed.'),
-        veeNote: z.string().min(1).max(200).optional().describe('One line for Vee: why this tile was built, in plain words (e.g. "tracks cold plunges to build morning discipline"). Stored on the tile so Vee has the intent forever.'),
+        goalCategory: z.string().max(20).optional().describe('Born classification: which of the nine life buckets this tile serves - fitness, health, mind, money, career, craft, audience, people, or general. Declare it whenever the purpose is clear (I\'s goal triage reads it - no scanning, no guessing). Case/whitespace near-misses are clamped to the bucket; anything outside the nine is dropped (the tile lands unclassified), never guessed.'),
+        veeNote: z.string().min(1).max(200).optional().describe('One line for I: why this tile was built, in plain words (e.g. "tracks cold plunges to build morning discipline"). Stored on the tile so I has the intent forever.'),
       },
     },
     async (args: {
@@ -1117,22 +1117,22 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       return safe(async () => {
         const v = await getVdb();
         const t = await addTile(v, args);
-        return `Added "${t.name}" (${t.category}) to your Vitality Library. Open it here: http://localhost:3000/app?open=library - tap Place next to "${t.name}" to put it on your board. Give the user that link as a clickable line.`;
+        return `Added "${t.name}" (${t.category}) to your Imperium Library. Open it here: http://localhost:3000/app?open=library - tap Place next to "${t.name}" to put it on your board. Give the user that link as a clickable line.`;
       })();
     },
   );
 
   // ── scaffold_tile (PURE builder: no DB, no getVdb) ────────────────────────────
   // The "sauce": one plain-English goal becomes one finished, themed, bridge-wired
-  // Vitality tile. Deterministic — the caller's own Claude Code is the intelligence;
-  // this guarantees the output is correct Vitality every time. Ignores getVdb.
+  // Imperium tile. Deterministic — the caller's own Claude Code is the intelligence;
+  // this guarantees the output is correct Imperium every time. Ignores getVdb.
   server.registerTool(
     'scaffold_tile',
     {
       annotations: { readOnlyHint: true },
-      title: 'Build a Vitality tile',
+      title: 'Build a Imperium tile',
       description:
-        'The default tile builder. Start here for essentially any tracker ("beer tracker", "cold plunges", "reading minutes", "daily savings", "mood 1-5", "meditation done"). One plain-English goal becomes ONE finished, on-brand, full-grade tile in a single call: sealed self-contained HTML with the Vitality signature baked in (Instrument Serif hero number, eyebrow, status pill, a real section with a live 7-day chart / streak grid / rating week, honest empty state), 60fps motion, safe-area insets, and the bridge pre-wired (save/load + one Vitality.report() so it feeds Vee and lands on the dashboard, no keys/Supabase/Vercel). Deterministic: no LLM, no API key, no tokens spent, and it cannot break the floor because it is generated FROM the floor (passes check_tile at 0 errors). Seven kinds cover the common shapes (intake / count / duration / rating / measure / money / done); infer picks the kind and unit. Returns the inferred {key,label,kind,goalDirection,template}, a Vitality-grade receipt, then the HTML; edit it freely (re-run check_tile after). Do NOT read vitality_tile_kit first for a normal tracker; this call already IS on-brand. Reach for the kit only to hand-author something the templates cannot express (multi-metric, an AI bring-your-own-key chat, a bespoke multi-section layout or domain visual).',
+        'The default tile builder. Start here for essentially any tracker ("beer tracker", "cold plunges", "reading minutes", "daily savings", "mood 1-5", "meditation done"). One plain-English goal becomes ONE finished, on-brand, full-grade tile in a single call: sealed self-contained HTML with the Imperium signature baked in (Instrument Serif hero number, eyebrow, status pill, a real section with a live 7-day chart / streak grid / rating week, honest empty state), 60fps motion, safe-area insets, and the bridge pre-wired (save/load + one Imperium.report() so it feeds I and lands on the dashboard, no keys/Supabase/Vercel). Deterministic: no LLM, no API key, no tokens spent, and it cannot break the floor because it is generated FROM the floor (passes check_tile at 0 errors). Seven kinds cover the common shapes (intake / count / duration / rating / measure / money / done); infer picks the kind and unit. Returns the inferred {key,label,kind,goalDirection,template}, a Imperium-grade receipt, then the HTML; edit it freely (re-run check_tile after). Do NOT read vitality_tile_kit first for a normal tracker; this call already IS on-brand. Reach for the kit only to hand-author something the templates cannot express (multi-metric, an AI bring-your-own-key chat, a bespoke multi-section layout or domain visual).',
       inputSchema: {
         goal: z.string().min(1).max(300).describe('What the tile tracks, in plain words'),
         kind: z.enum(['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done']).optional().describe('Override the inferred tile type'),
@@ -1156,7 +1156,7 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
         return text(scaffoldTile(args).text);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        return { content: [{ type: 'text', text: `Vitality error: ${sanitizeError(msg)}` }], isError: true };
+        return { content: [{ type: 'text', text: `Imperium error: ${sanitizeError(msg)}` }], isError: true };
       }
     },
   );
@@ -1176,7 +1176,7 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       annotations: { destructiveHint: true },
       title: 'Build a tile and post it onto the dashboard',
       description:
-        'Build a tile from a plain-English goal and POST it straight onto the user\'s dashboard through the Library upload socket - no copy-paste. Same deterministic full-grade builder as scaffold_tile (no kit read, no tokens spent); numbers auto-label in the user\'s own units and currency. Category/color auto-fill from the tile and are overridable. Gated on the Vitality floor: a hard lint error REFUSES (error names the rule) rather than land something off-brand or unsealed; polish warnings never block. Requires a write-enabled connection: a read-only one gets one-step reconnect instructions - relay them and try again; never quietly fall back to copy-paste. Pass package_only:true (rare) to skip the dashboard write and get the raw upload envelope JSON to paste in through the dashboard\'s "Add a tile" door instead.',
+        'Build a tile from a plain-English goal and POST it straight onto the user\'s dashboard through the Library upload socket - no copy-paste. Same deterministic full-grade builder as scaffold_tile (no kit read, no tokens spent); numbers auto-label in the user\'s own units and currency. Category/color auto-fill from the tile and are overridable. Gated on the Imperium floor: a hard lint error REFUSES (error names the rule) rather than land something off-brand or unsealed; polish warnings never block. Requires a write-enabled connection: a read-only one gets one-step reconnect instructions - relay them and try again; never quietly fall back to copy-paste. Pass package_only:true (rare) to skip the dashboard write and get the raw upload envelope JSON to paste in through the dashboard\'s "Add a tile" door instead.',
       inputSchema: {
         goal: z.string().min(1).max(300).describe('What the tile tracks, in plain words'),
         kind: z.enum(['intake', 'count', 'duration', 'rating', 'measure', 'money', 'done']).optional().describe('Override the inferred tile type'),
@@ -1186,8 +1186,8 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
         category: z.enum(['fitness', 'health', 'finance', 'mind', 'data']).optional().describe('Library category (auto-filled from the tile type if omitted)'),
         color: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'color must be a 3- or 6-digit hex like #6EE7B7').optional().describe('Hex accent color (default mint #6EE7B7)'),
         design: z.string().min(1).max(40).optional().describe('Optional design hint; the Library resolves it to its catalog'),
-        goalCategory: z.string().max(20).optional().describe('Born classification: which of the nine life buckets this tile serves - fitness, health, mind, money, career, craft, audience, people, or general. Declare it whenever the purpose is clear (Vee\'s goal triage reads it - no scanning, no guessing). Case/whitespace near-misses are clamped to the bucket; anything outside the nine is dropped (the tile lands unclassified), never guessed.'),
-        veeNote: z.string().min(1).max(200).optional().describe('One line for Vee: why this tile was built, in plain words. Stored on the tile so Vee has the intent forever.'),
+        goalCategory: z.string().max(20).optional().describe('Born classification: which of the nine life buckets this tile serves - fitness, health, mind, money, career, craft, audience, people, or general. Declare it whenever the purpose is clear (I\'s goal triage reads it - no scanning, no guessing). Case/whitespace near-misses are clamped to the bucket; anything outside the nine is dropped (the tile lands unclassified), never guessed.'),
+        veeNote: z.string().min(1).max(200).optional().describe('One line for I: why this tile was built, in plain words. Stored on the tile so I has the intent forever.'),
         package_only: z.boolean().optional().describe('Skip the dashboard write and return the raw upload-envelope JSON instead (to paste in via the dashboard\'s "Add a tile" door). Rare; the default posts the tile straight onto the board.'),
       },
     },
@@ -1212,7 +1212,7 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
           return text(buildUploadTile(args).text);
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
-          return { content: [{ type: 'text', text: `Vitality error: ${sanitizeError(msg)}` }], isError: true };
+          return { content: [{ type: 'text', text: `Imperium error: ${sanitizeError(msg)}` }], isError: true };
         }
       }
       // The socket: same floor-enforced build, then the row lands in the user's
@@ -1221,13 +1221,13 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
       return safe(async () => {
         const v = await getVdb();
         const t = await addTile(v, args);
-        return `Posted "${t.name}" (${t.category}) straight onto your dashboard through the Library upload socket - no paste needed. Open Vitality and it lands placed on your board (it also syncs to your other devices). Its report stream is pre-wired, so Vee starts reading it as soon as you log in the tile.`;
+        return `Posted "${t.name}" (${t.category}) straight onto your dashboard through the Library upload socket - no paste needed. Open Imperium and it lands placed on your board (it also syncs to your other devices). Its report stream is pre-wired, so I starts reading it as soon as you log in the tile.`;
       })();
     },
   );
 
-  // ── vitality_tile_kit (PURE — serves the captured Vitality DNA pack) ───────────
-  // The payoff: before building a tile, the caller's Claude pulls Vitality's design
+  // ── vitality_tile_kit (PURE — serves the captured Imperium DNA pack) ───────────
+  // The payoff: before building a tile, the caller's Claude pulls Imperium's design
   // DNA, data libraries (food/lifts/supplements), API recipes, and the hard-won
   // gotchas rulebook, so the tile is on-brand, knows the domain, and avoids the bugs
   // already fixed over two months. This is what makes the MCP overpowered vs plain
@@ -1236,11 +1236,11 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
     'vitality_tile_kit',
     {
       annotations: { readOnlyHint: true },
-      title: 'Vitality tile kit (design DNA, data, fixes)',
+      title: 'Imperium tile kit (design DNA, data, fixes)',
       description:
-        'OPT-IN, for HAND-AUTHORED tiles only. For a normal tracker use scaffold_tile / vitality_add_tile with a plain goal: that path is already on-brand and floor-clean and spends no tokens here. Reach for this kit ONLY to hand-write a tile the templates cannot express (multi-metric, an AI bring-your-own-key chat, a bespoke multi-section layout or domain visual). It serves Vitality\'s design DNA, data libraries (real foods, lifts, supplements), API recipes, and the distilled bug-fix rules so the tile comes out on-brand and dodges bugs already fixed. No args = lean orientation (value + top-rules digest + section list). Then {domain:"food|workout|supplement|vee|finance|vitals|goals|quiz"} for a focused bundle (base look + that domain\'s data + recipes, the usual read); add {lean:true} for the lightest bundle that still clears the floor. Or {section:"<name>"} for one file. For the ceiling pattern read a sealed 0/0 example and swap its domain: {section:"example-markets-tile"} (finance) or {section:"example-workout-tile"} (workout). The base ships lean motion-core/icons-core; pull {section:"motion"} or {section:"icons"} for the full set, and {section:"gotchas"} for a rule\'s reasoning or the overlay/chart/form rules. {full:true} is rarely worth it. Finish with check_tile.',
+        'OPT-IN, for HAND-AUTHORED tiles only. For a normal tracker use scaffold_tile / vitality_add_tile with a plain goal: that path is already on-brand and floor-clean and spends no tokens here. Reach for this kit ONLY to hand-write a tile the templates cannot express (multi-metric, an AI bring-your-own-key chat, a bespoke multi-section layout or domain visual). It serves Imperium\'s design DNA, data libraries (real foods, lifts, supplements), API recipes, and the distilled bug-fix rules so the tile comes out on-brand and dodges bugs already fixed. No args = lean orientation (value + top-rules digest + section list). Then {domain:"food|workout|supplement|I|finance|vitals|goals|quiz"} for a focused bundle (base look + that domain\'s data + recipes, the usual read); add {lean:true} for the lightest bundle that still clears the floor. Or {section:"<name>"} for one file. For the ceiling pattern read a sealed 0/0 example and swap its domain: {section:"example-markets-tile"} (finance) or {section:"example-workout-tile"} (workout). The base ships lean motion-core/icons-core; pull {section:"motion"} or {section:"icons"} for the full set, and {section:"gotchas"} for a rule\'s reasoning or the overlay/chart/form rules. {full:true} is rarely worth it. Finish with check_tile.',
       inputSchema: {
-        domain: z.string().max(40).optional().describe('Tile domain for a focused bundle: food, workout, supplement, vee, finance, vitals, goals, quiz. The usual read.'),
+        domain: z.string().max(40).optional().describe('Tile domain for a focused bundle: food, workout, supplement, I, finance, vitals, goals, quiz. The usual read.'),
         lean: z.boolean().optional().describe('With {domain}, serve the lightest bundle (top rules + theme + components + the domain\'s data + sealed example) instead of the full base. check_tile still enforces the whole floor.'),
         section: z.string().max(60).optional().describe('A single reference section by name, e.g. theme, motion, motion-core, icons, icons-core, gotchas, gotchas-top, food-library, exercise-library, example-workout-tile, example-markets-tile'),
         full: z.boolean().optional().describe('Rarely needed. The entire pack (~70K tokens). A {domain:...} bundle already covers a build; requires {confirm:true} to actually return it.'),
@@ -1252,23 +1252,23 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
         return text(buildKit(args));
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        return { content: [{ type: 'text', text: `Vitality error: ${sanitizeError(msg)}` }], isError: true };
+        return { content: [{ type: 'text', text: `Imperium error: ${sanitizeError(msg)}` }], isError: true };
       }
     },
   );
 
   // ── check_tile (PURE — the quality gate / magic-wand loop) ────────────────────
   // Run any finished tile HTML (scaffolded OR hand-authored by the caller's Claude)
-  // through the Vitality linter and return a pass/fail receipt with every rule it
+  // through the Imperium linter and return a pass/fail receipt with every rule it
   // breaks. This is what turns ~80 advisory rules into a hard floor: the caller
   // iterates to green before shipping. Ignores getVdb.
   server.registerTool(
     'check_tile',
     {
       annotations: { readOnlyHint: true },
-      title: 'Check a tile against the Vitality floor',
+      title: 'Check a tile against the Imperium floor',
       description:
-        'Lint a finished tile\'s HTML against Vitality\'s hard floor (sealed isolation, local date keys, buttery 60fps motion (transform/opacity only, never layout props), no emoji or em dashes, on-brand tokens, contract-valid report() shape) and return a "Vitality-grade" receipt: PASS or FAIL with the exact rule each problem breaks and how to fix it. ALWAYS call this after you build or edit a tile by hand, and fix every error until it passes, before you hand the tile back or upload it. A PASSING receipt includes a Proof value: pass it to vitality_add_tile as `check` with the identical html and the re-lint is skipped.',
+        'Lint a finished tile\'s HTML against Imperium\'s hard floor (sealed isolation, local date keys, buttery 60fps motion (transform/opacity only, never layout props), no emoji or em dashes, on-brand tokens, contract-valid report() shape) and return a "Imperium-grade" receipt: PASS or FAIL with the exact rule each problem breaks and how to fix it. ALWAYS call this after you build or edit a tile by hand, and fix every error until it passes, before you hand the tile back or upload it. A PASSING receipt includes a Proof value: pass it to vitality_add_tile as `check` with the identical html and the re-lint is skipped.',
       inputSchema: {
         html: z.string().min(1).max(400000).describe('The complete tile HTML to check'),
       },
@@ -1278,8 +1278,9 @@ export function registerTools(server: McpServer, getVdb: VdbProvider): void {
         return text(checkTile(html).text);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        return { content: [{ type: 'text', text: `Vitality error: ${sanitizeError(msg)}` }], isError: true };
+        return { content: [{ type: 'text', text: `Imperium error: ${sanitizeError(msg)}` }], isError: true };
       }
     },
   );
 }
+

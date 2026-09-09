@@ -6,7 +6,7 @@
  * fields. SessionStorage (not localStorage) so it dies with the tab and
  * we never resurrect a stale order intent on a new session.
  */
-const KEY = 'vitality:orderPrefill'
+const KEY = 'Imperium:orderPrefill'
 
 export interface OrderPrefill {
   name: string
@@ -43,3 +43,4 @@ export function clearOrderPrefill(): void {
     sessionStorage.removeItem(KEY)
   } catch {}
 }
+

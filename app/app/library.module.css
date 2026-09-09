@@ -588,7 +588,7 @@
 /* ---- section label ---- */
 /* Linear-grade section header: a status pip, a normal-case group name, and a
    count in a small badge (not an uppercase micro-label). Reads like a real
-   file/issue app, in Vitality's black+mint skin. */
+   file/issue app, in Imperium's black+mint skin. */
 .seclabel {
   display: flex;
   align-items: center;
@@ -773,9 +773,9 @@
   border-color: rgba(142, 163, 192, 0.32);
   background: rgba(142, 163, 192, 0.07);
 }
-/* The mark of a readable tile: its stream feeds Vee (graphs, goals, Noticed).
-   Iris - the Vee identity color - so it reads as "hooked into Vee" at a glance. */
-.chip.vee {
+/* The mark of a readable tile: its stream feeds I (graphs, goals, Noticed).
+   Iris - the I identity color - so it reads as "hooked into I" at a glance. */
+.chip.I {
   margin-left: 6px;
   color: #a78bfa;
   border-color: rgba(167, 139, 250, 0.34);
@@ -1374,3 +1374,4 @@
     opacity: 1;
   }
 }
+

@@ -92,7 +92,7 @@ test('richness: the section-rendered mark catches an empty placeholder section',
 test('richness: the persists mark catches a tile that never saves or loads', () => {
   // GAMED never touches the host bridge, so a log would not survive a reload.
   assert.ok(richnessOf(GAMED).missing.includes('persists'));
-  // Every real template saves AND loads its own data through Vitality.
+  // Every real template saves AND loads its own data through Imperium.
   const { html } = scaffoldTile({ goal: 'did I read today' });
   assert.ok(!richnessOf(html).missing.includes('persists'));
 });
@@ -111,3 +111,4 @@ test('richness: the gate stays graded (score/max/missing), never a hard binary',
   assert.ok(r.score > 0 && r.score < r.max, `expected a partial score, got ${r.score}/${r.max}`);
   assert.equal(r.score + r.missing.length, r.max, 'score and missing must account for every mark');
 });
+

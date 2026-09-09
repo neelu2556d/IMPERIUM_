@@ -24,7 +24,7 @@ export interface PeakSnapshot {
   ready: boolean
   /** Hourly score (length 24, 0-100). Empty array when Peak hasn't loaded. */
   curve: number[]
-  /** Current 0-100 score (Vitality Score for the day). */
+  /** Current 0-100 score (Imperium Score for the day). */
   score: number
   /** Tier label. */
   tier: ScoreTier
@@ -172,3 +172,4 @@ export function suggestSlot(
   if (!slot) return null
   return { startHour: slot.start, endHour: slot.end, avgScore: slot.avgScore }
 }
+

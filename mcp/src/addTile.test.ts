@@ -85,11 +85,11 @@ test('addTile: a pre-built (rich) html tile is stored as-is, floor-checked, owne
   assert.equal(out.name, 'My rich tile');
 });
 
-test('addTile: a measurable html tile that lacks Vitality.report() is refused loud, never landed dark', async () => {
+test('addTile: a measurable html tile that lacks Imperium.report() is refused loud, never landed dark', async () => {
   const cap: Capture = {};
   // A sealed tile that persists via save/load but emits no report(): the exact
-  // "measurable tile that would feed Vee nothing" the floor guard exists to catch.
-  const dark = scaffoldTile({ goal: 'track my pushups' }).html.replace(/Vitality\.report\(/g, 'VitalityReportDisabled(');
+  // "measurable tile that would feed I nothing" the floor guard exists to catch.
+  const dark = scaffoldTile({ goal: 'track my pushups' }).html.replace(/Imperium\.report\(/g, 'VitalityReportDisabled(');
   await assert.rejects(
     () => addTile(makeV(['mcp:read', WRITE_SCOPE], cap), { html: dark, name: 'Pushups', kind: 'count' }),
     /report-missing/,
@@ -139,3 +139,4 @@ test('addTile: neither goal nor html is a clear error', async () => {
     /provide either.*goal.*html/i,
   );
 });
+

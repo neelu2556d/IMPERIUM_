@@ -53,10 +53,10 @@ describe('useTileHost: ai verb gating', () => {
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-1') }) // no { trusted: true }
 
-    dispatch({ source: 'vitality-tile', type: 'ai', id: 'req-1', input: 'hello', kind: 'notes' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'ai', id: 'req-1', input: 'hello', kind: 'notes' }, win)
 
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'ai:error', id: 'req-1', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'ai:error', id: 'req-1', reason: 'forbidden' },
       '*',
     )
     expect(global.fetch).not.toHaveBeenCalled()
@@ -71,7 +71,7 @@ describe('useTileHost: ai verb gating', () => {
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
-    dispatch({ source: 'vitality-tile', type: 'ai', id: 'req-2', input: 'hello', kind: 'notes' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'ai', id: 'req-2', input: 'hello', kind: 'notes' }, win)
 
     expect(global.fetch).toHaveBeenCalledTimes(1)
     const [url, init] = (global.fetch as jest.Mock).mock.calls[0]
@@ -82,7 +82,7 @@ describe('useTileHost: ai verb gating', () => {
     await flush()
 
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'ai:result', id: 'req-2', data: { titles: ['A title'] } },
+      { source: 'Imperium-host', type: 'ai:result', id: 'req-2', data: { titles: ['A title'] } },
       '*',
     )
   })
@@ -96,11 +96,11 @@ describe('useTileHost: ai verb gating', () => {
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
-    dispatch({ source: 'vitality-tile', type: 'ai', id: 'req-3', input: 'hello' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'ai', id: 'req-3', input: 'hello' }, win)
     await flush()
 
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'ai:error', id: 'req-3', reason: 'daily_limit_reached' },
+      { source: 'Imperium-host', type: 'ai:error', id: 'req-3', reason: 'daily_limit_reached' },
       '*',
     )
   })
@@ -112,7 +112,7 @@ describe('useTileHost: ai verb gating', () => {
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
     dispatch({
-      source: 'vitality-tile',
+      source: 'Imperium-tile',
       type: 'ai',
       id: 'req-4',
       input: 'the real input',
@@ -136,7 +136,7 @@ describe('useTileHost: ai verb gating', () => {
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
     // still trusted under the same user
-    dispatch({ source: 'vitality-tile', type: 'ai', id: 'req-5', input: 'x' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'ai', id: 'req-5', input: 'x' }, win)
     expect(global.fetch).toHaveBeenCalledTimes(1)
     await flush()
 
@@ -151,10 +151,10 @@ describe('useTileHost: ai verb gating', () => {
     // "is this the first-party Studio install" for the new user's tiles.
     act(() => { result.current.register(win, 'tile-studio') })
 
-    dispatch({ source: 'vitality-tile', type: 'ai', id: 'req-6', input: 'x' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'ai', id: 'req-6', input: 'x' }, win)
     expect(global.fetch).not.toHaveBeenCalled()
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'ai:error', id: 'req-6', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'ai:error', id: 'req-6', reason: 'forbidden' },
       '*',
     )
   })
@@ -170,8 +170,8 @@ describe('useTileHost: save/load/report are unchanged for trusted and untrusted 
       result.current.register(trusted, 'tile-b', { trusted: true })
     })
 
-    dispatch({ source: 'vitality-tile', type: 'save', id: 's1', data: [1, 2, 3] }, untrusted)
-    dispatch({ source: 'vitality-tile', type: 'save', id: 's2', data: [1, 2] }, trusted)
+    dispatch({ source: 'Imperium-tile', type: 'save', id: 's1', data: [1, 2, 3] }, untrusted)
+    dispatch({ source: 'Imperium-tile', type: 'save', id: 's2', data: [1, 2] }, trusted)
 
     expect(mockSaveData).toHaveBeenNthCalledWith(1, 'user-1', 'tile-a', [1, 2, 3])
     expect(mockSaveData).toHaveBeenNthCalledWith(2, 'user-1', 'tile-b', [1, 2])
@@ -189,14 +189,14 @@ describe('useTileHost: save/load/report are unchanged for trusted and untrusted 
       result.current.register(trusted, 'tile-b', { trusted: true })
     })
 
-    dispatch({ source: 'vitality-tile', type: 'load', id: 'l1' }, untrusted)
-    dispatch({ source: 'vitality-tile', type: 'load', id: 'l2' }, trusted)
+    dispatch({ source: 'Imperium-tile', type: 'load', id: 'l1' }, untrusted)
+    dispatch({ source: 'Imperium-tile', type: 'load', id: 'l2' }, trusted)
 
     expect(untrusted.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'load:result', id: 'l1', data: ['loaded-item'] }, '*',
+      { source: 'Imperium-host', type: 'load:result', id: 'l1', data: ['loaded-item'] }, '*',
     )
     expect(trusted.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'load:result', id: 'l2', data: ['loaded-item'] }, '*',
+      { source: 'Imperium-host', type: 'load:result', id: 'l2', data: ['loaded-item'] }, '*',
     )
   })
 
@@ -210,8 +210,8 @@ describe('useTileHost: save/load/report are unchanged for trusted and untrusted 
       result.current.register(trusted, 'tile-b', { trusted: true })
     })
 
-    dispatch({ source: 'vitality-tile', type: 'report', id: 'r1', stream: { key: 'beer', value: 1 } }, untrusted)
-    dispatch({ source: 'vitality-tile', type: 'report', id: 'r2', stream: { key: 'reading', value: 2 } }, trusted)
+    dispatch({ source: 'Imperium-tile', type: 'report', id: 'r1', stream: { key: 'beer', value: 1 } }, untrusted)
+    dispatch({ source: 'Imperium-tile', type: 'report', id: 'r2', stream: { key: 'reading', value: 2 } }, trusted)
 
     expect(onReport).toHaveBeenNthCalledWith(1, { key: 'beer', value: 1 }, 'tile-a')
     expect(onReport).toHaveBeenNthCalledWith(2, { key: 'reading', value: 2 }, 'tile-b')
@@ -224,7 +224,7 @@ describe('useTileHost: save/load/report are unchanged for trusted and untrusted 
     act(() => { result.current.unregister(win) })
 
     // no longer a registered sender at all, so even 'load' (untrusted-safe) is ignored
-    dispatch({ source: 'vitality-tile', type: 'load', id: 'l1' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'load', id: 'l1' }, win)
     expect(win.postMessage).not.toHaveBeenCalled()
   })
 })
@@ -235,10 +235,10 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-1') })
 
-    dispatch({ source: 'vitality-tile', type: 'studio:lookup', id: 'lk-1', url: 'https://youtu.be/abcdefghijk' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'studio:lookup', id: 'lk-1', url: 'https://youtu.be/abcdefghijk' }, win)
 
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:lookup:error', id: 'lk-1', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'studio:lookup:error', id: 'lk-1', reason: 'forbidden' },
       '*',
     )
     expect(global.fetch).not.toHaveBeenCalled()
@@ -254,7 +254,7 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
     dispatch({
-      source: 'vitality-tile', type: 'studio:lookup', id: 'lk-2',
+      source: 'Imperium-tile', type: 'studio:lookup', id: 'lk-2',
       url: 'https://youtu.be/abcdefghijk', sneaky: 'field',
     }, win)
 
@@ -267,7 +267,7 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
 
     await flush()
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:lookup:result', id: 'lk-2', data: { video: { videoId: 'abcdefghijk', title: 'A video' } } },
+      { source: 'Imperium-host', type: 'studio:lookup:result', id: 'lk-2', data: { video: { videoId: 'abcdefghijk', title: 'A video' } } },
       '*',
     )
   })
@@ -286,12 +286,12 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
-    dispatch({ source: 'vitality-tile', type: 'studio:status', id: 'st-1' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'studio:status', id: 'st-1' }, win)
     await flush()
 
     expect(win.postMessage).toHaveBeenCalledWith(
       {
-        source: 'vitality-host', type: 'studio:status:result', id: 'st-1',
+        source: 'Imperium-host', type: 'studio:status:result', id: 'st-1',
         data: { configured: true, connected: true, accountLabel: 'example', metrics: { subscribers: 12 } },
       },
       '*',
@@ -302,9 +302,9 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
     const { result } = renderHook(() => useTileHost('user-1'))
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-1') })
-    dispatch({ source: 'vitality-tile', type: 'studio:status', id: 'st-2' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'studio:status', id: 'st-2' }, win)
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:status:error', id: 'st-2', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'studio:status:error', id: 'st-2', reason: 'forbidden' },
       '*',
     )
     expect(global.fetch).not.toHaveBeenCalled()
@@ -316,19 +316,19 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
 
     const evil = fakeWindow()
     act(() => { result.current.register(evil, 'tile-evil') })
-    dispatch({ source: 'vitality-tile', type: 'studio:connect', id: 'cn-0' }, evil)
+    dispatch({ source: 'Imperium-tile', type: 'studio:connect', id: 'cn-0' }, evil)
     expect(openSpy).not.toHaveBeenCalled()
     expect(evil.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:connect:error', id: 'cn-0', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'studio:connect:error', id: 'cn-0', reason: 'forbidden' },
       '*',
     )
 
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
-    dispatch({ source: 'vitality-tile', type: 'studio:connect', id: 'cn-1' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'studio:connect', id: 'cn-1' }, win)
     expect(openSpy).toHaveBeenCalledWith('/api/connectors/youtube/connect', '_blank')
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:connect:result', id: 'cn-1', opened: true },
+      { source: 'Imperium-host', type: 'studio:connect:result', id: 'cn-1', opened: true },
       '*',
     )
     openSpy.mockRestore()
@@ -339,10 +339,10 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-1') })
 
-    dispatch({ source: 'vitality-tile', type: 'studio:channel', id: 'ch-0', channel: '@example' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'studio:channel', id: 'ch-0', channel: '@example' }, win)
 
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:channel:error', id: 'ch-0', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'studio:channel:error', id: 'ch-0', reason: 'forbidden' },
       '*',
     )
     expect(global.fetch).not.toHaveBeenCalled()
@@ -358,7 +358,7 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
 
     dispatch({
-      source: 'vitality-tile', type: 'studio:channel', id: 'ch-1',
+      source: 'Imperium-tile', type: 'studio:channel', id: 'ch-1',
       channel: '@example', sneaky: 'field',
     }, win)
 
@@ -371,7 +371,7 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
 
     await flush()
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:channel:result', id: 'ch-1', data: { channel: { id: 'UCx', handle: '@example', title: 'example', videos: [] } } },
+      { source: 'Imperium-host', type: 'studio:channel:result', id: 'ch-1', data: { channel: { id: 'UCx', handle: '@example', title: 'example', videos: [] } } },
       '*',
     )
   })
@@ -382,21 +382,21 @@ describe('useTileHost: studio verbs share the ai trust gate', () => {
 
     const evil = fakeWindow()
     act(() => { result.current.register(evil, 'tile-evil') })
-    dispatch({ source: 'vitality-tile', type: 'studio:claude', id: 'cl-0' }, evil)
+    dispatch({ source: 'Imperium-tile', type: 'studio:claude', id: 'cl-0' }, evil)
     expect(openSpy).not.toHaveBeenCalled()
     expect(evil.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:claude:error', id: 'cl-0', reason: 'forbidden' },
+      { source: 'Imperium-host', type: 'studio:claude:error', id: 'cl-0', reason: 'forbidden' },
       '*',
     )
 
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-studio', { trusted: true }) })
-    dispatch({ source: 'vitality-tile', type: 'studio:claude', id: 'cl-1' }, win)
+    dispatch({ source: 'Imperium-tile', type: 'studio:claude', id: 'cl-1' }, win)
     expect(openSpy).toHaveBeenCalledWith('https://claude.ai/new', '_blank', 'noopener')
     // noopener means a null return even on success, so the host reports
     // opened:true unconditionally rather than lying about a block
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'studio:claude:result', id: 'cl-1', opened: true },
+      { source: 'Imperium-host', type: 'studio:claude:result', id: 'cl-1', opened: true },
       '*',
     )
     openSpy.mockRestore()
@@ -411,7 +411,7 @@ describe('useTileHost: report is acknowledged honestly (the silent-swallow fix)'
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-a') })
 
-    dispatch({ source: 'vitality-tile', type: 'report', id: 'r1', stream: { key: 'water', value: 1 } }, win)
+    dispatch({ source: 'Imperium-tile', type: 'report', id: 'r1', stream: { key: 'water', value: 1 } }, win)
     await flush()
 
     expect(onReport).toHaveBeenCalledWith({ key: 'water', value: 1 }, 'tile-a')
@@ -426,12 +426,12 @@ describe('useTileHost: report is acknowledged honestly (the silent-swallow fix)'
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-a') })
 
-    dispatch({ source: 'vitality-tile', type: 'report', id: 'r9', stream: { key: 'water', value: 1 } }, win)
+    dispatch({ source: 'Imperium-tile', type: 'report', id: 'r9', stream: { key: 'water', value: 1 } }, win)
     await flush()
 
     expect(onActivity).not.toHaveBeenCalled()
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'report:error', id: 'r9', reason: 'unauthorized' }, '*',
+      { source: 'Imperium-host', type: 'report:error', id: 'r9', reason: 'unauthorized' }, '*',
     )
   })
 
@@ -442,12 +442,12 @@ describe('useTileHost: report is acknowledged honestly (the silent-swallow fix)'
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-a') })
 
-    dispatch({ source: 'vitality-tile', type: 'report', id: 'r2', stream: { key: 'water', value: 1 } }, win)
+    dispatch({ source: 'Imperium-tile', type: 'report', id: 'r2', stream: { key: 'water', value: 1 } }, win)
     await flush()
 
     expect(onActivity).not.toHaveBeenCalled()
     expect(win.postMessage).toHaveBeenCalledWith(
-      { source: 'vitality-host', type: 'report:error', id: 'r2', reason: 'failed' }, '*',
+      { source: 'Imperium-host', type: 'report:error', id: 'r2', reason: 'failed' }, '*',
     )
   })
 
@@ -458,9 +458,10 @@ describe('useTileHost: report is acknowledged honestly (the silent-swallow fix)'
     const win = fakeWindow()
     act(() => { result.current.register(win, 'tile-a') })
 
-    dispatch({ source: 'vitality-tile', type: 'report', id: 'r3', stream: { key: 'water', value: 1 } }, win)
+    dispatch({ source: 'Imperium-tile', type: 'report', id: 'r3', stream: { key: 'water', value: 1 } }, win)
     await flush()
 
     expect(onActivity).toHaveBeenCalledWith({ tileId: 'tile-a', type: 'report', count: 1 })
   })
 })
+

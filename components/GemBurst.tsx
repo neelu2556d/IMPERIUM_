@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import styles from './GemBurst.module.css'
 
 /**
- * GemBurst — reusable particle-burst overlay for any Vitality gem, so a page
+ * GemBurst — reusable particle-burst overlay for any Imperium gem, so a page
  * can fire celebratory pulses (rings / particles / sparkles / confetti) without
  * re-implementing the DOM + CSS each time. Pair with HeroCrystal's onHappyStart
  * (ambient warmth) or trigger directly on a real event (a save, a win).
@@ -155,3 +155,4 @@ export function GemBurst({ burst }: { burst: BurstState }) {
     </div>
   )
 }
+

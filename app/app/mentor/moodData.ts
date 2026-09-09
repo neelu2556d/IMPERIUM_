@@ -1,4 +1,4 @@
-// Pure mood helpers. Mood is stored as a user_facts row (no new table) so Vee
+// Pure mood helpers. Mood is stored as a user_facts row (no new table) so I
 // reads it everywhere. body is human-readable AND parseable for the 7-day strip.
 
 export const MOOD_SOURCE = 'mental_health'
@@ -75,3 +75,4 @@ export function buildMoodStrip(facts: RawMoodFact[], todayKey: string, days = 7)
   }
   return out
 }
+

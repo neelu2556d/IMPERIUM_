@@ -1,5 +1,5 @@
 /*
- * Vee, the mentor — themed 1:1 to public/mentor-theme-kit.html (canonical).
+ * I, the mentor — themed 1:1 to public/mentor-theme-kit.html (canonical).
  * Cozy system tuned to iris: Instrument Serif italic headlines, Hanken
  * Grotesk body, JetBrains Mono labels, near-black #04060a, soft radial sky.
  */
@@ -305,7 +305,7 @@
   white-space: pre-wrap;
 }
 
-/* Wrapper for a Vee turn that renders as an ask card (left, wider than a bubble). */
+/* Wrapper for a I turn that renders as an ask card (left, wider than a bubble). */
 .askWrap {
   align-self: flex-start;
   width: 100%;
@@ -353,7 +353,7 @@
   color: var(--ink-faint);
 }
 
-/* ── Vee's replies render as designed content, not a text blob ──
+/* ── I's replies render as designed content, not a text blob ──
    A lead headline, then tile-style bullet rows with an iris diamond marker.
    The one bold phrase per line is the signal the eye lands on. */
 .mdPara {
@@ -869,7 +869,7 @@
 
 .dayCheck{margin-bottom:4px}
 
-/* ── 01 Vent · the "Open Vee in Claude" doorway (hero) ── */
+/* ── 01 Vent · the "Open I in Claude" doorway (hero) ── */
 .door {
   position: relative;
   overflow: hidden;
@@ -994,7 +994,7 @@
 }
 
 /* ── 02 Context · "Folded Notes" cozy progressive disclosure ──
-   Ported from public/vee-mental-health-preview.html. Tokens cascade from .page. */
+   Ported from public/I-mental-health-preview.html. Tokens cascade from .page. */
 .contextSec {
   display: block;
 }
@@ -1421,3 +1421,4 @@
   .veeNote, .ctxRow, .noteDiamond { opacity: 1 !important; transform: none !important; }
   .noteGlyph path, .noteGlyph circle { stroke-dashoffset: 0 !important; }
 }
+

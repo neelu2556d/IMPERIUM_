@@ -5,7 +5,7 @@ import {
 } from '@/lib/goals/repo'
 import { EMPTY_STREAK } from '@/app/app/goals/veeTypes'
 
-describe('vee goals repo mappers', () => {
+describe('I goals repo mappers', () => {
   const bigRow: BigGoalRow = {
     id: 'g1', user_id: 'u1', title: 'hit 1000 subs on yt',
     clean_title: 'Reach 1,000 Subscribers', category: 'audience',
@@ -86,3 +86,4 @@ describe('vee goals repo mappers', () => {
     expect(streakToRow(s, 'u1')).toMatchObject({ user_id: 'u1', current: 5, longest: 12, last_extended_date: '2026-06-17', freezes: 1, freezes_used: 3 })
   })
 })
+

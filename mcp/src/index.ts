@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Vitality MCP — stdio server.
+// Imperium MCP — stdio server.
 //
-// Exposes a single Vitality user's data (sleep, training, nutrition, weight,
+// Exposes a single Imperium user's data (sleep, training, nutrition, weight,
 // finances, notes, durable facts) to an MCP client (Claude Code / Desktop), plus
 // a `vitality_daily_briefing` tool that runs the nudge engine, plus the tile
 // builder (scaffold_tile / check_tile / vitality_tile_kit / upload_tile). Reads
@@ -23,17 +23,18 @@ import { getDb } from './supabase.js';
 import { registerTools } from './tools.js';
 import { registerResources } from './resources.js';
 
-const server = new McpServer({ name: 'vitality', version: '0.1.0' });
+const server = new McpServer({ name: 'Imperium', version: '0.1.0' });
 registerTools(server, getDb);
 registerResources(server); // ambient tile-engine context (dna + kits), identity-free
 
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('[vitality-mcp] ready (reads + gated writes + tile builder + engine resources). Waiting on stdio…');
+  console.error('[Imperium-mcp] ready (reads + gated writes + tile builder + engine resources). Waiting on stdio…');
 }
 
 main().catch((err) => {
-  console.error('[vitality-mcp] fatal:', err);
+  console.error('[Imperium-mcp] fatal:', err);
   process.exit(1);
 });
+

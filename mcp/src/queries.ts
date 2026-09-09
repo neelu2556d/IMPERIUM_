@@ -1,4 +1,4 @@
-// Read-only query layer for the Vitality MCP.
+// Read-only query layer for the Imperium MCP.
 //
 // One function per domain. Each takes the authenticated client and returns a
 // shaped, typed object (never raw rows). Mirrors the column choices in
@@ -822,7 +822,7 @@ export interface BigGoal {
   rawTitle: string;
   category: string | null;
   priority: 'low' | 'medium' | 'high';
-  /** Vee push cadence: silent | gentle | balanced | push. */
+  /** I push cadence: silent | gentle | balanced | push. */
   pushLevel: string;
   targetDate: string | null;
   /** Signed days from today to the target (negative = overdue). null if no date. */
@@ -1450,7 +1450,7 @@ export interface TileListEntry {
   /** Born classification: which of the nine life buckets the tile declared at
    *  build time (TRAIN 5), or null for an unclassified tile. */
   goalCategory: string | null;
-  /** The one-line "note for Vee" declared at build time, or null. */
+  /** The one-line "note for I" declared at build time, or null. */
   veeNote: string | null;
 }
 
@@ -1514,3 +1514,4 @@ export async function getTiles(v: VitalityDb): Promise<TilesList> {
   });
   return { tiles, boardKnown };
 }
+

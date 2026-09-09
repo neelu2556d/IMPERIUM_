@@ -87,7 +87,7 @@ describe('phone clamp', () => {
 describe('legacy size migration (the old s/m/lw/lt vocabulary)', () => {
   test('lw maps forward to band, lt to big, s/m unchanged, on read', () => {
     localStorageMock.setItem(
-      'vitality:user-a:tileSkins',
+      'Imperium:user-a:tileSkins',
       JSON.stringify({
         a: { size: 'lw', design: null, color: null, name: null },
         b: { size: 'lt', design: null, color: null, name: null },
@@ -100,7 +100,8 @@ describe('legacy size migration (the old s/m/lw/lt vocabulary)', () => {
   })
 
   test('an unknown size falls back to s', () => {
-    localStorageMock.setItem('vitality:user-a:tileSkins', JSON.stringify({ a: { size: 'xxl' } }))
+    localStorageMock.setItem('Imperium:user-a:tileSkins', JSON.stringify({ a: { size: 'xxl' } }))
     expect(tileSkin.get(A, 'a').size).toBe('s')
   })
 })
+

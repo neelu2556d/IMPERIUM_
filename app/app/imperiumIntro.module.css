@@ -1,6 +1,6 @@
 /* ───────── App-open splash: "The Swipe" ─────────
-   Ported 1:1 from the approved public/vitality-intro-a.html: the V mark
-   streaks in from the RIGHT trailing mint motion lines, and the VITALITY
+   Ported 1:1 from the approved public/Imperium-intro-a.html: the V mark
+   streaks in from the RIGHT trailing mint motion lines, and the Imperium
    letters catch up and settle right to left in its wake. Pure presentation
    overlay: opacity / transform / filter / stroke only, zero layout impact,
    and it sits above every app surface (highest z-index in the app is 1000). */
@@ -134,3 +134,4 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+

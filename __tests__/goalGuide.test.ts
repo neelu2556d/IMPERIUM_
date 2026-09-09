@@ -30,7 +30,7 @@ function climbing(id: string, name: string, start: number, step: number, weeks =
 }
 
 describe('buildGoalGuide', () => {
-  it('only ever recommends real, shipped Vitality routes (never vaporware)', () => {
+  it('only ever recommends real, shipped Imperium routes (never vaporware)', () => {
     // Titles with a real body/money/audience theme MUST get a guide...
     const themed = [
       'bench 225', 'lose fat', 'sleep 8 hours', 'reach 1000 subscribers',
@@ -1360,3 +1360,4 @@ describe('strongestBinding (TRAIN 4): the named metric for the empty graph slot'
     expect(b.feedLine).toContain('write a note each day')
   })
 })
+

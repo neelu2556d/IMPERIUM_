@@ -61,7 +61,7 @@ describe('reportsToSeries: kind drives same-day aggregation', () => {
   })
 })
 
-describe('seamForStream: a reported stream becomes an honest Vee insight', () => {
+describe('seamForStream: a reported stream becomes an honest I insight', () => {
   // Honest synthetic data: more beers today, lower recovery TOMORROW (lag 1).
   const beerByDay: Record<string, number> = {
     '2026-06-01': 0, '2026-06-02': 4, '2026-06-03': 0, '2026-06-04': 5, '2026-06-05': 1,
@@ -294,3 +294,4 @@ describe('tileInsight: color LAW and copy rules hold on every branch', () => {
     expect(a).toEqual(b)
   })
 })
+

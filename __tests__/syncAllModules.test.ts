@@ -134,7 +134,7 @@ describe('ownerAction — shared-device cross-user bleed guard', () => {
     expect(action.stampTo).toBe('userB')
     expect(action.purge.sort()).toEqual(['vitality_brand_v1', 'vitality_goals_v1'].sort())
     expect(action.purge).not.toContain(OWNER_KEY) // never wipe the stamp itself
-    expect(action.purge).not.toContain('sb-auth-token') // never touch non-vitality keys (e.g. auth)
+    expect(action.purge).not.toContain('sb-auth-token') // never touch non-Imperium keys (e.g. auth)
     expect(action.purge).not.toContain('unrelated')
   })
 
@@ -142,3 +142,4 @@ describe('ownerAction — shared-device cross-user bleed guard', () => {
     expect(keysToPurge(['vitality_a', 'vitality_b', OWNER_KEY, 'sb-x', 'other']).sort()).toEqual(['vitality_a', 'vitality_b'])
   })
 })
+

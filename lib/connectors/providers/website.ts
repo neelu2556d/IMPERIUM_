@@ -22,7 +22,7 @@ function normalizeUrl(raw: string): string {
 async function probe(url: string): Promise<{ ok: boolean; status: number; ms: number; title?: string }> {
   const startedAt = Date.now()
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'VitalityBot/1.0 (+https://vitality.app)' },
+    headers: { 'User-Agent': 'VitalityBot/1.0 (+https://Imperium.app)' },
     redirect: 'follow',
     cache: 'no-store',
   })
@@ -64,3 +64,4 @@ export const websiteConnector: ConnectorDef = {
     return { accountLabel: r.title || new URL(url).hostname, metrics }
   },
 }
+

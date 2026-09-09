@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
  * The Forge drop zone (and the Library Upload) sends the raw html of a
  * user-supplied tile here; the server runs the SAME floor the MCP's
  * vitality_add_tile enforces (assertTileExportable) plus the kind-aware
- * Vee-readability read, and answers with one of two verdicts:
+ * I-readability read, and answers with one of two verdicts:
  *
  *   { ok: true,  envelope }            install it via tileStore.importTile
  *   { ok: false, errors, fixBrief }    show the fix card; the fixBrief is
@@ -41,3 +41,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json(gateTile(html, name))
 }
+

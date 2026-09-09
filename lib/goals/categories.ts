@@ -1,6 +1,6 @@
 /**
  * Goal triage — the nine universal buckets every goal funnels into (BUILD47).
- * One word + one icon each so the system (and Vee) knows what a goal is about at
+ * One word + one icon each so the system (and I) knows what a goal is about at
  * a glance. Colour LAW: all buckets render iris, never rainbow — meaning rides on
  * the icon shape + the word, colourblind-safe.
  *
@@ -56,3 +56,4 @@ export function guessCategory(title: string): GoalCategory {
   for (const [cat, re] of KEYWORDS) if (re.test(t)) return cat
   return 'general'
 }
+

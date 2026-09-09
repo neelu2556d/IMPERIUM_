@@ -170,7 +170,7 @@ for (const c of CASES) {
     assert.equal(/NaN/.test(h.section()), false, `${c.name} section drew without NaN`);
 
     // 4. PERSISTS + REHYDRATES (S2) — reopen keeps the number; a pure reopen does NOT
-    //    re-report (INV-2: a reopen must not double-count into Vee).
+    //    re-report (INV-2: a reopen must not double-count into I).
     const h2 = await h.rehydrate();
     assert.equal(h2.errors.length, 0, `${c.name} threw on rehydrate: ${h2.errors.join(' | ')}`);
     assert.equal(h2.value(), c.expect, `${c.name} reopened tile shows the persisted number`);
@@ -362,7 +362,7 @@ test('honesty: a report:error reply from the host surfaces the same calm amber n
   const { html } = scaffoldTile({ goal: 'track my water' });
   const h = await mountReady(html, { now: NOW });
   // The host answered the report with a failure (the server write never landed).
-  h.win.postMessage({ source: 'vitality-host', type: 'report:error', reason: 'failed' }, '*');
+  h.win.postMessage({ source: 'Imperium-host', type: 'report:error', reason: 'failed' }, '*');
   await h.settle();
   const msg = h.win.document.getElementById('msg');
   assert.ok(msg, 'the shared msg line exists');
@@ -396,7 +396,7 @@ test('honesty: a LATE load reply carrying saved data reloads the tile (before an
   // The real reply finally lands (a stalled main thread), carrying weeks of history.
   const id = h.loads[h.loads.length - 1];
   h.win.postMessage(
-    { source: 'vitality-host', type: 'load:result', id, data: [{ date: '2026-06-01', value: 3 }] },
+    { source: 'Imperium-host', type: 'load:result', id, data: [{ date: '2026-06-01', value: 3 }] },
     '*',
   );
   await h.settle();
@@ -416,11 +416,11 @@ test('honesty: a LATE load reply never stomps fresh input - once the user has sa
   const h = await mountReady(html, { now: NOW, dropLoads: true });
   await new Promise((r) => setTimeout(r, 6600)); // past the fallback: tile booted empty
   await h.settle();
-  await h.click('#plus'); // the user logs something: Vitality._sv is set
+  await h.click('#plus'); // the user logs something: Imperium._sv is set
   const before = h.errors.length;
   const id = h.loads[h.loads.length - 1];
   h.win.postMessage(
-    { source: 'vitality-host', type: 'load:result', id, data: [{ date: '2026-06-01', value: 3 }] },
+    { source: 'Imperium-host', type: 'load:result', id, data: [{ date: '2026-06-01', value: 3 }] },
     '*',
   );
   await h.settle();
@@ -431,3 +431,4 @@ test('honesty: a LATE load reply never stomps fresh input - once the user has sa
   );
   h.close();
 });
+

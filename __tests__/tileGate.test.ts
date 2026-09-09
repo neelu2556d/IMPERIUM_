@@ -18,7 +18,7 @@ describe('gateTile', () => {
     if (v.ok) return
     expect(v.errors.length).toBeGreaterThan(0)
     expect(v.fixBrief).toContain('return the corrected file')
-    expect(v.fixBrief).toContain('Vitality.report')
+    expect(v.fixBrief).toContain('Imperium.report')
     // The brief is for the AI: it must never contain an em dash (hard copy rule).
     expect(v.fixBrief).not.toContain('—')
   })
@@ -52,11 +52,11 @@ describe('gateTile', () => {
 
   /* The no-maybes floor: a reporting tile whose stream identity is not
    * readable with certainty is refused, never admitted as a guess. This is
-   * what stops a tile from entering marked "quiet" and then talking to Vee
+   * what stops a tile from entering marked "quiet" and then talking to I
    * at runtime with an identity the gate never saw. */
 
   it('refuses a report() whose kind is a variable, not a literal', () => {
-    const sneaky = GOOD.replace(/(Vitality\.report\s*\([\s\S]{0,200}?)kind:\s*['"]intake['"]/, '$1kind: myKind')
+    const sneaky = GOOD.replace(/(Imperium\.report\s*\([\s\S]{0,200}?)kind:\s*['"]intake['"]/, '$1kind: myKind')
     const v = gateTile(sneaky)
     expect(v.ok).toBe(false)
     if (v.ok) return
@@ -64,7 +64,7 @@ describe('gateTile', () => {
   })
 
   it('refuses a report() whose kind is outside the locked 7', () => {
-    const sneaky = GOOD.replace(/(Vitality\.report\s*\([\s\S]{0,200}?)kind:\s*['"]intake['"]/, "$1kind: 'vibes'")
+    const sneaky = GOOD.replace(/(Imperium\.report\s*\([\s\S]{0,200}?)kind:\s*['"]intake['"]/, "$1kind: 'vibes'")
     const v = gateTile(sneaky)
     expect(v.ok).toBe(false)
     if (v.ok) return
@@ -72,7 +72,7 @@ describe('gateTile', () => {
   })
 
   it('refuses a report() whose key is dynamic', () => {
-    const sneaky = GOOD.replace(/(Vitality\.report\s*\(\s*\{\s*)key:\s*['"][^'"]+['"]/, '$1key: someKey')
+    const sneaky = GOOD.replace(/(Imperium\.report\s*\(\s*\{\s*)key:\s*['"][^'"]+['"]/, '$1key: someKey')
     const v = gateTile(sneaky)
     expect(v.ok).toBe(false)
     if (v.ok) return
@@ -80,7 +80,7 @@ describe('gateTile', () => {
   })
 
   it('still admits a genuine no-report note tile as quiet', () => {
-    const quiet = GOOD.replace(/Vitality\.report\s*\([\s\S]*?\)\s*;?/, '')
+    const quiet = GOOD.replace(/Imperium\.report\s*\([\s\S]*?\)\s*;?/, '')
     const v = gateTile(quiet)
     // Whatever the lint verdict is for the stripped tile, the identity floor
     // itself must not fire: no report call means no stream to classify.
@@ -90,3 +90,4 @@ describe('gateTile', () => {
     }
   })
 })
+

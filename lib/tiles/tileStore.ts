@@ -14,13 +14,13 @@ import { tileDataSync } from './tileDataSync'
  *   tile_data(tile_id, user_id, data jsonb)
  *
  * Keys:
- *   vitality:<userId>:tiles            -> Tile[]  (the index, source order)
- *   vitality:<userId>:tile:<id>:data   -> whatever Vitality.save() persisted
+ *   Imperium:<userId>:tiles            -> Tile[]  (the index, source order)
+ *   Imperium:<userId>:tile:<id>:data   -> whatever Imperium.save() persisted
  */
 
-const indexKey = (userId: string) => `vitality:${userId}:tiles`
-const dataKey = (userId: string, id: string) => `vitality:${userId}:tile:${id}:data`
-const legacyKey = (userId: string) => `vitality:${userId}:tile:draft` // BUILD71 single key
+const indexKey = (userId: string) => `Imperium:${userId}:tiles`
+const dataKey = (userId: string, id: string) => `Imperium:${userId}:tile:${id}:data`
+const legacyKey = (userId: string) => `Imperium:${userId}:tile:draft` // BUILD71 single key
 
 const hasStorage = () => typeof window !== 'undefined' && !!window.localStorage
 
@@ -364,7 +364,7 @@ function hydrateData(userId: string, id: string, data: TileData): void {
 
 /**
  * One-time migration from the BUILD71 single-tile key, where
- * vitality:<userId>:tile:draft held the saved data array directly (literal id
+ * Imperium:<userId>:tile:draft held the saved data array directly (literal id
  * "draft", no html persisted). If the registry is empty and that key exists,
  * adopt its data into a real tile (html was never stored back then, so the
  * caller supplies a default), then remove the legacy key. Guarded on an empty
@@ -411,3 +411,4 @@ export const tileStore = {
   hydrateData,
   migrateLegacy,
 }
+

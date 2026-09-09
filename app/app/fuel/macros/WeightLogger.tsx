@@ -294,8 +294,8 @@ export default function WeightLogger({ initialWeights, units }: Props) {
   beginLogRef.current = beginLog
   useEffect(() => {
     const open = () => beginLogRef.current()
-    window.addEventListener('vitality:log-weight', open)
-    return () => window.removeEventListener('vitality:log-weight', open)
+    window.addEventListener('Imperium:log-weight', open)
+    return () => window.removeEventListener('Imperium:log-weight', open)
   }, [])
 
   function save() {
@@ -628,3 +628,4 @@ export default function WeightLogger({ initialWeights, units }: Props) {
     </section>
   )
 }
+

@@ -9,7 +9,7 @@ import {
 import type { Tile } from '@/lib/tiles/types'
 import type { Skin } from '@/lib/tiles/tileSkin'
 
-const PREFIX = 'vitality:tile:'
+const PREFIX = 'Imperium:tile:'
 
 const tile: Tile = {
   id: 't1',
@@ -196,16 +196,16 @@ describe('tile share code: oversized payload rejected cleanly', () => {
 describe('isTileCode: cheap, exact, never throws', () => {
   test('true for a real code and for the bare prefix', () => {
     expect(isTileCode(exportTileCode(tile, skin))).toBe(true)
-    expect(isTileCode('vitality:tile:anything')).toBe(true)
-    expect(isTileCode('   vitality:tile:padded  ')).toBe(true) // trims first
+    expect(isTileCode('Imperium:tile:anything')).toBe(true)
+    expect(isTileCode('   Imperium:tile:padded  ')).toBe(true) // trims first
   })
 
   test('false for non-codes', () => {
     expect(isTileCode('nope')).toBe(false)
     expect(isTileCode('')).toBe(false)
     expect(isTileCode('{"name":"x"}')).toBe(false)
-    expect(isTileCode('vitality:tile')).toBe(false) // missing trailing colon
-    expect(isTileCode('vitality:')).toBe(false)
+    expect(isTileCode('Imperium:tile')).toBe(false) // missing trailing colon
+    expect(isTileCode('Imperium:')).toBe(false)
   })
 
   test('does not throw on non-string input', () => {
@@ -216,3 +216,4 @@ describe('isTileCode: cheap, exact, never throws', () => {
     expect(isTileCode(null as unknown as string)).toBe(false)
   })
 })
+

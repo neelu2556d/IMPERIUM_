@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/server'
 //
 // The report is saved two places: the bug_reports Supabase table (durable
 // backup, read via the SQL editor) AND Sentry's User Feedback inbox (so reports
-// land next to our error monitoring at vitality-79.sentry.io). Sentry is
+// land next to our error monitoring at Imperium-79.sentry.io). Sentry is
 // production-only and forwarding is best-effort — it never blocks the save.
 export async function POST(request: Request) {
   const supabase = createClient()
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   })
 
   // Forward to Sentry's User Feedback inbox so reports sit alongside our error
-  // monitoring at vitality-79.sentry.io. Best-effort and returns an event id on
+  // monitoring at Imperium-79.sentry.io. Best-effort and returns an event id on
   // success; a no-op (and falsy) in dev/preview, where Sentry is disabled.
   let sentryId: string | undefined
   try {
@@ -66,3 +66,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true })
 }
+

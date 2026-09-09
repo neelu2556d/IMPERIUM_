@@ -6,7 +6,7 @@ import { logDriftShown, resolveDrift } from './driftActions'
 import type { DriftKind, DriftResolution } from '@/lib/goals/drift'
 
 /**
- * DriftCard — Vee's warm outreach when it notices you slipping (BUILD42 flagship).
+ * DriftCard — I's warm outreach when it notices you slipping (BUILD42 flagship).
  * Reaches out FIRST, before the user does. On mount it logs that it was shown
  * (cooldown). The three responses (grace / ease / talk) all rest the nudge and
  * are always honest. "Talk to me" hands off to the chat right below.
@@ -32,7 +32,7 @@ export default function DriftCard({
   const [resolved, setResolved] = useState<DriftResolution | null>(null)
   const logged = useRef(false)
 
-  // Record that this nudge was surfaced (cooldown keeps Vee present, not naggy).
+  // Record that this nudge was surfaced (cooldown keeps I present, not naggy).
   useEffect(() => {
     if (logged.current) return
     logged.current = true
@@ -76,3 +76,4 @@ export default function DriftCard({
     </section>
   )
 }
+

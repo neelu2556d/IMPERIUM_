@@ -207,12 +207,12 @@ input,select{font-family:inherit;color:inherit}
     </div>
   </main>
   <script>
-  var Vitality={_w:{},
-    save:function(d){parent.postMessage({source:'vitality-tile',type:'save',data:d},'*')},
-    load:function(){return new Promise(function(res){var id=Math.random().toString(36).slice(2);Vitality._w[id]=res;parent.postMessage({source:'vitality-tile',type:'load',id:id},'*')})},
-    report:function(s){parent.postMessage({source:'vitality-tile',type:'report',stream:s},'*')}
+  var Imperium={_w:{},
+    save:function(d){parent.postMessage({source:'Imperium-tile',type:'save',data:d},'*')},
+    load:function(){return new Promise(function(res){var id=Math.random().toString(36).slice(2);Imperium._w[id]=res;parent.postMessage({source:'Imperium-tile',type:'load',id:id},'*')})},
+    report:function(s){parent.postMessage({source:'Imperium-tile',type:'report',stream:s},'*')}
   };
-  window.addEventListener('message',function(e){var m=e.data;if(m&&m.source==='vitality-host'&&m.type==='load:result'&&Vitality._w[m.id]){Vitality._w[m.id](m.data);delete Vitality._w[m.id]}});
+  window.addEventListener('message',function(e){var m=e.data;if(m&&m.source==='Imperium-host'&&m.type==='load:result'&&Imperium._w[m.id]){Imperium._w[m.id](m.data);delete Imperium._w[m.id]}});
   (function(){
     var DOW=['Su','Mo','Tu','We','Th','Fr','Sa'];
     var MAXV=10;
@@ -223,7 +223,7 @@ input,select{font-family:inherit;color:inherit}
     function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
     function today(){return key(new Date())}
 
-    function writeStore(){Vitality.save(mem);}
+    function writeStore(){Imperium.save(mem);}
 
     function get(k){return mem.days[k]||0}
 
@@ -299,7 +299,7 @@ input,select{font-family:inherit;color:inherit}
     }
 
     function report(v){
-      if(v>0){Vitality.report({key:'sleep quality',label:'Sleep quality',value:v,date:today(),kind:'rating',goalDirection:'up'});}
+      if(v>0){Imperium.report({key:'sleep quality',label:'Sleep quality',value:v,date:today(),kind:'rating',goalDirection:'up'});}
     }
 
     function commit(){
@@ -316,7 +316,7 @@ input,select{font-family:inherit;color:inherit}
     }
 
     function load(){
-      Vitality.load().then(function(s){
+      Imperium.load().then(function(s){
         if(s&&typeof s==='object'){mem.days=s.days||{};if(typeof s.goal==='number')mem.goal=s.goal}
         GOAL=mem.goal||7;pending=get(today());
         document.getElementById('goal').value=mem.goal||'';
@@ -338,7 +338,7 @@ input,select{font-family:inherit;color:inherit}
 </body>
 </html>`;
 
-test('rating example: the tile is Vitality-grade (0 errors, 0 warnings)', () => {
+test('rating example: the tile is Imperium-grade (0 errors, 0 warnings)', () => {
   const result = lintTile(HTML);
   if (!result.ok || result.warnings > 0) {
     console.log('\n' + result.findings.map((f) => `  [${f.severity}] ${f.rule}: ${f.message}`).join('\n') + '\n');
@@ -356,7 +356,7 @@ test('rating example: it clears the richness gate as Fuel-grade rich', () => {
 
 test('rating example: it reports exactly one valid rating stream', () => {
   // exactly one report() call, and it is a rating stream
-  const reports = HTML.match(/Vitality\.report\s*\(/g) || [];
+  const reports = HTML.match(/Imperium\.report\s*\(/g) || [];
   assert.equal(reports.length, 1, 'a rating tile reports exactly one stream');
   assert.match(HTML, /kind:\s*'rating'/, 'reports a rating stream');
   assert.match(HTML, /goalDirection:\s*'up'/, 'a higher sleep-quality score is an up goal');
@@ -392,7 +392,7 @@ test('rating example behaves: reports through the host bridge and survives reope
   ticks[7].click();
   await h.settle();
   await h.click('#primary');
-  assert.ok(h.reports.length >= 1, 'the tile reports its rating to Vee via the host');
+  assert.ok(h.reports.length >= 1, 'the tile reports its rating to I via the host');
   const v = validateReport(h.reports[h.reports.length - 1]);
   assert.ok(v.ok && v.stream.value === 8, 'the reported value matches the on-screen rating');
   const h2 = await h.rehydrate();
@@ -402,3 +402,4 @@ test('rating example behaves: reports through the host bridge and survives reope
   h.close();
   h2.close();
 });
+

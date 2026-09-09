@@ -1,4 +1,4 @@
-/* "Vitality, I'm home" - the ritual stage.
+/* "Imperium, I'm home" - the ritual stage.
    Full screen, never scrolls, on the signature world. The shell owns this
    file: gem travel, scrim, settle flash, act frame, skip, questions, close.
    Acts bring their own .module.css and render inside .actStage. */
@@ -108,8 +108,8 @@
 }
 .bodyLeaving { opacity: 0; transform: translateY(10px); }
 
-/* Vee's one-line bubble. */
-.vee {
+/* I's one-line bubble. */
+.I {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -353,12 +353,12 @@
   .gemDock { transform: translateY(calc(env(safe-area-inset-top) + 10px)) scale(0.55); }
   .actFrame { top: calc(env(safe-area-inset-top) + 134px); width: calc(100vw - 28px); }
   .arrive, .quiet, .questions, .closeAct { margin-top: 92px; }
-  .vee { font-size: 15.5px; }
+  .I { font-size: 15.5px; }
   .questionLine { font-size: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage, .vee, .question, .beatText, .eyebrow, .hero, .heroSub, .enter, .settleFlash { animation: none; }
+  .stage, .I, .question, .beatText, .eyebrow, .hero, .heroSub, .enter, .settleFlash { animation: none; }
   .gemWrap { transition: none; }
   .body, .actFrame { transition: none; }
 }
@@ -382,3 +382,4 @@
 @media (prefers-reduced-motion: reduce) {
   .recap { animation: none; }
 }
+

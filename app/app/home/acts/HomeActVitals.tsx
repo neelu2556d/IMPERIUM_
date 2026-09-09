@@ -19,7 +19,7 @@ import { getLocalDateKey } from '@/lib/dates'
 import styles from './homeActVitals.module.css'
 
 /*
- * ACT 1 - VITALS. The first act of "Vitality, I'm home".
+ * ACT 1 - VITALS. The first act of "Imperium, I'm home".
  *
  * ZERO-INPUT by law. The shell only mounts this act when the account has a
  * vitals stream at all (presence.usesVitals). Inside:
@@ -426,8 +426,8 @@ export default function HomeActVitals({
     <div className={`${styles.act} ${leaving ? styles.actLeaving : ''}`}>
       {page === 'checkin' && (
         <div className={styles.pageCol}>
-          <p className={styles.vee}>
-            <span className={styles.veeTag}>VEE</span>
+          <p className={styles.I}>
+            <span className={styles.veeTag}>I</span>
             Before anything, tell me how you slept and how you feel. This is the one thing I cannot read for you.
           </p>
 
@@ -526,8 +526,8 @@ export default function HomeActVitals({
 
       {page === 'reads' && (
         <div className={styles.pageCol}>
-          <p className={styles.vee}>
-            <span className={styles.veeTag}>VEE</span>
+          <p className={styles.I}>
+            <span className={styles.veeTag}>I</span>
             {readsAreToday
               ? 'Here is your body today. Sleep, recovery, and strain, each out of a hundred.'
               : readDate
@@ -569,8 +569,8 @@ export default function HomeActVitals({
 
       {page === 'graph' && (
         <div className={styles.pageCol}>
-          <p className={styles.vee}>
-            <span className={styles.veeTag}>VEE</span>
+          <p className={styles.I}>
+            <span className={styles.veeTag}>I</span>
             Look at your line. Hit next to dive into the day.
           </p>
 
@@ -697,3 +697,4 @@ export default function HomeActVitals({
     </div>
   )
 }
+

@@ -6,7 +6,7 @@
  * the generated opener. Kept tiny and typed so both sides agree on the shape.
  */
 
-const KEY = 'vitality.mentorSeed'
+const KEY = 'Imperium.mentorSeed'
 
 export interface MentorSeed {
   topic: string       // e.g. 'recovery'
@@ -28,3 +28,4 @@ export function readMentorSeed(): MentorSeed | null {
     return JSON.parse(raw) as MentorSeed
   } catch { return null }
 }
+

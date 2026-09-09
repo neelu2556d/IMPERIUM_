@@ -15,7 +15,7 @@ import { createClient } from '@/lib/supabase/server'
  * set, so the card can show "coming soon" instead of a dead address.
  */
 
-const DOMAIN = process.env.NEXT_PUBLIC_EMAIL_INGEST_DOMAIN || 'in.vitality.app'
+const DOMAIN = process.env.NEXT_PUBLIC_EMAIL_INGEST_DOMAIN || 'in.Imperium.app'
 
 export async function GET() {
   const supabase = createClient()
@@ -61,3 +61,4 @@ export async function GET() {
     configured,
   })
 }
+

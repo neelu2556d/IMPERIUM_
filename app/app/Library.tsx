@@ -103,7 +103,7 @@ function categoryLabel(key: string): string {
 /** One-line, plain-English meaning per category so "Data" / "Measure" are
  *  self-explanatory (shown as a tooltip on each sidebar category). */
 const CATEGORY_DESC: Record<string, string> = {
-  core: 'Built-in Vitality modules',
+  core: 'Built-in Imperium modules',
   side: 'Extra apps, kept off your core dashboard until you place them',
   intake: 'Things you take in, like water, food or supplements',
   count: 'Tallies and streaks you add up',
@@ -123,7 +123,7 @@ interface Row {
   id: string
   name: string
   sublabel: string
-  /** 'core' for pre-installed tiles + Vee + Library, else the lowercased category. */
+  /** 'core' for pre-installed tiles + I + Library, else the lowercased category. */
   catKey: string
   /** The chip text. */
   chip: string
@@ -141,8 +141,8 @@ interface Row {
   locked?: boolean
   /** A user-built tile gets Delete + Open-in-Create; a core tile does not. */
   user?: boolean
-  /** True when the tile declares a report kind: Vee can read its stream.
-   *  Rendered as the small iris "Vee" chip beside the category chip. */
+  /** True when the tile declares a report kind: I can read its stream.
+   *  Rendered as the small iris "I" chip beside the category chip. */
   veeRead?: boolean
 }
 
@@ -226,7 +226,7 @@ export default function Library({
       locked: true,
     })
 
-    // Vee.
+    // I.
     out.push({
       id: VEE_TILE.id,
       name: VEE_TILE.label,
@@ -678,8 +678,8 @@ function RowItem({
       <div className={styles.chipCell}>
         <span className={`${styles.chip} ${toneClass(row.tone)}`}>{row.chip}</span>
         {row.veeRead && (
-          <span className={`${styles.chip} ${styles.vee}`} title="Imperium can read this tile's numbers">
-            Vee
+          <span className={`${styles.chip} ${styles.I}`} title="Imperium can read this tile's numbers">
+            I
           </span>
         )}
       </div>
@@ -792,8 +792,8 @@ function SideNav({
   )
 }
 
-/* The Vee glyph (mint chat orb) and the default user-tile glyph, kept inline so
- * Library has no dependency on the live Vee tile component. */
+/* The I glyph (mint chat orb) and the default user-tile glyph, kept inline so
+ * Library has no dependency on the live I tile component. */
 const veeGlyph = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 4c4 0 7 2.7 7 6.3 0 3.6-3 6.3-7 6.3-.8 0-1.5-.1-2.2-.3L6 18l.7-2.8C5.6 14 5 12.2 5 10.3 5 6.7 8 4 12 4Z" />
@@ -903,3 +903,4 @@ const Icon = {
  * future change to either is type-checked against this panel. */
 void isLibraryId
 void isCoreId
+

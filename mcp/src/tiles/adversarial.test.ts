@@ -7,7 +7,7 @@ import { gradeStamp } from '../checkTile.js';
 // The injection corpus that the happy-path test matrix never exercised. A
 // plain-English goal can carry a quote or an HTML/JS metacharacter; a `name` or
 // `unit` override is raw free text. None of these may break the sealed document,
-// inject a script, or flip the green "Vitality-grade" stamp on a broken tile.
+// inject a script, or flip the green "Imperium-grade" stamp on a broken tile.
 const ATTACKS = [
   '</script><script>alert(1)//',
   '"><script>alert(1)</script>',
@@ -77,8 +77,8 @@ test('lint: fetching external DATA (bring-your-own-key) is allowed, not banned',
   // recipe, so fetch of data must stay clean while external CODE stays blocked.
   const html =
     '<!doctype html><html><head><style>body{background:transparent}::selection{color:#6EE7B7}</style></head>' +
-    '<body><script>var Vitality={report:function(s){parent.postMessage({source:"vitality-tile",type:"report",stream:s},"*")}};' +
-    'fetch("https://finnhub.io/api/v1/quote?token=x").then(function(r){return r.json()}).then(function(v){Vitality.report({key:"px",label:"Price",value:v,date:"2000-01-01",kind:"measure"})});</script></body></html>';
+    '<body><script>var Imperium={report:function(s){parent.postMessage({source:"Imperium-tile",type:"report",stream:s},"*")}};' +
+    'fetch("https://finnhub.io/api/v1/quote?token=x").then(function(r){return r.json()}).then(function(v){Imperium.report({key:"px",label:"Price",value:v,date:"2000-01-01",kind:"measure"})});</script></body></html>';
   const r = lintTile(html);
   assert.equal(r.errors, 0, 'fetching data is the BYO-key feature, not a violation: ' + JSON.stringify(r.findings));
 });
@@ -93,9 +93,9 @@ test('lint: fetching external DATA (bring-your-own-key) is allowed, not banned',
 const SEALED = `<!doctype html><html><head><style>body{background:transparent;color:#fff}::selection{background:rgba(110,231,183,.25)}.big{color:#6EE7B7}</style></head><body>
 <div class="big" id="v">0</div><button id="add">add one</button>
 <script>
-var Vitality={save:function(d){parent.postMessage({source:'vitality-tile',type:'save',data:d},'*')},load:function(){return Promise.resolve([])},report:function(s){parent.postMessage({source:'vitality-tile',type:'report',stream:s},'*')}};
+var Imperium={save:function(d){parent.postMessage({source:'Imperium-tile',type:'save',data:d},'*')},load:function(){return Promise.resolve([])},report:function(s){parent.postMessage({source:'Imperium-tile',type:'report',stream:s},'*')}};
 function today(){var d=new Date();var m=String(d.getMonth()+1).padStart(2,'0');var dd=String(d.getDate()).padStart(2,'0');return d.getFullYear()+'-'+m+'-'+dd}
-var n=0;document.getElementById('add').addEventListener('click',function(){n++;Vitality.save({n:n});Vitality.report({key:'x',label:'X',value:n,date:today(),kind:'count'})});
+var n=0;document.getElementById('add').addEventListener('click',function(){n++;Imperium.save({n:n});Imperium.report({key:'x',label:'X',value:n,date:today(),kind:'count'})});
 </script></body></html>`;
 
 /** The full findings for a HTML string, for readable assert messages. */
@@ -147,7 +147,7 @@ test('taste is advice: a flag / regional-indicator emoji warns but never blocks'
 });
 
 test('adversarial floor: an external <script src> (CDN code) is refused', () => {
-  const bad = SEALED.replace('<script>\nvar Vitality', '<script src="https://cdn.jsdelivr.net/npm/x.js"></script>\n<script>\nvar Vitality');
+  const bad = SEALED.replace('<script>\nvar Imperium', '<script src="https://cdn.jsdelivr.net/npm/x.js"></script>\n<script>\nvar Imperium');
   refuses(bad, 'sealed-external-script', /inline/i);
 });
 
@@ -195,22 +195,23 @@ test('over-fire guard: an ESCAPED tag in text (&lt;img onerror=...&gt;) is inert
   assert.equal(r.findings.filter((f) => f.rule === 'inline-event-handler').length, 0, 'escaped text is inert: ' + dump(inert));
 });
 
-test('adversarial floor: a tile with NO Vitality bridge call is flagged (cannot persist or report)', () => {
+test('adversarial floor: a tile with NO Imperium bridge call is flagged (cannot persist or report)', () => {
   const bad = SEALED
-    .replace(/var Vitality=\{[\s\S]*?\};\n/, '')
-    .replace('Vitality.save({n:n});Vitality.report({key:\'x\',label:\'X\',value:n,date:today(),kind:\'count\'})', 'n=n');
+    .replace(/var Imperium=\{[\s\S]*?\};\n/, '')
+    .replace('Imperium.save({n:n});Imperium.report({key:\'x\',label:\'X\',value:n,date:today(),kind:\'count\'})', 'n=n');
   const r = lintTile(bad);
   const f = r.findings.find((x) => x.rule === 'bridge-missing');
   assert.ok(f, 'a bridgeless tile must be flagged: ' + dump(bad));
-  assert.match(`${f!.message} ${f!.hint ?? ''}`, /Vitality\.save|Vitality\.load|Vitality\.report/, 'the bridge fix-it must name the bridge calls');
+  assert.match(`${f!.message} ${f!.hint ?? ''}`, /Imperium\.save|Imperium\.load|Imperium\.report/, 'the bridge fix-it must name the bridge calls');
 });
 
 test('adversarial floor: a report() missing required fields is flagged with the missing names', () => {
   const bad = SEALED.replace(
-    "Vitality.report({key:'x',label:'X',value:n,date:today(),kind:'count'})",
-    'Vitality.report({value:n})',
+    "Imperium.report({key:'x',label:'X',value:n,date:today(),kind:'count'})",
+    'Imperium.report({value:n})',
   );
   const f = lintTile(bad).findings.find((x) => x.rule === 'report-shape');
   assert.ok(f, 'an invalid report() line must be flagged: ' + dump(bad));
   assert.match(f!.message, /key|date|kind/i, 'the report-shape message must name the missing fields');
 });
+

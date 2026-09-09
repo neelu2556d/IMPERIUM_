@@ -1,7 +1,7 @@
 /*
- * Vee ask-card glyph registry.
+ * I ask-card glyph registry.
  *
- * The whitelist of line icons Vee may attach to an answer chip. Each value is
+ * The whitelist of line icons I may attach to an answer chip. Each value is
  * the INNER markup of a 24x24 line SVG (the renderer wraps it with the shared
  * stroke styling, so paths here carry no stroke/fill of their own). This single
  * file is what keeps the ask-card system "automatic": the chat route validates
@@ -56,3 +56,4 @@ export const DEFAULT_ASK_GLYPH = 'dull'
 export function resolveAskGlyph(name: unknown): string {
   return typeof name === 'string' && name in ASK_GLYPHS ? name : DEFAULT_ASK_GLYPH
 }
+

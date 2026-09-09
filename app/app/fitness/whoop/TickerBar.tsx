@@ -11,7 +11,7 @@ import styles from './whoop.module.css'
  *   · value   — current value as displayed
  *   · spark   — mini sparkline from whatever recent history we have
  *   · delta   — signed change vs baseline / weekly avg / target, with unit
- *   · tone    — vitality canon: mint (good) / amber (watch) / red (urgent)
+ *   · tone    — Imperium canon: mint (good) / amber (watch) / red (urgent)
  *
  * Live behaviour:
  *   · the track scrolls horizontally (existing marquee)
@@ -265,3 +265,4 @@ export default function TickerBar({ d }: { d: TickerDataLike }) {
     </div>
   )
 }
+
