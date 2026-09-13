@@ -9,6 +9,7 @@
  * only tiles with server-readable data. Vitals / Peak / Brand / Finance have no
  * live source yet, so they intentionally show nothing.
  */
+
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getLocalDayKey } from '@/lib/nutrition/dayKey'
 
@@ -17,13 +18,17 @@ export interface DashboardTileStats {
   trainDay: string | null
   /** Today's logged calories (4am rollover), or null if nothing logged today. */
   fuelKcalToday: number | null
-  /** Total monthly sales in rupees, or null if no sales yet. */
+}
+
+export interface BusinessTileStats {
+  /** Total sales in the last 30 days, or null if no data. */
   totalMonthlySales: number | null
-  /** Active lots count, or null if no lots. */
+  /** Number of active lots, or null if no data. */
   activeLots: number | null
 }
 
-const EMPTY: DashboardTileStats = { trainDay: null, fuelKcalToday: null, totalMonthlySales: null, activeLots: null }
+const EMPTY: DashboardTileStats = { trainDay: null, fuelKcalToday: null }
+const EMPTY_BUSINESS: BusinessTileStats = { totalMonthlySales: null, activeLots: null }
 
 export async function getDashboardTileStats(
   supabase: SupabaseClient,
@@ -41,8 +46,6 @@ export async function getDashboardTileStats(
   const stats: DashboardTileStats = {
     trainDay: null,
     fuelKcalToday: null,
-    totalMonthlySales: null,
-    activeLots: null,
   }
 
   // Train — the most recent submitted session's day name.
@@ -59,15 +62,6 @@ export async function getDashboardTileStats(
     if (dayName) stats.trainDay = dayName
   } catch {
     // leave null — the tile just shows no stat
-  }
-
-  // Business — aggregate from business module
-  try {
-    const { totalMonthlySales, activeLots } = await getBusinessTileStats(supabase, userId)
-    stats.totalMonthlySales = totalMonthlySales
-    stats.activeLots = activeLots
-  } catch {
-    // leave null
   }
 
   // Fuel — today's logged calories. Prefer the client's local day key (cookie);
@@ -90,48 +84,39 @@ export async function getDashboardTileStats(
   return stats
 }
 
-/**
- * Fetch Business-module stats for the dashboard tile.
- * Called from the Business tile's stat resolver and from the main
- * dashboard page so the Business tile can show live figures.
- */
 export async function getBusinessTileStats(
   supabase: SupabaseClient,
   userId: string,
-): Promise<{ totalMonthlySales: number | null; activeLots: number | null }> {
-  const result = { totalMonthlySales: null as number | null, activeLots: null as number | null }
+): Promise<BusinessTileStats> {
+  const stats: BusinessTileStats = { totalMonthlySales: null, activeLots: null }
 
   try {
-    // Count active lots
-    const { count: lotsCount } = await supabase
-      .from('business_lots')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId)
-      .neq('status', 'cleared')
-
-    result.activeLots = lotsCount ?? null
-  } catch {
-    // leave null
-  }
-
-  try {
-    // Sum net amounts from this month's orders
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
     const { data: orders } = await supabase
       .from('business_orders')
-      .select('net_amount')
+      .select('total_amount')
       .eq('user_id', userId)
-      .gte('order_date', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())
-      .lte('order_date', new Date().toISOString())
-
-    if (orders && orders.length > 0) {
-      result.totalMonthlySales = orders.reduce(
-        (sum, o) => sum + Number(o.net_amount ?? 0),
-        0
-      )
+      .gte('order_date', thirtyDaysAgo.toISOString().split('T')[0])
+    if (orders) {
+      stats.totalMonthlySales = orders.reduce((sum, o) => sum + Number(o.total_amount ?? 0), 0) || null
     }
   } catch {
     // leave null
   }
 
-  return result
+  try {
+    const { data: lots } = await supabase
+      .from('business_lots')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+    if (lots) {
+      stats.activeLots = lots.length || null
+    }
+  } catch {
+    // leave null
+  }
+
+  return stats
 }

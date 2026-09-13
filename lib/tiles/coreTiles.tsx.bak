@@ -106,7 +106,6 @@ export interface ForgeTile {
   id: 'forge'
   index: '05'
   label: 'Forge'
-  sub: string
   orb?: { mode?: string }
   defaultSize: TileSize
   glyph: ReactNode
@@ -118,6 +117,9 @@ export function isCoreId(id: string): id is CoreTileId | 'I' {
   return id === 'I' || id in CORE_TILES
 }
 
+/** Is this id the special locked Forge tile (the Claude-builds-it storefront)? */
+export const isForgeId = (id: string) => id === FORGE_TILE.id
+
 /** Is this id any home tile (a core tile, I, or the locked Library / Create / Forge)? */
 export type HomeTileId =
   | CoreTileId
@@ -125,6 +127,10 @@ export type HomeTileId =
   | 'library'
   | 'create'
   | 'forge'
+
+export const isLibraryId = (id: string): id is 'library' => id === 'library'
+export const isCreateId = (id: string): id is 'create' => id === 'create'
+export const isForgeId = (id: string): id is 'forge' => id === 'forge'
 
 /** Default size for any home tile id. I defaults to the 2x2 centrepiece. */
 export function coreDefaultSize(id: HomeTileId): TileSize {
@@ -134,22 +140,6 @@ export function coreDefaultSize(id: HomeTileId): TileSize {
   if (id === 'forge') return FORGE_TILE.defaultSize
   return CORE_TILES[id].defaultSize
 }
-
-/** Is this id the special locked Library tile (the app storefront)? */
-export const isLibraryId = (id: string): id is 'library' => id === 'library'
-/** Is this id the special locked Create tile (the AI builder door)? */
-export const isCreateId = (id: string): id is 'create' => id === 'create'
-/** Is this id the special locked Forge tile (the Claude-builds-it storefront)? */
-export const isForgeId = (id: string): id is 'forge' => id === FORGE_TILE.id
-
-/** Is this id any home tile (a core tile, I, or the locked Library / Create / Forge)? */
-export const isHomeId = (id: string): id is HomeTileId =>
-  isLibraryId(id) || isCreateId(id) || isForgeId(id) || isCoreId(id)
-
-/** Is this id one of the "side project" tiles (the de-cored modules that live on
- *  the Library's side-projects shelf: Brand, Peak, Create, and any future ones)? */
-export const isSideProjectId = (id: string): id is 'brand' | 'peak' | 'create' =>
-  id === 'brand' || id === 'peak' || id === 'create'
 
 /** The "side project" tiles (launch strip, 2026-07-12). These are real, shipped
  * modules, but DE-CORED for launch: demoted off the default dashboard and
@@ -467,6 +457,12 @@ export const FORGE_TILE: ForgeTile = {
   ),
 }
 
+/** Where Library sits in the seeded default: the prominent second-row slot. */
+export const LIBRARY_DEFAULT_INDEX = Math.max(0, DEFAULT_HOME_ORDER.indexOf(LIBRARY_TILE.id))
+
+/** Where Forge sits in the seeded default: beside Library (the storefront). */
+export const FORGE_DEFAULT_INDEX = Math.max(0, DEFAULT_HOME_ORDER.indexOf(FORGE_TILE.id))
+
 /** The single ordered list of EVERY tile on a user's home dashboard: the pre-installed
  *  core tiles, the optional I tile, and the user's own built tiles, all interleaved in
  *  one order. The dashboard renders this list into one grid, so core tiles, I, and
@@ -494,8 +490,26 @@ export const DEFAULT_HOME_ORDER: HomeTileId[] = [
   'I',
 ]
 
-/** Where Library sits in the seeded default: the prominent second-row slot. */
-export const LIBRARY_DEFAULT_INDEX = Math.max(0, DEFAULT_HOME_ORDER.indexOf(LIBRARY_TILE.id))
+/** Is this id one of the pre-installed core tiles (incl. I)? */
+export function isCoreId(id: string): id is CoreTileId | 'I' {
+  return id === 'I' || id in CORE_TILES
+}
 
-/** Where Forge sits in the seeded default: beside Library (the storefront). */
-export const FORGE_DEFAULT_INDEX = Math.max(0, DEFAULT_HOME_ORDER.indexOf(FORGE_TILE.id))
+/** Is this id the special locked Forge tile (the Claude-builds-it storefront)? */
+export const isForgeId = (id: string) => id === FORGE_TILE.id
+
+/** Is this id any home tile (a core tile, I, or the locked Library / Create / Forge)? */
+export const isHomeId = (id: string): id is HomeTileId =>
+  isLibraryId(id) || isCreateId(id) || isForgeId(id) || isCoreId(id)
+
+/** Default size for any home tile id. I defaults to the 2x2 centrepiece. */
+export function coreDefaultSize(id: HomeTileId): TileSize {
+  if (id === 'I') return 'big'
+  if (id === 'library') return LIBRARY_TILE.defaultSize
+  if (id === 'create') return CREATE_TILE.defaultSize
+  if (id === 'forge') return FORGE_TILE.defaultSize
+  return CORE_TILES[id].defaultSize
+}
+export const isLibraryId = (id: string): id is 'library' => id === 'library'
+export const isCreateId = (id: string): id is 'create' => id === 'create'
+export const isForgeId = (id: string): id is 'forge' => id === 'forge'

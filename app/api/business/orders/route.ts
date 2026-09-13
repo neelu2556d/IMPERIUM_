@@ -1,28 +1,18 @@
-/**
- * Business Orders API — /api/business/orders
- * Access: writer.nishant2809@gmail.com only.
- */
-
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { isBusinessOwner, forbiddenResponse, unauthorizedResponse } from '@/lib/business/auth'
 
-// GET /api/business/orders — List all orders
+// GET /api/business/orders — List all orders for the authenticated user
 export async function GET(req: NextRequest) {
   const supabase = createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    return unauthorizedResponse()
-  }
-
-  if (!isBusinessOwner(user.email)) {
-    return forbiddenResponse()
+    return new Response('Unauthorized', { status: 401 })
   }
 
   const { data, error } = await supabase
     .from('business_orders')
-    .select('*, lot:business_lots(item_name, d_no), party:business_parties(name)')
+    .select('*')
     .eq('user_id', user.id)
     .order('order_date', { ascending: false })
 
@@ -39,97 +29,152 @@ export async function POST(req: NextRequest) {
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    return unauthorizedResponse()
-  }
-
-  if (!isBusinessOwner(user.email)) {
-    return forbiddenResponse()
+    return new Response('Unauthorized', { status: 401 })
   }
 
   const body = await req.json()
   const {
-    lot_id,
     party_id,
     order_date,
-    colours,
-    top_quantity,
-    bottom_quantity,
-    dupatta_quantity,
-    top_rate,
-    bottom_rate,
-    dupatta_rate,
+    due_date,
+    items,
     discount_percent,
-    gst,
-    payment_days,
+    gst_percent,
+    cash_discount_percent,
+    notes,
   } = body
 
-  if (!lot_id || !party_id) {
-    return NextResponse.json({ error: 'lot_id and party_id are required' }, { status: 400 })
+  if (!party_id || !due_date) {
+    return NextResponse.json({ error: 'party_id and due_date are required' }, { status: 400 })
   }
 
-  const orderDate = order_date || new Date().toISOString().split('T')[0]
-  const dueDate = new Date()
-  dueDate.setDate(dueDate.getDate() + (payment_days || 45))
-
-  const totalMetres = (Number(top_quantity) + Number(bottom_quantity) + Number(dupatta_quantity)) * Number(colours || 1)
-  const totalAmount = (Number(top_quantity) * Number(top_rate || 0) + Number(bottom_quantity) * Number(bottom_rate || 0) + Number(dupatta_quantity) * Number(dupatta_rate || 0)) * Number(colours || 1)
-  const discountAmount = totalAmount * Number(discount_percent || 0) / 100
-  const afterDiscount = totalAmount - discountAmount
-  const gstAmount = gst ? afterDiscount * 0.05 : 0
-  const netAmount = afterDiscount + gstAmount
+  // Calculate totals from items
+  const totalMetre = items?.reduce((sum: number, i: any) => sum + i.metre, 0) || 0
+  const totalAmount = items?.reduce((sum: number, i: any) => sum + i.amount, 0) || 0
 
   const { data, error } = await supabase
     .from('business_orders')
     .insert({
       user_id: user.id,
-      lot_id,
       party_id,
-      order_date: orderDate,
-      colours: Number(colours) || 1,
-      top_quantity: Number(top_quantity) || 0,
-      bottom_quantity: Number(bottom_quantity) || 0,
-      dupatta_quantity: Number(dupatta_quantity) || 0,
-      top_rate: Number(top_rate) || 0,
-      bottom_rate: Number(bottom_rate) || 0,
-      dupatta_rate: Number(dupatta_rate) || 0,
-      discount_percent: Number(discount_percent) || 0,
-      gst: gst !== undefined ? gst : true,
-      payment_days: Number(payment_days) || 45,
-      due_date: dueDate.toISOString().split('T')[0],
-      status: 'pending',
+      order_date: order_date || new Date().toISOString().split('T')[0],
+      due_date,
+      total_metre: totalMetre,
+      total_amount: totalAmount,
+      discount_percent,
+      gst_percent,
+      cash_discount_percent,
+      notes,
     })
-    .select('*, lot:business_lots(item_name, d_no), party:business_parties(name)')
+    .select()
     .single()
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  // Auto-populate sales register
-  await supabase.from('business_sales_register').insert({
-    order_id: data.id,
-    amount: totalAmount,
-    gst_rate: gst ? 5 : 0,
-    net_amount: netAmount,
-  })
+  // Insert order items if provided
+  if (items && items.length > 0 && data) {
+    const orderItems = items.map((item: any) => ({
+      order_id: data.id,
+      lot_id: item.lot_id,
+      item_name: item.item_name,
+      design_no: item.design_no,
+      top_metre: item.top_metre,
+      bottom_metre: item.bottom_metre,
+      dupatta_metre: item.dupatta_metre,
+      colour_name: item.colour_name,
+      metre: item.metre,
+      price_per_metre: item.price_per_metre,
+      amount: item.amount,
+    }))
 
-  // Auto-populate collection register
-  await supabase.from('business_collection_register').insert({
-    party_id,
-    invoice_date: orderDate,
-    due_date: dueDate.toISOString().split('T')[0],
-    amount: netAmount,
-    status: 'pending',
-  })
+    const { error: itemsError } = await supabase
+      .from('business_order_items')
+      .insert(orderItems)
 
-  // Auto-populate party ledger
-  await supabase.from('business_party_ledger').insert({
-    party_id,
-    outstanding_amount: netAmount,
-    due_date: dueDate.toISOString().split('T')[0],
-    status: 'pending',
-    last_transaction_date: orderDate,
-  })
+    if (itemsError) {
+      // Rollback: delete the order
+      await supabase.from('business_orders').delete().eq('id', data.id)
+      return NextResponse.json({ error: itemsError.message }, { status: 500 })
+    }
+  }
 
   return NextResponse.json({ order: data }, { status: 201 })
+}
+
+// PATCH /api/business/orders/:id — Update an order
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const supabase = createClient()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const body = await req.json()
+  const {
+    party_id,
+    order_date,
+    due_date,
+    total_metre,
+    total_amount,
+    discount_percent,
+    gst_percent,
+    cash_discount_percent,
+    amount_received,
+    status,
+    invoice_number,
+    notes,
+  } = body
+
+  const updates: any = {}
+  if (party_id !== undefined) updates.party_id = party_id
+  if (order_date !== undefined) updates.order_date = order_date
+  if (due_date !== undefined) updates.due_date = due_date
+  if (total_metre !== undefined) updates.total_metre = total_metre
+  if (total_amount !== undefined) updates.total_amount = total_amount
+  if (discount_percent !== undefined) updates.discount_percent = discount_percent
+  if (gst_percent !== undefined) updates.gst_percent = gst_percent
+  if (cash_discount_percent !== undefined) updates.cash_discount_percent = cash_discount_percent
+  if (amount_received !== undefined) updates.amount_received = amount_received
+  if (status !== undefined) updates.status = status
+  if (invoice_number !== undefined) updates.invoice_number = invoice_number
+  if (notes !== undefined) updates.notes = notes
+
+  const { data, error } = await supabase
+    .from('business_orders')
+    .update(updates)
+    .eq('id', params.id)
+    .eq('user_id', user.id)
+    .select()
+    .single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ order: data })
+}
+
+// DELETE /api/business/orders/:id — Delete an order
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const supabase = createClient()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const { error } = await supabase
+    .from('business_orders')
+    .delete()
+    .eq('id', params.id)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ success: true })
 }

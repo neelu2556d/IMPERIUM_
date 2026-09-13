@@ -13,7 +13,7 @@
 
 export type GlyphDraw = (ctx: CanvasRenderingContext2D) => void
 export type GlyphName =
-  | 'V' | 'CHECK'
+  | 'V' | 'I' | 'CHECK'
   | 'BAR' | 'SPARK' | 'BOLT' | 'CHART' | 'ASCEND'
   | 'TALLY' | 'DROP' | 'CAPSULE' | 'SPARKLINE' | 'PULSE' | 'SINE' | 'RINGS'
   | 'ROBOT' | 'FLAME' | 'SLIDERS' | 'NOTE'
