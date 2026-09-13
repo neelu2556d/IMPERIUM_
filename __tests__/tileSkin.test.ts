@@ -44,8 +44,8 @@ describe('tileSkin: how a tile looks (size, design, color, name)', () => {
 })
 
 describe('size taxonomy', () => {
-  test('the seven presets', () => {
-    expect(TILE_SIZES).toEqual(['s', 'm', 'tall', 'hero', 'big', 'band', 'l'])
+  test('the eight presets', () => {
+    expect(TILE_SIZES).toEqual(['s', 'm', 'tall', 'hero', 'big', 'band', 'l', 'wide'])
   })
 
   test('every preset has a span and a label', () => {
@@ -63,15 +63,15 @@ describe('size taxonomy', () => {
     expect(SIZE_PRESETS.band).toEqual({ cols: 4, rows: 1 })
   })
 
-  test('nextSize cycles through all seven and wraps', () => {
+  test('nextSize cycles through all eight and wraps', () => {
     const seen: TileSize[] = []
     let s: TileSize = 's'
     for (let i = 0; i < TILE_SIZES.length; i++) {
       seen.push(s)
       s = nextSize(s)
     }
-    expect(seen).toEqual(['s', 'm', 'tall', 'hero', 'big', 'band', 'l'])
-    expect(nextSize('l')).toBe('s')
+    expect(seen).toEqual(['s', 'm', 'tall', 'hero', 'big', 'band', 'l', 'wide'])
+    expect(nextSize('wide')).toBe('s')
   })
 })
 

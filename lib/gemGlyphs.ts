@@ -39,6 +39,11 @@ export const GLYPHS: Record<GlyphName, GlyphDraw> = {
     ctx.moveTo(146, 174); ctx.lineTo(256, 360); ctx.lineTo(366, 174)
     ctx.stroke()
   },
+  I: (ctx) => {
+    ctx.beginPath()
+    ctx.moveTo(256, 140); ctx.lineTo(256, 372)
+    ctx.stroke()
+  },
   CHECK: (ctx) => {
     ctx.beginPath()
     ctx.moveTo(146, 268); ctx.lineTo(226, 348); ctx.lineTo(370, 172)

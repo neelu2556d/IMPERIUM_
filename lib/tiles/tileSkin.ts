@@ -24,7 +24,7 @@
  *   band 4x1  full-width (old Finance / Create)
  *   l    4x2  showcase — a user tile can outdo the hero
  */
-export const TILE_SIZES = ['s', 'm', 'tall', 'hero', 'big', 'band', 'l'] as const
+export const TILE_SIZES = ['s', 'm', 'tall', 'hero', 'big', 'band', 'l', 'wide'] as const
 export type TileSize = (typeof TILE_SIZES)[number]
 
 export interface Span {
@@ -40,6 +40,7 @@ export const SIZE_PRESETS: Record<TileSize, Span> = {
   big: { cols: 2, rows: 2 },
   band: { cols: 4, rows: 1 },
   l: { cols: 4, rows: 2 },
+  wide: { cols: 3, rows: 1 }, // Added to support 'wide' tile size
 }
 
 /** Short label for the resize chip / size segments. */
@@ -51,6 +52,7 @@ export const SIZE_LABELS: Record<TileSize, string> = {
   big: 'Big',
   band: 'Band',
   l: 'L',
+  wide: 'Wide',
 }
 
 /** Cycle to the next size (the resize chip on a tile), wrapping at the end. */

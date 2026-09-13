@@ -6,6 +6,7 @@ import type {
   BusinessParty,
   BusinessOrder,
   BusinessPayment,
+  BusinessRate,
   CreateLotPayload,
   CreatePartyPayload,
   CreateOrderPayload,
@@ -360,7 +361,7 @@ export const useBusinessStore = create<BusinessState>()((set, get) => ({
     if (!error && data) {
       set((s) => ({ payments: [data, ...s.payments] }));
       // Recalculate order status
-      const order = s.orders.find((o) => o.id === payload.order_id);
+      const order = get().orders.find((o) => o.id === payload.order_id);
       if (order) {
         const newReceived = (order.amount_received || 0) + payload.amount;
         const newStatus: OrderStatus = newReceived >= order.total_amount ? 'paid' : 'partially_paid';

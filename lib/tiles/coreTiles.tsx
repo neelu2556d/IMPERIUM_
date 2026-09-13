@@ -73,16 +73,19 @@ export interface VeeTile {
   id: 'I'
   index: '00'
   label: 'I'
+  href: string
+  orb?: { mode?: string; roam?: string; pt?: string }
   glyph: ReactNode
   art: ReactNode
   defaultSize: TileSize
   variant?: string
+  kicker: string
 }
 
 /** The Library tile (the storefront). Locked to its slot, not draggable. */
 export interface LibraryTile {
   id: 'library'
-  href: '/app/Library'
+  href: string
   index: '03'
   label: 'Library'
   orb?: { mode?: string }
@@ -94,8 +97,10 @@ export interface LibraryTile {
 /** The Create tile (the AI builder door). Locked to its slot, not draggable. */
 export interface CreateTile {
   id: 'create'
+  href: string
   index: '04'
   label: 'Create'
+  orb?: { mode?: string }
   defaultSize: TileSize
   glyph: ReactNode
   art: ReactNode
@@ -104,6 +109,7 @@ export interface CreateTile {
 /** The Forge tile (the Claude-builds-it storefront). Locked to its slot, not draggable. */
 export interface ForgeTile {
   id: 'forge'
+  href: string
   index: '05'
   label: 'Forge'
   sub: string
@@ -139,35 +145,19 @@ export function coreDefaultSize(id: HomeTileId): TileSize {
 export const isLibraryId = (id: string): id is 'library' => id === 'library'
 /** Is this id the special locked Create tile (the AI builder door)? */
 export const isCreateId = (id: string): id is 'create' => id === 'create'
-/** Is this id the special locked Forge tile (the Claude-builds-it storefront)? */
+/** Is this id the special locked Forge tile? */
 export const isForgeId = (id: string): id is 'forge' => id === FORGE_TILE.id
 
-/** Is this id any home tile (a core tile, I, or the locked Library / Create / Forge)? */
 export const isHomeId = (id: string): id is HomeTileId =>
-  isLibraryId(id) || isCreateId(id) || isForgeId(id) || isCoreId(id)
-
-/** Is this id one of the "side project" tiles (the de-cored modules that live on
- *  the Library's side-projects shelf: Brand, Peak, Create, and any future ones)? */
-export const isSideProjectId = (id: string): id is 'brand' | 'peak' | 'create' =>
-  id === 'brand' || id === 'peak' || id === 'create'
+  id === 'I' || id in CORE_TILES || id === 'library' || id === 'create' || id === 'forge'
 
 /** The "side project" tiles (launch strip, 2026-07-12). These are real, shipped
  * modules, but DE-CORED for launch: demoted off the default dashboard and
- * disconnected from I's proactive surfaces (the Noticed seam in lib/I/
- * tileRefs.ts and the graph library / Core Room). They live on the Library's
- * "Side projects" shelf and re-place onto any board with one tap. Create (the
- * no-AI quick builder) rides this shelf too. The single source of truth so the
- * Library, the seam, and any future gate can never disagree about wh
- * they are.
- *
- * Brand / Peak / Create are DE-CORED, not deleted: they live on in the Library
- * ("In your library", the side-projects shelf) and re-place with one tap.
- * Finance stays core (2026-07-12): it fully feeds I, so it earns the board.
- * Existing boards are
- * untouched - getOrder never rewrites a stored order, it only backfills the
- * locked Library + Forge. Every tile drags, resizes, and can be removed
- * (except the locked Library + Forge). User-built tiles append.
+ * disconnected from I's proactive surfaces. They live on the Library's
+ * "Side projects" shelf and re-place with one tap.
  */
+export const isSideProjectId = (id: string): id is 'brand' | 'peak' | 'create' =>
+  id === 'brand' || id === 'peak' || id === 'create'
 
 export const CORE_TILES: Record<CoreTileId, CoreTile> = {
   train: {
@@ -315,63 +305,8 @@ export const CORE_TILES: Record<CoreTileId, CoreTile> = {
         <g className="orb" transform="translate(104 70)"><circle className="glow" r="8" /><circle className="node" r="3.2" /></g>
       </svg>
     ),
-    stat: (s: import('@/lib/vitality/dashboardStats').DashboardTileStats) => {
-      const bs = s as import('@/lib/vitality/dashboardStats').BusinessTileStats
-      if (!bs) return null
-      return bs.activeLots !== null
-        ? { value: bs.activeLots.toString(), unit: 'lots' }
-        : null
-    },
+    stat: (s) => null, // Business stats disabled for now
   },
-}
-
-/** The locked centrepiece tile (I) with its own type and glyphs, art, stats. */
-export interface VeeTile {
-  id: 'I'
-  index: '00'
-  label: 'I'
-  href: string
-  orb?: { mode?: string; roam?: string; pt?: string }
-  glyph: ReactNode
-  art: ReactNode
-  defaultSize: TileSize
-  variant?: string
-}
-
-/** The Library tile (the storefront) — locked slot, not draggable. */
-export interface LibraryTile {
-  id: 'library'
-  href: string
-  index: '03'
-  label: 'Library'
-  orb?: { mode?: string }
-  defaultSize: TileSize
-  glyph: ReactNode
-  art: ReactNode
-}
-
-/** The Create tile (the AI builder door) — locked slot, not draggable. */
-export interface CreateTile {
-  id: 'create'
-  href: string
-  index: '04'
-  label: 'Create'
-  orb?: { mode?: string }
-  defaultSize: TileSize
-  glyph: ReactNode
-  art: ReactNode
-}
-
-/** The Forge tile (the Claude-builds-it storefront) — locked slot, not draggable. */
-export interface ForgeTile {
-  id: 'forge'
-  href: string
-  index: '05'
-  label: 'Forge'
-  orb?: { mode?: string }
-  defaultSize: TileSize
-  glyph: ReactNode
-  art: ReactNode
 }
 
 /** The locked centrepiece tile (I) with its own type and glyphs, art, stats. */
@@ -380,6 +315,7 @@ export const VEE_TILE: VeeTile = {
   index: '00',
   label: 'I',
   href: '/app',
+  kicker: 'Self',
   glyph: (
     <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
       <circle cx="0" cy="0" r="6" />
@@ -428,6 +364,7 @@ export const CREATE_TILE: CreateTile = {
   href: '/app/create',
   index: '04',
   label: 'Create',
+  orb: { mode: 'still' },
   defaultSize: 'hero',
   glyph: (
     <svg viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
@@ -450,6 +387,7 @@ export const FORGE_TILE: ForgeTile = {
   href: '/app/forge',
   index: '05',
   label: 'Forge',
+  sub: 'Build',
   orb: { mode: 'still' },
   defaultSize: 'hero',
   glyph: (
