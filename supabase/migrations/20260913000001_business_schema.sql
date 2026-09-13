@@ -45,7 +45,7 @@ create table business_lot_components (
   colour_name text not null,
   colour_metre numeric not null,
   colour_price numeric not null default 0,
-  unique key (lot_id, component_type, colour_name)
+  unique (lot_id, component_type, colour_name)
 );
 
 -- Parties: Customers and suppliers
@@ -98,7 +98,7 @@ create table public.business_order_items (
   metre numeric not null default 0,
   price_per_metre numeric not null default 0,
   amount numeric not null default 0,
-  unique key (order_id, lot_id)
+  unique (order_id, lot_id)
 );
 
 -- Payments: Money received
@@ -124,7 +124,7 @@ create table public.business_rates (
   price_per_metre numeric not null default 0,
   is_default boolean default false,
   created_at timestamp with time zone default now(),
-  unique key (party_id, item_name, design_no)
+  unique (party_id, item_name, design_no)
 );
 
 -- AI conversations: Business mentor chat history
