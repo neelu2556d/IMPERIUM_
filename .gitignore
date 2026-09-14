@@ -85,3 +85,6 @@ public/*-preview.html
 /explain-*.png
 /pol-*.png
 .env*
+
+.vercel
+.env*

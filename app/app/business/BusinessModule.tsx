@@ -4,6 +4,17 @@ import { useEffect } from 'react'
 import { useBusinessStore } from '@/lib/business/store'
 import styles from './business.module.css'
 
+// View components
+import LotsView from './views/LotsView'
+import PartiesView from './views/PartiesView'
+import OrdersView from './views/OrdersView'
+import PaymentsView from './views/PaymentsView'
+import ReportsView from './views/ReportsView'
+import AiView from './views/AiView'
+import ProfilesView from './views/ProfilesView'
+import ConnectionsView from './views/ConnectionsView'
+import SettingsView from './views/SettingsView'
+
 export function BusinessModule() {
   const { activeTab, setActiveTab, fetchLots, fetchParties, fetchOrders, fetchPayments, fetchRates } = useBusinessStore()
 
@@ -53,16 +64,5 @@ export function BusinessModule() {
     </div>
   )
 }
-
-// Placeholder views - will be implemented progressively
-const LotsView = () => <div className={styles.view}>Lots view placeholder</div>
-const PartiesView = () => <div className={styles.view}>Parties view placeholder</div>
-const OrdersView = () => <div className={styles.view}>Orders view placeholder</div>
-const PaymentsView = () => <div className={styles.view}>Payments view placeholder</div>
-const ReportsView = () => <div className={styles.view}>Reports view placeholder</div>
-const AiView = () => <div className={styles.view}>AI view placeholder</div>
-const ProfilesView = () => <div className={styles.view}>Profiles view placeholder</div>
-const ConnectionsView = () => <div className={styles.view}>Connections view placeholder</div>
-const SettingsView = () => <div className={styles.view}>Settings view placeholder</div>
 
 export default BusinessModule
